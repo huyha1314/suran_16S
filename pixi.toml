@@ -1,0 +1,37 @@
+[workspace]
+authors = ["huyha1314 <hagiahuy311@gmail.com>"]
+channels = ["conda-forge", "bioconda"]
+name = "suran_16S"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+generate_samples = "bash script/generate_samples_tsv.sh data data/sample.tsv"
+generate_metadata = "Rscript script/convert_metadata.R"
+check_md5 = "bash script/check_md5.sh data"
+qc_trim = "bash script/01_qc_trim.sh"
+dada2 = "Rscript script/02_dada2.R"
+phyloseq = "Rscript script/03_phyloseq_prep.R"
+stats = "Rscript script/04_longitudinal_stats.R"
+network = "Rscript script/05_network_analysis.R"
+download_db = "bash script/download_db.sh"
+picrust2 = "bash script/06_picrust2.sh"
+all = "bash master.sh"
+
+[dependencies]
+fastqc = ">=0.12.1,<0.13"
+cutadapt = ">=5.2,<6"
+multiqc = ">=1.35,<2"
+bioconductor-dada2 = ">=1.38.0,<2"
+bioconductor-phyloseq = ">=1.54.0,<2"
+r-vegan = ">=2.7_3,<3"
+r-tidyverse = ">=2.0.0,<3"
+r-ggpubr = ">=0.6.3,<0.7"
+r-lme4 = ">=2.0_1,<3"
+r-lmertest = ">=3.2_1,<4"
+r-rmarkdown = ">=2.31,<3"
+r-knitr = ">=1.51,<2"
+r-openxlsx = ">=4.2.8.1,<5"
+r-cowplot = ">=1.2.0,<2"
+r-dt = ">=0.34.0,<0.35"
+picrust2 = ">=2.6.3,<3"
