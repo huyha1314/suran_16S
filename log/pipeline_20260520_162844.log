@@ -1,0 +1,2878 @@
+=========================================================================
+📝 LOGGING ACTIVE: Live output is being saved to: log/pipeline_20260520_162844.log
+=========================================================================
+=========================================================================
+        __  ___               __            _   __ _____                 
+       /  |/  /____ _ _____  / /_ ___   __ / | / // ___/                 
+      / /|_/ // __ `// ___/ / __// _ \ /_//  |/ / \__ \                  
+     / /  / // /_/ // /__  / /_ /  __/   / /|  / ___/ /                  
+    /_/  /_/ \__,_/ \___/  \__/ \___/   /_/ |_/ /____/                   
+                                                                         
+         Modular 16S rRNA Longitudinal Pipeline Orchestrator             
+=========================================================================
+Global Threads fallback: 64
+------------------- Parallel Resource Allocations ---------------------
+1. MD5 Integrity Check: 64 cores (Parallel)
+2. Raw/Trimmed FastQC:  64 cores (Parallel)
+3. Cutadapt Trimming:   8 concurrent jobs x 8 threads/job
+4. DADA2 Denoising:     64 cores (Parallel)
+5. PICRUSt2 Metagenome: 64 cores (Parallel)
+-------------------------------------------------------------------------
+Raw Read Directory:     ./data
+Sample Sheet TSV:       ./sample.tsv
+Standard Metadata TSV:  ./metadata.tsv
+V3-V4 Primer Forward:   CCTACGGGNGGCWGCAG
+V3-V4 Primer Reverse:   GACTACHVGGGTATCTAATCC
+DADA2 Truncation F/R:   270 / 210 bp
+DADA2 Max EE F/R:       2 / 5
+=========================================================================
+✅ Verified sample sheet exists at: ./sample.tsv
+✅ Verified longitudinal metadata exists at: ./metadata.tsv
+
+⏭️  [RESUME] STAGE 0.5: MD5 Raw Data Integrity Check already completed.
+    Verified output file exists: log/.md5_verified
+    Skipping to next stage...
+
+=========================================================================
+ >>> STAGE 1: QC & Cutadapt Primer Trimming
+     Running command: bash script/01_qc_trim.sh
+=========================================================================
+=========================================================================
+        16S rRNA Quality Control & Primer Trimming (Parallel)            
+=========================================================================
+Sample TSV:             ./sample.tsv
+Results Directory:      ./results
+FastQC Threads:         64
+Cutadapt Concurrency:   8 concurrent jobs
+Threads Per Cutadapt:   8 threads/job
+Total Trim Cores:       64
+=========================================================================
+>>> Step 1: Running FastQC on raw reads...
+application/gzip
+application/gzip
+Started analysis of 0-12_merged_L00_R1.fq.gz
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+application/gzip
+Started analysis of 0-12_merged_L00_R2.fq.gz
+Approx 5% complete for 0-12_merged_L00_R1.fq.gz
+Started analysis of 0-13_merged_L00_R1.fq.gz
+Approx 5% complete for 0-12_merged_L00_R2.fq.gz
+Approx 10% complete for 0-12_merged_L00_R1.fq.gz
+Started analysis of 0-13_merged_L00_R2.fq.gz
+Approx 5% complete for 0-13_merged_L00_R1.fq.gz
+Approx 10% complete for 0-12_merged_L00_R2.fq.gz
+Started analysis of 0-22_merged_L00_R1.fq.gz
+Approx 15% complete for 0-12_merged_L00_R1.fq.gz
+Approx 5% complete for 0-13_merged_L00_R2.fq.gz
+Approx 10% complete for 0-13_merged_L00_R1.fq.gz
+Approx 15% complete for 0-12_merged_L00_R2.fq.gz
+Approx 10% complete for 0-13_merged_L00_R2.fq.gz
+Started analysis of 0-22_merged_L00_R2.fq.gz
+Approx 20% complete for 0-12_merged_L00_R1.fq.gz
+Approx 5% complete for 0-22_merged_L00_R1.fq.gz
+Approx 20% complete for 0-12_merged_L00_R2.fq.gz
+Approx 15% complete for 0-13_merged_L00_R1.fq.gz
+Started analysis of 0-23_merged_L00_R1.fq.gz
+Approx 15% complete for 0-13_merged_L00_R2.fq.gz
+Approx 5% complete for 0-22_merged_L00_R2.fq.gz
+Approx 25% complete for 0-12_merged_L00_R1.fq.gz
+Approx 25% complete for 0-12_merged_L00_R2.fq.gz
+Approx 20% complete for 0-13_merged_L00_R1.fq.gz
+Approx 10% complete for 0-22_merged_L00_R1.fq.gz
+Started analysis of 0-23_merged_L00_R2.fq.gz
+Approx 20% complete for 0-13_merged_L00_R2.fq.gz
+Approx 30% complete for 0-12_merged_L00_R2.fq.gz
+Approx 5% complete for 0-23_merged_L00_R1.fq.gz
+Approx 10% complete for 0-22_merged_L00_R2.fq.gz
+Approx 25% complete for 0-13_merged_L00_R1.fq.gz
+Approx 30% complete for 0-12_merged_L00_R1.fq.gz
+Started analysis of 0-32_merged_L00_R1.fq.gz
+Approx 5% complete for 0-23_merged_L00_R2.fq.gz
+Approx 15% complete for 0-22_merged_L00_R1.fq.gz
+Approx 25% complete for 0-13_merged_L00_R2.fq.gz
+Started analysis of 0-32_merged_L00_R2.fq.gz
+Approx 35% complete for 0-12_merged_L00_R2.fq.gz
+Approx 30% complete for 0-13_merged_L00_R1.fq.gz
+Approx 15% complete for 0-22_merged_L00_R2.fq.gz
+Approx 10% complete for 0-23_merged_L00_R1.fq.gz
+Approx 35% complete for 0-12_merged_L00_R1.fq.gz
+Approx 30% complete for 0-13_merged_L00_R2.fq.gz
+Approx 10% complete for 0-23_merged_L00_R2.fq.gz
+Approx 20% complete for 0-22_merged_L00_R1.fq.gz
+Started analysis of 0-33_merged_L00_R1.fq.gz
+Approx 40% complete for 0-12_merged_L00_R2.fq.gz
+Approx 5% complete for 0-32_merged_L00_R1.fq.gz
+Approx 35% complete for 0-13_merged_L00_R1.fq.gz
+Approx 20% complete for 0-22_merged_L00_R2.fq.gz
+Approx 5% complete for 0-32_merged_L00_R2.fq.gz
+Approx 15% complete for 0-23_merged_L00_R1.fq.gz
+Approx 35% complete for 0-13_merged_L00_R2.fq.gz
+Approx 40% complete for 0-12_merged_L00_R1.fq.gz
+Started analysis of 0-33_merged_L00_R2.fq.gz
+Approx 15% complete for 0-23_merged_L00_R2.fq.gz
+Approx 25% complete for 0-22_merged_L00_R1.fq.gz
+Approx 45% complete for 0-12_merged_L00_R2.fq.gz
+Started analysis of 0-42_merged_L00_R1.fq.gz
+Approx 40% complete for 0-13_merged_L00_R1.fq.gz
+Approx 25% complete for 0-22_merged_L00_R2.fq.gz
+Approx 40% complete for 0-13_merged_L00_R2.fq.gz
+Approx 5% complete for 0-33_merged_L00_R1.fq.gz
+Approx 20% complete for 0-23_merged_L00_R1.fq.gz
+Approx 45% complete for 0-12_merged_L00_R1.fq.gz
+Approx 10% complete for 0-32_merged_L00_R1.fq.gz
+Approx 20% complete for 0-23_merged_L00_R2.fq.gz
+Approx 10% complete for 0-32_merged_L00_R2.fq.gz
+Approx 50% complete for 0-12_merged_L00_R2.fq.gz
+Approx 5% complete for 0-33_merged_L00_R2.fq.gz
+Started analysis of 0-42_merged_L00_R2.fq.gz
+Approx 45% complete for 0-13_merged_L00_R1.fq.gz
+Approx 30% complete for 0-22_merged_L00_R1.fq.gz
+Approx 45% complete for 0-13_merged_L00_R2.fq.gz
+Approx 30% complete for 0-22_merged_L00_R2.fq.gz
+Approx 25% complete for 0-23_merged_L00_R2.fq.gz
+Approx 5% complete for 0-42_merged_L00_R1.fq.gz
+Approx 50% complete for 0-12_merged_L00_R1.fq.gz
+Approx 25% complete for 0-23_merged_L00_R1.fq.gz
+Started analysis of 0-43_merged_L00_R1.fq.gz
+Approx 55% complete for 0-12_merged_L00_R2.fq.gz
+Approx 10% complete for 0-33_merged_L00_R1.fq.gz
+Approx 50% complete for 0-13_merged_L00_R1.fq.gz
+Approx 50% complete for 0-13_merged_L00_R2.fq.gz
+Approx 15% complete for 0-32_merged_L00_R2.fq.gz
+Approx 15% complete for 0-32_merged_L00_R1.fq.gz
+Approx 10% complete for 0-33_merged_L00_R2.fq.gz
+Approx 35% complete for 0-22_merged_L00_R2.fq.gz
+Approx 35% complete for 0-22_merged_L00_R1.fq.gz
+Approx 5% complete for 0-42_merged_L00_R2.fq.gz
+Started analysis of 0-43_merged_L00_R2.fq.gz
+Approx 30% complete for 0-23_merged_L00_R2.fq.gz
+Approx 55% complete for 0-12_merged_L00_R1.fq.gz
+Approx 30% complete for 0-23_merged_L00_R1.fq.gz
+Approx 60% complete for 0-12_merged_L00_R2.fq.gz
+Approx 55% complete for 0-13_merged_L00_R2.fq.gz
+Approx 55% complete for 0-13_merged_L00_R1.fq.gz
+Approx 10% complete for 0-42_merged_L00_R1.fq.gz
+Started analysis of 0-52_merged_L00_R1.fq.gz
+Approx 5% complete for 0-43_merged_L00_R1.fq.gz
+Approx 40% complete for 0-22_merged_L00_R2.fq.gz
+Approx 20% complete for 0-32_merged_L00_R2.fq.gz
+Approx 15% complete for 0-33_merged_L00_R1.fq.gz
+Approx 40% complete for 0-22_merged_L00_R1.fq.gz
+Approx 15% complete for 0-33_merged_L00_R2.fq.gz
+Approx 20% complete for 0-32_merged_L00_R1.fq.gz
+Approx 10% complete for 0-42_merged_L00_R2.fq.gz
+Approx 35% complete for 0-23_merged_L00_R2.fq.gz
+Started analysis of 0-52_merged_L00_R2.fq.gz
+Approx 60% complete for 0-13_merged_L00_R2.fq.gz
+Approx 60% complete for 0-12_merged_L00_R1.fq.gz
+Approx 65% complete for 0-12_merged_L00_R2.fq.gz
+Approx 5% complete for 0-43_merged_L00_R2.fq.gz
+Approx 35% complete for 0-23_merged_L00_R1.fq.gz
+Approx 60% complete for 0-13_merged_L00_R1.fq.gz
+Approx 45% complete for 0-22_merged_L00_R2.fq.gz
+Started analysis of 0-53_merged_L00_R1.fq.gz
+Approx 15% complete for 0-42_merged_L00_R1.fq.gz
+Approx 45% complete for 0-22_merged_L00_R1.fq.gz
+Approx 10% complete for 0-43_merged_L00_R1.fq.gz
+Approx 65% complete for 0-13_merged_L00_R2.fq.gz
+Approx 25% complete for 0-32_merged_L00_R2.fq.gz
+Started analysis of 0-53_merged_L00_R2.fq.gz
+Approx 40% complete for 0-23_merged_L00_R2.fq.gz
+Approx 70% complete for 0-12_merged_L00_R2.fq.gz
+Approx 5% complete for 0-52_merged_L00_R1.fq.gz
+Approx 20% complete for 0-33_merged_L00_R1.fq.gz
+Approx 65% complete for 0-12_merged_L00_R1.fq.gz
+Approx 20% complete for 0-33_merged_L00_R2.fq.gz
+Approx 65% complete for 0-13_merged_L00_R1.fq.gz
+Approx 40% complete for 0-23_merged_L00_R1.fq.gz
+Approx 15% complete for 0-42_merged_L00_R2.fq.gz
+Approx 25% complete for 0-32_merged_L00_R1.fq.gz
+Started analysis of 0-62_merged_L00_R1.fq.gz
+Approx 10% complete for 0-43_merged_L00_R2.fq.gz
+Approx 5% complete for 0-53_merged_L00_R1.fq.gz
+Approx 50% complete for 0-22_merged_L00_R2.fq.gz
+Approx 5% complete for 0-52_merged_L00_R2.fq.gz
+Approx 5% complete for 0-53_merged_L00_R2.fq.gz
+Approx 70% complete for 0-13_merged_L00_R2.fq.gz
+Started analysis of 0-62_merged_L00_R2.fq.gz
+Approx 75% complete for 0-12_merged_L00_R2.fq.gz
+Approx 50% complete for 0-22_merged_L00_R1.fq.gz
+Approx 45% complete for 0-23_merged_L00_R2.fq.gz
+Approx 20% complete for 0-42_merged_L00_R1.fq.gz
+Approx 70% complete for 0-13_merged_L00_R1.fq.gz
+Approx 10% complete for 0-53_merged_L00_R1.fq.gz
+Approx 70% complete for 0-12_merged_L00_R1.fq.gz
+Started analysis of 0-63_merged_L00_R1.fq.gz
+Approx 45% complete for 0-23_merged_L00_R1.fq.gz
+Approx 30% complete for 0-32_merged_L00_R2.fq.gz
+Approx 15% complete for 0-43_merged_L00_R1.fq.gz
+Approx 25% complete for 0-33_merged_L00_R2.fq.gz
+Approx 10% complete for 0-53_merged_L00_R2.fq.gz
+Approx 55% complete for 0-22_merged_L00_R2.fq.gz
+Approx 25% complete for 0-33_merged_L00_R1.fq.gz
+Approx 20% complete for 0-42_merged_L00_R2.fq.gz
+Approx 75% complete for 0-13_merged_L00_R2.fq.gz
+Approx 10% complete for 0-52_merged_L00_R1.fq.gz
+Approx 15% complete for 0-43_merged_L00_R2.fq.gz
+Started analysis of 0-63_merged_L00_R2.fq.gz
+Approx 30% complete for 0-32_merged_L00_R1.fq.gz
+Approx 80% complete for 0-12_merged_L00_R2.fq.gz
+Approx 50% complete for 0-23_merged_L00_R2.fq.gz
+Approx 15% complete for 0-53_merged_L00_R1.fq.gz
+Approx 75% complete for 0-13_merged_L00_R1.fq.gz
+Approx 10% complete for 0-52_merged_L00_R2.fq.gz
+Approx 15% complete for 0-53_merged_L00_R2.fq.gz
+Approx 55% complete for 0-22_merged_L00_R1.fq.gz
+Approx 75% complete for 0-12_merged_L00_R1.fq.gz
+Started analysis of 0-72_merged_L00_R1.fq.gz
+Approx 50% complete for 0-23_merged_L00_R1.fq.gz
+Approx 25% complete for 0-42_merged_L00_R1.fq.gz
+Approx 60% complete for 0-22_merged_L00_R2.fq.gz
+Approx 80% complete for 0-13_merged_L00_R2.fq.gz
+Started analysis of 0-72_merged_L00_R2.fq.gz
+Approx 35% complete for 0-32_merged_L00_R2.fq.gz
+Approx 30% complete for 0-33_merged_L00_R2.fq.gz
+Approx 5% complete for 0-62_merged_L00_R1.fq.gz
+Approx 25% complete for 0-42_merged_L00_R2.fq.gz
+Approx 20% complete for 0-43_merged_L00_R1.fq.gz
+Approx 20% complete for 0-53_merged_L00_R1.fq.gz
+Approx 85% complete for 0-12_merged_L00_R2.fq.gz
+Approx 20% complete for 0-43_merged_L00_R2.fq.gz
+Approx 20% complete for 0-53_merged_L00_R2.fq.gz
+Approx 30% complete for 0-33_merged_L00_R1.fq.gz
+Approx 80% complete for 0-13_merged_L00_R1.fq.gz
+Started analysis of 0-73_merged_L00_R1.fq.gz
+Approx 55% complete for 0-23_merged_L00_R2.fq.gz
+Approx 15% complete for 0-52_merged_L00_R1.fq.gz
+Approx 5% complete for 0-62_merged_L00_R2.fq.gz
+Approx 5% complete for 0-63_merged_L00_R1.fq.gz
+Approx 80% complete for 0-12_merged_L00_R1.fq.gz
+Approx 60% complete for 0-22_merged_L00_R1.fq.gz
+Approx 55% complete for 0-23_merged_L00_R1.fq.gz
+Started analysis of 0-73_merged_L00_R2.fq.gz
+Approx 85% complete for 0-13_merged_L00_R2.fq.gz
+Approx 35% complete for 0-32_merged_L00_R1.fq.gz
+Approx 65% complete for 0-22_merged_L00_R2.fq.gz
+Approx 5% complete for 0-63_merged_L00_R2.fq.gz
+Approx 15% complete for 0-52_merged_L00_R2.fq.gz
+Approx 25% complete for 0-53_merged_L00_R1.fq.gz
+Approx 25% complete for 0-53_merged_L00_R2.fq.gz
+Approx 30% complete for 0-42_merged_L00_R1.fq.gz
+Approx 90% complete for 0-12_merged_L00_R2.fq.gz
+Approx 40% complete for 0-32_merged_L00_R2.fq.gz
+Started analysis of 0-82_merged_L00_R1.fq.gz
+Approx 30% complete for 0-42_merged_L00_R2.fq.gz
+Approx 85% complete for 0-13_merged_L00_R1.fq.gz
+Approx 35% complete for 0-33_merged_L00_R2.fq.gz
+Approx 25% complete for 0-43_merged_L00_R2.fq.gz
+Approx 60% complete for 0-23_merged_L00_R2.fq.gz
+Approx 25% complete for 0-43_merged_L00_R1.fq.gz
+Started analysis of 0-82_merged_L00_R2.fq.gz
+Approx 90% complete for 0-13_merged_L00_R2.fq.gz
+Approx 70% complete for 0-22_merged_L00_R2.fq.gz
+Approx 30% complete for 0-53_merged_L00_R1.fq.gz
+Approx 5% complete for 0-72_merged_L00_R2.fq.gz
+Approx 60% complete for 0-23_merged_L00_R1.fq.gz
+Approx 85% complete for 0-12_merged_L00_R1.fq.gz
+Approx 35% complete for 0-33_merged_L00_R1.fq.gz
+Approx 30% complete for 0-53_merged_L00_R2.fq.gz
+Approx 5% complete for 0-72_merged_L00_R1.fq.gz
+Approx 5% complete for 0-73_merged_L00_R1.fq.gz
+Approx 65% complete for 0-22_merged_L00_R1.fq.gz
+Approx 20% complete for 0-52_merged_L00_R1.fq.gz
+Approx 5% complete for 0-73_merged_L00_R2.fq.gz
+Approx 95% complete for 0-12_merged_L00_R2.fq.gz
+Started analysis of 0-83_merged_L00_R1.fq.gz
+Approx 10% complete for 0-62_merged_L00_R1.fq.gz
+Approx 40% complete for 0-32_merged_L00_R1.fq.gz
+Approx 90% complete for 0-13_merged_L00_R1.fq.gz
+Approx 10% complete for 0-63_merged_L00_R2.fq.gz
+Approx 20% complete for 0-52_merged_L00_R2.fq.gz
+Approx 35% complete for 0-42_merged_L00_R1.fq.gz
+Approx 35% complete for 0-53_merged_L00_R1.fq.gz
+Approx 45% complete for 0-32_merged_L00_R2.fq.gz
+Approx 35% complete for 0-42_merged_L00_R2.fq.gz
+Approx 95% complete for 0-13_merged_L00_R2.fq.gz
+Approx 75% complete for 0-22_merged_L00_R2.fq.gz
+Approx 30% complete for 0-43_merged_L00_R2.fq.gz
+Approx 35% complete for 0-53_merged_L00_R2.fq.gz
+Approx 65% complete for 0-23_merged_L00_R2.fq.gz
+Approx 10% complete for 0-63_merged_L00_R1.fq.gz
+Started analysis of 0-83_merged_L00_R2.fq.gz
+Approx 40% complete for 0-33_merged_L00_R2.fq.gz
+Approx 65% complete for 0-23_merged_L00_R1.fq.gz
+Approx 5% complete for 0-82_merged_L00_R2.fq.gz
+Approx 90% complete for 0-12_merged_L00_R1.fq.gz
+Analysis complete for 0-12_merged_L00_R2.fq.gz
+Started analysis of 21-11_merged_L00_R1.fq.gz
+Approx 10% complete for 0-62_merged_L00_R2.fq.gz
+Approx 30% complete for 0-43_merged_L00_R1.fq.gz
+Approx 5% complete for 0-82_merged_L00_R1.fq.gz
+Approx 70% complete for 0-22_merged_L00_R1.fq.gz
+Approx 40% complete for 0-53_merged_L00_R1.fq.gz
+Approx 10% complete for 0-73_merged_L00_R2.fq.gz
+Approx 10% complete for 0-73_merged_L00_R1.fq.gz
+Approx 25% complete for 0-52_merged_L00_R1.fq.gz
+Approx 95% complete for 0-13_merged_L00_R1.fq.gz
+Approx 40% complete for 0-33_merged_L00_R1.fq.gz
+Analysis complete for 0-13_merged_L00_R2.fq.gz
+Approx 10% complete for 0-72_merged_L00_R2.fq.gz
+Started analysis of 21-11_merged_L00_R2.fq.gz
+Approx 40% complete for 0-53_merged_L00_R2.fq.gz
+Approx 80% complete for 0-22_merged_L00_R2.fq.gz
+Approx 50% complete for 0-32_merged_L00_R2.fq.gz
+Approx 40% complete for 0-42_merged_L00_R1.fq.gz
+Approx 40% complete for 0-42_merged_L00_R2.fq.gz
+Approx 35% complete for 0-43_merged_L00_R2.fq.gz
+Approx 5% complete for 21-11_merged_L00_R1.fq.gz
+Started analysis of 21-12_merged_L00_R1.fq.gz
+Approx 70% complete for 0-23_merged_L00_R1.fq.gz
+Approx 70% complete for 0-23_merged_L00_R2.fq.gz
+Approx 15% complete for 0-63_merged_L00_R2.fq.gz
+Approx 45% complete for 0-53_merged_L00_R1.fq.gz
+Approx 5% complete for 0-83_merged_L00_R1.fq.gz
+Approx 25% complete for 0-52_merged_L00_R2.fq.gz
+Approx 45% complete for 0-32_merged_L00_R1.fq.gz
+Approx 95% complete for 0-12_merged_L00_R1.fq.gz
+Approx 10% complete for 0-82_merged_L00_R2.fq.gz
+Approx 45% complete for 0-33_merged_L00_R2.fq.gz
+Started analysis of 21-12_merged_L00_R2.fq.gz
+Approx 10% complete for 0-72_merged_L00_R1.fq.gz
+Approx 45% complete for 0-53_merged_L00_R2.fq.gz
+Analysis complete for 0-13_merged_L00_R1.fq.gz
+Approx 5% complete for 0-83_merged_L00_R2.fq.gz
+Approx 85% complete for 0-22_merged_L00_R2.fq.gz
+Approx 75% complete for 0-22_merged_L00_R1.fq.gz
+Approx 15% complete for 0-73_merged_L00_R2.fq.gz
+Approx 15% complete for 0-62_merged_L00_R1.fq.gz
+Approx 10% complete for 21-11_merged_L00_R1.fq.gz
+Started analysis of 21-13_merged_L00_R1.fq.gz
+Approx 15% complete for 0-73_merged_L00_R1.fq.gz
+Approx 5% complete for 21-11_merged_L00_R2.fq.gz
+Approx 50% complete for 0-53_merged_L00_R1.fq.gz
+Approx 30% complete for 0-52_merged_L00_R1.fq.gz
+Approx 45% complete for 0-42_merged_L00_R2.fq.gz
+Approx 75% complete for 0-23_merged_L00_R1.fq.gz
+Approx 40% complete for 0-43_merged_L00_R2.fq.gz
+Approx 35% complete for 0-43_merged_L00_R1.fq.gz
+Approx 55% complete for 0-32_merged_L00_R2.fq.gz
+Approx 45% complete for 0-42_merged_L00_R1.fq.gz
+Approx 5% complete for 21-12_merged_L00_R1.fq.gz
+Approx 15% complete for 0-63_merged_L00_R1.fq.gz
+Started analysis of 21-13_merged_L00_R2.fq.gz
+Approx 45% complete for 0-33_merged_L00_R1.fq.gz
+Approx 10% complete for 0-82_merged_L00_R1.fq.gz
+Approx 15% complete for 0-72_merged_L00_R2.fq.gz
+Approx 75% complete for 0-23_merged_L00_R2.fq.gz
+Approx 15% complete for 21-11_merged_L00_R1.fq.gz
+Approx 50% complete for 0-53_merged_L00_R2.fq.gz
+Started analysis of 21-21_merged_L00_R1.fq.gz
+Approx 90% complete for 0-22_merged_L00_R2.fq.gz
+Approx 55% complete for 0-53_merged_L00_R1.fq.gz
+Approx 20% complete for 0-63_merged_L00_R2.fq.gz
+Analysis complete for 0-12_merged_L00_R1.fq.gz
+Approx 10% complete for 21-11_merged_L00_R2.fq.gz
+Approx 15% complete for 0-82_merged_L00_R2.fq.gz
+Approx 15% complete for 0-62_merged_L00_R2.fq.gz
+Approx 5% complete for 21-12_merged_L00_R2.fq.gz
+Approx 20% complete for 0-73_merged_L00_R2.fq.gz
+Approx 20% complete for 0-73_merged_L00_R1.fq.gz
+Approx 50% complete for 0-33_merged_L00_R2.fq.gz
+Approx 80% complete for 0-23_merged_L00_R1.fq.gz
+Started analysis of 21-21_merged_L00_R2.fq.gz
+Approx 50% complete for 0-32_merged_L00_R1.fq.gz
+Approx 30% complete for 0-52_merged_L00_R2.fq.gz
+Approx 50% complete for 0-42_merged_L00_R2.fq.gz
+Approx 45% complete for 0-43_merged_L00_R2.fq.gz
+Approx 80% complete for 0-22_merged_L00_R1.fq.gz
+Approx 20% complete for 21-11_merged_L00_R1.fq.gz
+Approx 10% complete for 0-83_merged_L00_R1.fq.gz
+Approx 15% complete for 21-11_merged_L00_R2.fq.gz
+Approx 10% complete for 21-12_merged_L00_R1.fq.gz
+Approx 60% complete for 0-53_merged_L00_R1.fq.gz
+Approx 50% complete for 0-42_merged_L00_R1.fq.gz
+Approx 60% complete for 0-32_merged_L00_R2.fq.gz
+Approx 35% complete for 0-52_merged_L00_R1.fq.gz
+Approx 95% complete for 0-22_merged_L00_R2.fq.gz
+Approx 55% complete for 0-53_merged_L00_R2.fq.gz
+Started analysis of 21-22_merged_L00_R1.fq.gz
+Approx 10% complete for 0-83_merged_L00_R2.fq.gz
+Approx 20% complete for 0-62_merged_L00_R1.fq.gz
+Approx 20% complete for 0-82_merged_L00_R2.fq.gz
+Started analysis of 21-22_merged_L00_R2.fq.gz
+Approx 25% complete for 21-11_merged_L00_R1.fq.gz
+Approx 20% complete for 0-72_merged_L00_R2.fq.gz
+Approx 20% complete for 21-11_merged_L00_R2.fq.gz
+Approx 5% complete for 21-21_merged_L00_R2.fq.gz
+Approx 80% complete for 0-23_merged_L00_R2.fq.gz
+Approx 65% complete for 0-53_merged_L00_R1.fq.gz
+Approx 40% complete for 0-43_merged_L00_R1.fq.gz
+Approx 25% complete for 0-63_merged_L00_R2.fq.gz
+Approx 85% complete for 0-23_merged_L00_R1.fq.gz
+Approx 5% complete for 21-21_merged_L00_R1.fq.gz
+Approx 25% complete for 0-73_merged_L00_R2.fq.gz
+Approx 50% complete for 0-33_merged_L00_R1.fq.gz
+Approx 5% complete for 21-13_merged_L00_R1.fq.gz
+Approx 50% complete for 0-43_merged_L00_R2.fq.gz
+Analysis complete for 0-22_merged_L00_R2.fq.gz
+Approx 25% complete for 0-73_merged_L00_R1.fq.gz
+Approx 55% complete for 0-42_merged_L00_R2.fq.gz
+Approx 15% complete for 0-72_merged_L00_R1.fq.gz
+Approx 15% complete for 21-12_merged_L00_R1.fq.gz
+Approx 10% complete for 21-12_merged_L00_R2.fq.gz
+Approx 65% complete for 0-32_merged_L00_R2.fq.gz
+Approx 55% complete for 0-42_merged_L00_R1.fq.gz
+Approx 5% complete for 21-13_merged_L00_R2.fq.gz
+Approx 15% complete for 0-82_merged_L00_R1.fq.gz
+Approx 60% complete for 0-53_merged_L00_R2.fq.gz
+Approx 25% complete for 21-11_merged_L00_R2.fq.gz
+Started analysis of 21-23_merged_L00_R1.fq.gz
+Approx 30% complete for 21-11_merged_L00_R1.fq.gz
+Approx 40% complete for 0-52_merged_L00_R1.fq.gz
+Approx 70% complete for 0-53_merged_L00_R1.fq.gz
+Approx 5% complete for 21-22_merged_L00_R1.fq.gz
+Approx 85% complete for 0-22_merged_L00_R1.fq.gz
+Approx 20% complete for 0-63_merged_L00_R1.fq.gz
+Approx 55% complete for 0-33_merged_L00_R2.fq.gz
+Approx 5% complete for 21-22_merged_L00_R2.fq.gz
+Approx 10% complete for 21-21_merged_L00_R2.fq.gz
+Started analysis of 21-23_merged_L00_R2.fq.gz
+Approx 25% complete for 0-82_merged_L00_R2.fq.gz
+Approx 90% complete for 0-23_merged_L00_R1.fq.gz
+Approx 35% complete for 0-52_merged_L00_R2.fq.gz
+Approx 30% complete for 21-11_merged_L00_R2.fq.gz
+Approx 55% complete for 0-32_merged_L00_R1.fq.gz
+Approx 55% complete for 0-43_merged_L00_R2.fq.gz
+Approx 20% complete for 21-12_merged_L00_R1.fq.gz
+Approx 30% complete for 0-73_merged_L00_R2.fq.gz
+Approx 35% complete for 21-11_merged_L00_R1.fq.gz
+Approx 15% complete for 0-83_merged_L00_R1.fq.gz
+Approx 60% complete for 0-42_merged_L00_R2.fq.gz
+Approx 75% complete for 0-53_merged_L00_R1.fq.gz
+Approx 25% complete for 0-72_merged_L00_R2.fq.gz
+Approx 30% complete for 0-73_merged_L00_R1.fq.gz
+Approx 30% complete for 0-63_merged_L00_R2.fq.gz
+Approx 85% complete for 0-23_merged_L00_R2.fq.gz
+Approx 65% complete for 0-53_merged_L00_R2.fq.gz
+Approx 70% complete for 0-32_merged_L00_R2.fq.gz
+Started analysis of 21-31_merged_L00_R1.fq.gz
+Approx 15% complete for 0-83_merged_L00_R2.fq.gz
+Approx 10% complete for 21-21_merged_L00_R1.fq.gz
+Approx 60% complete for 0-42_merged_L00_R1.fq.gz
+Approx 15% complete for 21-21_merged_L00_R2.fq.gz
+Approx 10% complete for 21-22_merged_L00_R1.fq.gz
+Approx 20% complete for 0-62_merged_L00_R2.fq.gz
+Approx 25% complete for 0-62_merged_L00_R1.fq.gz
+Approx 10% complete for 21-22_merged_L00_R2.fq.gz
+Approx 35% complete for 21-11_merged_L00_R2.fq.gz
+Approx 15% complete for 21-12_merged_L00_R2.fq.gz
+Started analysis of 21-31_merged_L00_R2.fq.gz
+Approx 45% complete for 0-52_merged_L00_R1.fq.gz
+Approx 95% complete for 0-23_merged_L00_R1.fq.gz
+Approx 40% complete for 21-11_merged_L00_R1.fq.gz
+Approx 45% complete for 0-43_merged_L00_R1.fq.gz
+Approx 30% complete for 0-82_merged_L00_R2.fq.gz
+Approx 80% complete for 0-53_merged_L00_R1.fq.gz
+Approx 25% complete for 21-12_merged_L00_R1.fq.gz
+Approx 55% complete for 0-33_merged_L00_R1.fq.gz
+Approx 5% complete for 21-23_merged_L00_R2.fq.gz
+Approx 90% complete for 0-22_merged_L00_R1.fq.gz
+Approx 60% complete for 0-43_merged_L00_R2.fq.gz
+Approx 65% complete for 0-42_merged_L00_R2.fq.gz
+Approx 35% complete for 0-73_merged_L00_R2.fq.gz
+Approx 40% complete for 21-11_merged_L00_R2.fq.gz
+Approx 20% complete for 21-21_merged_L00_R2.fq.gz
+Approx 70% complete for 0-53_merged_L00_R2.fq.gz
+Started analysis of 21-32_merged_L00_R1.fq.gz
+Approx 10% complete for 21-13_merged_L00_R1.fq.gz
+Approx 5% complete for 21-31_merged_L00_R1.fq.gz
+Approx 35% complete for 0-73_merged_L00_R1.fq.gz
+Approx 15% complete for 21-22_merged_L00_R2.fq.gz
+Approx 15% complete for 21-22_merged_L00_R1.fq.gz
+Approx 45% complete for 21-11_merged_L00_R1.fq.gz
+Approx 75% complete for 0-32_merged_L00_R2.fq.gz
+Approx 60% complete for 0-33_merged_L00_R2.fq.gz
+Approx 65% complete for 0-42_merged_L00_R1.fq.gz
+Approx 20% complete for 0-82_merged_L00_R1.fq.gz
+Analysis complete for 0-23_merged_L00_R1.fq.gz
+Started analysis of 21-32_merged_L00_R2.fq.gz
+Approx 10% complete for 21-13_merged_L00_R2.fq.gz
+Approx 35% complete for 0-63_merged_L00_R2.fq.gz
+Approx 30% complete for 0-72_merged_L00_R2.fq.gz
+Approx 45% complete for 21-11_merged_L00_R2.fq.gz
+Approx 85% complete for 0-53_merged_L00_R1.fq.gz
+Approx 90% complete for 0-23_merged_L00_R2.fq.gz
+Approx 30% complete for 21-12_merged_L00_R1.fq.gz
+Started analysis of 21-33_merged_L00_R1.fq.gz
+Approx 20% complete for 0-72_merged_L00_R1.fq.gz
+Approx 50% complete for 0-52_merged_L00_R1.fq.gz
+Approx 40% complete for 0-52_merged_L00_R2.fq.gz
+Approx 25% complete for 21-21_merged_L00_R2.fq.gz
+Approx 5% complete for 21-23_merged_L00_R1.fq.gz
+Approx 65% complete for 0-43_merged_L00_R2.fq.gz
+Approx 15% complete for 21-21_merged_L00_R1.fq.gz
+Approx 50% complete for 21-11_merged_L00_R1.fq.gz
+Approx 70% complete for 0-42_merged_L00_R2.fq.gz
+Approx 40% complete for 0-73_merged_L00_R2.fq.gz
+Approx 20% complete for 21-12_merged_L00_R2.fq.gz
+Approx 25% complete for 0-63_merged_L00_R1.fq.gz
+Approx 60% complete for 0-32_merged_L00_R1.fq.gz
+Approx 5% complete for 21-31_merged_L00_R2.fq.gz
+Approx 10% complete for 21-31_merged_L00_R1.fq.gz
+Approx 20% complete for 21-22_merged_L00_R2.fq.gz
+Approx 10% complete for 21-23_merged_L00_R2.fq.gz
+Approx 35% complete for 0-82_merged_L00_R2.fq.gz
+Started analysis of 21-33_merged_L00_R2.fq.gz
+Approx 75% complete for 0-53_merged_L00_R2.fq.gz
+Approx 20% complete for 21-22_merged_L00_R1.fq.gz
+Approx 50% complete for 21-11_merged_L00_R2.fq.gz
+Approx 20% complete for 0-83_merged_L00_R1.fq.gz
+Approx 20% complete for 0-83_merged_L00_R2.fq.gz
+Approx 5% complete for 21-32_merged_L00_R2.fq.gz
+Approx 40% complete for 0-73_merged_L00_R1.fq.gz
+Approx 30% complete for 0-62_merged_L00_R1.fq.gz
+Approx 90% complete for 0-53_merged_L00_R1.fq.gz
+Approx 70% complete for 0-42_merged_L00_R1.fq.gz
+Approx 80% complete for 0-32_merged_L00_R2.fq.gz
+Approx 95% complete for 0-22_merged_L00_R1.fq.gz
+Approx 30% complete for 21-21_merged_L00_R2.fq.gz
+Approx 35% complete for 21-12_merged_L00_R1.fq.gz
+Approx 55% complete for 21-11_merged_L00_R1.fq.gz
+Approx 70% complete for 0-43_merged_L00_R2.fq.gz
+Started analysis of 21-41_merged_L00_R1.fq.gz
+Approx 50% complete for 0-43_merged_L00_R1.fq.gz
+Approx 55% complete for 21-11_merged_L00_R2.fq.gz
+Approx 40% complete for 0-63_merged_L00_R2.fq.gz
+Approx 75% complete for 0-42_merged_L00_R2.fq.gz
+Approx 25% complete for 21-22_merged_L00_R2.fq.gz
+Approx 15% complete for 21-31_merged_L00_R1.fq.gz
+Approx 45% complete for 0-73_merged_L00_R2.fq.gz
+Approx 95% complete for 0-53_merged_L00_R1.fq.gz
+Approx 35% complete for 0-72_merged_L00_R2.fq.gz
+Approx 60% complete for 0-33_merged_L00_R1.fq.gz
+Started analysis of 21-41_merged_L00_R2.fq.gz
+Approx 10% complete for 21-32_merged_L00_R2.fq.gz
+Approx 40% complete for 0-82_merged_L00_R2.fq.gz
+Approx 55% complete for 0-52_merged_L00_R1.fq.gz
+Approx 95% complete for 0-23_merged_L00_R2.fq.gz
+Approx 60% complete for 21-11_merged_L00_R1.fq.gz
+Approx 65% complete for 0-33_merged_L00_R2.fq.gz
+Approx 35% complete for 21-21_merged_L00_R2.fq.gz
+Approx 15% complete for 21-23_merged_L00_R2.fq.gz
+Approx 5% complete for 21-32_merged_L00_R1.fq.gz
+Approx 80% complete for 0-53_merged_L00_R2.fq.gz
+Approx 75% complete for 0-42_merged_L00_R1.fq.gz
+Approx 60% complete for 21-11_merged_L00_R2.fq.gz
+Approx 45% complete for 0-73_merged_L00_R1.fq.gz
+Approx 40% complete for 21-12_merged_L00_R1.fq.gz
+Approx 25% complete for 0-62_merged_L00_R2.fq.gz
+Approx 85% complete for 0-32_merged_L00_R2.fq.gz
+Approx 20% complete for 21-21_merged_L00_R1.fq.gz
+Approx 25% complete for 21-12_merged_L00_R2.fq.gz
+Approx 75% complete for 0-43_merged_L00_R2.fq.gz
+Started analysis of 21-42_merged_L00_R1.fq.gz
+Analysis complete for 0-22_merged_L00_R1.fq.gz
+Approx 10% complete for 21-31_merged_L00_R2.fq.gz
+Analysis complete for 0-53_merged_L00_R1.fq.gz
+Approx 5% complete for 21-41_merged_L00_R1.fq.gz
+Approx 30% complete for 21-22_merged_L00_R2.fq.gz
+Approx 15% complete for 21-13_merged_L00_R1.fq.gz
+Approx 5% complete for 21-41_merged_L00_R2.fq.gz
+Approx 20% complete for 21-31_merged_L00_R1.fq.gz
+Approx 65% complete for 21-11_merged_L00_R1.fq.gz
+Approx 80% complete for 0-42_merged_L00_R2.fq.gz
+Approx 15% complete for 21-32_merged_L00_R2.fq.gz
+Approx 65% complete for 21-11_merged_L00_R2.fq.gz
+Approx 45% complete for 0-52_merged_L00_R2.fq.gz
+Started analysis of 21-42_merged_L00_R2.fq.gz
+Approx 15% complete for 21-13_merged_L00_R2.fq.gz
+Approx 40% complete for 21-21_merged_L00_R2.fq.gz
+Approx 45% complete for 0-82_merged_L00_R2.fq.gz
+Approx 35% complete for 0-62_merged_L00_R1.fq.gz
+Approx 45% complete for 0-63_merged_L00_R2.fq.gz
+Approx 50% complete for 0-73_merged_L00_R2.fq.gz
+Approx 45% complete for 21-12_merged_L00_R1.fq.gz
+Approx 25% complete for 0-82_merged_L00_R1.fq.gz
+Approx 25% complete for 21-22_merged_L00_R1.fq.gz
+Approx 65% complete for 0-32_merged_L00_R1.fq.gz
+Approx 60% complete for 0-52_merged_L00_R1.fq.gz
+Approx 20% complete for 21-23_merged_L00_R2.fq.gz
+Approx 50% complete for 0-73_merged_L00_R1.fq.gz
+Approx 80% complete for 0-42_merged_L00_R1.fq.gz
+Approx 70% complete for 21-11_merged_L00_R1.fq.gz
+Approx 40% complete for 0-72_merged_L00_R2.fq.gz
+Approx 70% complete for 21-11_merged_L00_R2.fq.gz
+Approx 25% complete for 0-83_merged_L00_R2.fq.gz
+Approx 85% complete for 0-53_merged_L00_R2.fq.gz
+Approx 10% complete for 21-41_merged_L00_R2.fq.gz
+Approx 10% complete for 21-41_merged_L00_R1.fq.gz
+Approx 10% complete for 21-23_merged_L00_R1.fq.gz
+Approx 5% complete for 21-33_merged_L00_R1.fq.gz
+Approx 35% complete for 21-22_merged_L00_R2.fq.gz
+Approx 90% complete for 0-32_merged_L00_R2.fq.gz
+Started analysis of 21-43_merged_L00_R1.fq.gz
+Approx 80% complete for 0-43_merged_L00_R2.fq.gz
+Approx 25% complete for 21-31_merged_L00_R1.fq.gz
+Analysis complete for 0-23_merged_L00_R2.fq.gz
+Approx 25% complete for 0-83_merged_L00_R1.fq.gz
+Approx 20% complete for 21-32_merged_L00_R2.fq.gz
+Started analysis of 21-43_merged_L00_R2.fq.gz
+Approx 85% complete for 0-42_merged_L00_R2.fq.gz
+Approx 25% complete for 0-72_merged_L00_R1.fq.gz
+Approx 45% complete for 21-21_merged_L00_R2.fq.gz
+Approx 75% complete for 21-11_merged_L00_R2.fq.gz
+Approx 30% complete for 0-63_merged_L00_R1.fq.gz
+Approx 50% complete for 21-12_merged_L00_R1.fq.gz
+Approx 75% complete for 21-11_merged_L00_R1.fq.gz
+Approx 55% complete for 0-43_merged_L00_R1.fq.gz
+Approx 70% complete for 0-33_merged_L00_R2.fq.gz
+Approx 65% complete for 0-33_merged_L00_R1.fq.gz
+Approx 15% complete for 21-41_merged_L00_R2.fq.gz
+Approx 50% complete for 0-82_merged_L00_R2.fq.gz
+Approx 30% complete for 21-12_merged_L00_R2.fq.gz
+Approx 25% complete for 21-21_merged_L00_R1.fq.gz
+Approx 15% complete for 21-41_merged_L00_R1.fq.gz
+Approx 15% complete for 21-31_merged_L00_R2.fq.gz
+Approx 40% complete for 21-22_merged_L00_R2.fq.gz
+Approx 30% complete for 21-22_merged_L00_R1.fq.gz
+Started analysis of 21-51_merged_L00_R1.fq.gz
+Approx 25% complete for 21-32_merged_L00_R2.fq.gz
+Approx 65% complete for 0-52_merged_L00_R1.fq.gz
+Approx 55% complete for 0-73_merged_L00_R1.fq.gz
+Approx 85% complete for 0-42_merged_L00_R1.fq.gz
+Approx 25% complete for 21-23_merged_L00_R2.fq.gz
+Approx 5% complete for 21-33_merged_L00_R2.fq.gz
+Approx 85% complete for 0-43_merged_L00_R2.fq.gz
+Approx 90% complete for 0-53_merged_L00_R2.fq.gz
+Approx 10% complete for 21-32_merged_L00_R1.fq.gz
+Approx 55% complete for 0-73_merged_L00_R2.fq.gz
+Approx 95% complete for 0-32_merged_L00_R2.fq.gz
+Approx 80% complete for 21-11_merged_L00_R2.fq.gz
+Approx 30% complete for 21-31_merged_L00_R1.fq.gz
+Started analysis of 21-51_merged_L00_R2.fq.gz
+Approx 80% complete for 21-11_merged_L00_R1.fq.gz
+Approx 90% complete for 0-42_merged_L00_R2.fq.gz
+Approx 50% complete for 0-63_merged_L00_R2.fq.gz
+Approx 50% complete for 21-21_merged_L00_R2.fq.gz
+Approx 5% complete for 21-42_merged_L00_R2.fq.gz
+Approx 5% complete for 21-43_merged_L00_R1.fq.gz
+Approx 20% complete for 21-41_merged_L00_R1.fq.gz
+Approx 55% complete for 21-12_merged_L00_R1.fq.gz
+Approx 45% complete for 21-22_merged_L00_R2.fq.gz
+Approx 30% complete for 21-32_merged_L00_R2.fq.gz
+Approx 85% complete for 21-11_merged_L00_R2.fq.gz
+Approx 45% complete for 0-72_merged_L00_R2.fq.gz
+Approx 20% complete for 21-41_merged_L00_R2.fq.gz
+Approx 5% complete for 21-51_merged_L00_R1.fq.gz
+Started analysis of 21-52_merged_L00_R1.fq.gz
+Approx 5% complete for 21-42_merged_L00_R1.fq.gz
+Approx 40% complete for 0-62_merged_L00_R1.fq.gz
+Approx 85% complete for 21-11_merged_L00_R1.fq.gz
+Approx 35% complete for 21-22_merged_L00_R1.fq.gz
+Approx 90% complete for 0-43_merged_L00_R2.fq.gz
+Approx 35% complete for 21-31_merged_L00_R1.fq.gz
+Approx 20% complete for 21-13_merged_L00_R1.fq.gz
+Approx 70% complete for 0-32_merged_L00_R1.fq.gz
+Approx 90% complete for 0-42_merged_L00_R1.fq.gz
+Approx 60% complete for 0-73_merged_L00_R1.fq.gz
+Started analysis of 21-52_merged_L00_R2.fq.gz
+Analysis complete for 0-32_merged_L00_R2.fq.gz
+Approx 70% complete for 0-52_merged_L00_R1.fq.gz
+Approx 30% complete for 21-23_merged_L00_R2.fq.gz
+Approx 95% complete for 0-42_merged_L00_R2.fq.gz
+Approx 55% complete for 21-21_merged_L00_R2.fq.gz
+Approx 55% complete for 0-82_merged_L00_R2.fq.gz
+Approx 95% complete for 0-53_merged_L00_R2.fq.gz
+Approx 20% complete for 21-13_merged_L00_R2.fq.gz
+Approx 25% complete for 21-41_merged_L00_R1.fq.gz
+Approx 30% complete for 0-62_merged_L00_R2.fq.gz
+Approx 60% complete for 0-73_merged_L00_R2.fq.gz
+Started analysis of 21-53_merged_L00_R1.fq.gz
+Approx 35% complete for 21-32_merged_L00_R2.fq.gz
+Approx 50% complete for 21-22_merged_L00_R2.fq.gz
+Approx 35% complete for 21-12_merged_L00_R2.fq.gz
+Approx 90% complete for 21-11_merged_L00_R2.fq.gz
+Approx 50% complete for 0-52_merged_L00_R2.fq.gz
+Approx 90% complete for 21-11_merged_L00_R1.fq.gz
+Approx 20% complete for 21-31_merged_L00_R2.fq.gz
+Approx 10% complete for 21-51_merged_L00_R1.fq.gz
+Approx 75% complete for 0-33_merged_L00_R2.fq.gz
+Approx 30% complete for 21-21_merged_L00_R1.fq.gz
+Approx 25% complete for 21-41_merged_L00_R2.fq.gz
+Approx 55% complete for 0-63_merged_L00_R2.fq.gz
+Approx 30% complete for 0-83_merged_L00_R1.fq.gz
+Approx 40% complete for 21-31_merged_L00_R1.fq.gz
+Approx 15% complete for 21-23_merged_L00_R1.fq.gz
+Approx 60% complete for 21-12_merged_L00_R1.fq.gz
+Started analysis of 21-53_merged_L00_R2.fq.gz
+Approx 95% complete for 0-43_merged_L00_R2.fq.gz
+Approx 70% complete for 0-33_merged_L00_R1.fq.gz
+Approx 5% complete for 21-52_merged_L00_R2.fq.gz
+Approx 10% complete for 21-43_merged_L00_R1.fq.gz
+Approx 40% complete for 21-22_merged_L00_R1.fq.gz
+Approx 30% complete for 0-83_merged_L00_R2.fq.gz
+Approx 60% complete for 21-21_merged_L00_R2.fq.gz
+Approx 5% complete for 21-52_merged_L00_R1.fq.gz
+Approx 60% complete for 0-43_merged_L00_R1.fq.gz
+Approx 50% complete for 0-72_merged_L00_R2.fq.gz
+Approx 30% complete for 21-41_merged_L00_R1.fq.gz
+Analysis complete for 0-42_merged_L00_R2.fq.gz
+Approx 95% complete for 21-11_merged_L00_R1.fq.gz
+Approx 30% complete for 0-82_merged_L00_R1.fq.gz
+Approx 40% complete for 21-32_merged_L00_R2.fq.gz
+Started analysis of 21-61_merged_L00_R1.fq.gz
+Approx 10% complete for 21-33_merged_L00_R1.fq.gz
+Approx 95% complete for 21-11_merged_L00_R2.fq.gz
+Approx 75% complete for 0-52_merged_L00_R1.fq.gz
+Analysis complete for 0-53_merged_L00_R2.fq.gz
+Approx 35% complete for 21-23_merged_L00_R2.fq.gz
+Approx 65% complete for 0-73_merged_L00_R1.fq.gz
+Approx 5% complete for 21-51_merged_L00_R2.fq.gz
+Approx 95% complete for 0-42_merged_L00_R1.fq.gz
+Approx 15% complete for 21-51_merged_L00_R1.fq.gz
+Approx 45% complete for 21-31_merged_L00_R1.fq.gz
+Approx 10% complete for 21-42_merged_L00_R2.fq.gz
+Approx 60% complete for 0-82_merged_L00_R2.fq.gz
+Started analysis of 21-61_merged_L00_R2.fq.gz
+Approx 15% complete for 21-32_merged_L00_R1.fq.gz
+Approx 55% complete for 21-22_merged_L00_R2.fq.gz
+Approx 30% complete for 21-41_merged_L00_R2.fq.gz
+Approx 10% complete for 21-52_merged_L00_R2.fq.gz
+Approx 65% complete for 21-21_merged_L00_R2.fq.gz
+Analysis complete for 0-43_merged_L00_R2.fq.gz
+Approx 65% complete for 0-73_merged_L00_R2.fq.gz
+Analysis complete for 21-11_merged_L00_R1.fq.gz
+Approx 35% complete for 21-41_merged_L00_R1.fq.gz
+Approx 35% complete for 0-63_merged_L00_R1.fq.gz
+Approx 5% complete for 21-43_merged_L00_R2.fq.gz
+Approx 30% complete for 0-72_merged_L00_R1.fq.gz
+Approx 45% complete for 21-32_merged_L00_R2.fq.gz
+Approx 45% complete for 21-22_merged_L00_R1.fq.gz
+Approx 65% complete for 21-12_merged_L00_R1.fq.gz
+Analysis complete for 21-11_merged_L00_R2.fq.gz
+Approx 60% complete for 0-63_merged_L00_R2.fq.gz
+Approx 75% complete for 0-32_merged_L00_R1.fq.gz
+Approx 10% complete for 21-52_merged_L00_R1.fq.gz
+Approx 25% complete for 21-31_merged_L00_R2.fq.gz
+Approx 45% complete for 0-62_merged_L00_R1.fq.gz
+Approx 40% complete for 21-12_merged_L00_R2.fq.gz
+Started analysis of 21-62_merged_L00_R1.fq.gz
+Approx 20% complete for 21-51_merged_L00_R1.fq.gz
+Approx 35% complete for 21-41_merged_L00_R2.fq.gz
+Started analysis of 21-62_merged_L00_R2.fq.gz
+Approx 50% complete for 21-31_merged_L00_R1.fq.gz
+Approx 70% complete for 21-21_merged_L00_R2.fq.gz
+Approx 55% complete for 0-72_merged_L00_R2.fq.gz
+Approx 15% complete for 21-43_merged_L00_R1.fq.gz
+Approx 15% complete for 21-52_merged_L00_R2.fq.gz
+Approx 80% complete for 0-52_merged_L00_R1.fq.gz
+Approx 35% complete for 21-21_merged_L00_R1.fq.gz
+Approx 10% complete for 21-33_merged_L00_R2.fq.gz
+Approx 10% complete for 21-42_merged_L00_R1.fq.gz
+Approx 40% complete for 21-41_merged_L00_R1.fq.gz
+Approx 5% complete for 21-61_merged_L00_R1.fq.gz
+Approx 40% complete for 21-23_merged_L00_R2.fq.gz
+Approx 50% complete for 21-32_merged_L00_R2.fq.gz
+Analysis complete for 0-42_merged_L00_R1.fq.gz
+Approx 70% complete for 0-73_merged_L00_R1.fq.gz
+Approx 60% complete for 21-22_merged_L00_R2.fq.gz
+Approx 25% complete for 21-13_merged_L00_R1.fq.gz
+Approx 50% complete for 21-22_merged_L00_R1.fq.gz
+Approx 80% complete for 0-33_merged_L00_R2.fq.gz
+Started analysis of 21-63_merged_L00_R1.fq.gz
+Approx 5% complete for 21-53_merged_L00_R2.fq.gz
+Approx 65% complete for 0-82_merged_L00_R2.fq.gz
+Approx 70% complete for 0-73_merged_L00_R2.fq.gz
+Approx 70% complete for 21-12_merged_L00_R1.fq.gz
+Approx 40% complete for 21-41_merged_L00_R2.fq.gz
+Approx 55% complete for 0-52_merged_L00_R2.fq.gz
+Approx 75% complete for 21-21_merged_L00_R2.fq.gz
+Approx 75% complete for 0-33_merged_L00_R1.fq.gz
+Approx 25% complete for 21-51_merged_L00_R1.fq.gz
+Approx 15% complete for 21-52_merged_L00_R1.fq.gz
+Approx 20% complete for 21-52_merged_L00_R2.fq.gz
+Approx 5% complete for 21-53_merged_L00_R1.fq.gz
+Approx 65% complete for 0-63_merged_L00_R2.fq.gz
+Started analysis of 21-63_merged_L00_R2.fq.gz
+Approx 55% complete for 21-31_merged_L00_R1.fq.gz
+Approx 65% complete for 0-43_merged_L00_R1.fq.gz
+Approx 45% complete for 21-41_merged_L00_R1.fq.gz
+Approx 25% complete for 21-13_merged_L00_R2.fq.gz
+Approx 55% complete for 21-32_merged_L00_R2.fq.gz
+Approx 80% complete for 0-32_merged_L00_R1.fq.gz
+Approx 35% complete for 0-83_merged_L00_R2.fq.gz
+Approx 85% complete for 0-52_merged_L00_R1.fq.gz
+Started analysis of 21-71_merged_L00_R1.fq.gz
+Approx 45% complete for 21-41_merged_L00_R2.fq.gz
+Approx 60% complete for 0-72_merged_L00_R2.fq.gz
+Approx 20% complete for 21-23_merged_L00_R1.fq.gz
+Approx 45% complete for 21-23_merged_L00_R2.fq.gz
+Approx 20% complete for 21-43_merged_L00_R1.fq.gz
+Approx 10% complete for 21-51_merged_L00_R2.fq.gz
+Approx 80% complete for 21-21_merged_L00_R2.fq.gz
+Approx 35% complete for 0-83_merged_L00_R1.fq.gz
+Approx 30% complete for 21-31_merged_L00_R2.fq.gz
+Approx 35% complete for 0-82_merged_L00_R1.fq.gz
+Approx 65% complete for 21-22_merged_L00_R2.fq.gz
+Approx 30% complete for 21-51_merged_L00_R1.fq.gz
+Approx 55% complete for 21-22_merged_L00_R1.fq.gz
+Started analysis of 21-71_merged_L00_R2.fq.gz
+Approx 20% complete for 21-32_merged_L00_R1.fq.gz
+Approx 75% complete for 21-12_merged_L00_R1.fq.gz
+Approx 50% complete for 21-41_merged_L00_R1.fq.gz
+Approx 35% complete for 0-62_merged_L00_R2.fq.gz
+Approx 60% complete for 21-31_merged_L00_R1.fq.gz
+Approx 50% complete for 0-62_merged_L00_R1.fq.gz
+Approx 75% complete for 0-73_merged_L00_R1.fq.gz
+Approx 75% complete for 0-73_merged_L00_R2.fq.gz
+Approx 40% complete for 21-21_merged_L00_R1.fq.gz
+Approx 25% complete for 21-52_merged_L00_R2.fq.gz
+Approx 45% complete for 21-12_merged_L00_R2.fq.gz
+Approx 70% complete for 0-82_merged_L00_R2.fq.gz
+Approx 15% complete for 21-42_merged_L00_R1.fq.gz
+Approx 20% complete for 21-52_merged_L00_R1.fq.gz
+Approx 10% complete for 21-61_merged_L00_R1.fq.gz
+Approx 50% complete for 21-41_merged_L00_R2.fq.gz
+Approx 5% complete for 21-63_merged_L00_R2.fq.gz
+Approx 15% complete for 21-42_merged_L00_R2.fq.gz
+Started analysis of 21-72_merged_L00_R1.fq.gz
+Approx 60% complete for 21-32_merged_L00_R2.fq.gz
+Approx 70% complete for 0-63_merged_L00_R2.fq.gz
+Approx 5% complete for 21-61_merged_L00_R2.fq.gz
+Approx 85% complete for 21-21_merged_L00_R2.fq.gz
+Approx 5% complete for 21-63_merged_L00_R1.fq.gz
+Approx 10% complete for 21-43_merged_L00_R2.fq.gz
+Approx 15% complete for 21-33_merged_L00_R1.fq.gz
+Approx 5% complete for 21-62_merged_L00_R1.fq.gz
+Approx 35% complete for 21-51_merged_L00_R1.fq.gz
+Started analysis of 21-72_merged_L00_R2.fq.gz
+Approx 90% complete for 0-52_merged_L00_R1.fq.gz
+Approx 50% complete for 21-23_merged_L00_R2.fq.gz
+Approx 55% complete for 21-41_merged_L00_R1.fq.gz
+Approx 85% complete for 0-32_merged_L00_R1.fq.gz
+Approx 60% complete for 21-22_merged_L00_R1.fq.gz
+Approx 65% complete for 21-31_merged_L00_R1.fq.gz
+Approx 5% complete for 21-71_merged_L00_R1.fq.gz
+Started analysis of 21-73_merged_L00_R1.fq.gz
+Approx 70% complete for 21-22_merged_L00_R2.fq.gz
+Approx 10% complete for 21-53_merged_L00_R2.fq.gz
+Approx 25% complete for 21-52_merged_L00_R1.fq.gz
+Approx 25% complete for 21-43_merged_L00_R1.fq.gz
+Approx 55% complete for 21-41_merged_L00_R2.fq.gz
+Approx 65% complete for 0-72_merged_L00_R2.fq.gz
+Approx 20% complete for 21-42_merged_L00_R1.fq.gz
+Approx 80% complete for 21-12_merged_L00_R1.fq.gz
+Approx 90% complete for 21-21_merged_L00_R2.fq.gz
+Approx 5% complete for 21-62_merged_L00_R2.fq.gz
+Approx 30% complete for 21-52_merged_L00_R2.fq.gz
+Started analysis of 21-73_merged_L00_R2.fq.gz
+Approx 35% complete for 0-72_merged_L00_R1.fq.gz
+Approx 65% complete for 21-32_merged_L00_R2.fq.gz
+Approx 5% complete for 21-72_merged_L00_R1.fq.gz
+Approx 80% complete for 0-33_merged_L00_R1.fq.gz
+Approx 75% complete for 0-82_merged_L00_R2.fq.gz
+Approx 80% complete for 0-73_merged_L00_R2.fq.gz
+Approx 85% complete for 0-33_merged_L00_R2.fq.gz
+Approx 70% complete for 0-43_merged_L00_R1.fq.gz
+Approx 60% complete for 21-41_merged_L00_R1.fq.gz
+Approx 15% complete for 21-51_merged_L00_R2.fq.gz
+Approx 30% complete for 21-13_merged_L00_R1.fq.gz
+Approx 10% complete for 21-63_merged_L00_R2.fq.gz
+Approx 60% complete for 0-52_merged_L00_R2.fq.gz
+Started analysis of 21-81_merged_L00_R1.fq.gz
+Approx 35% complete for 21-31_merged_L00_R2.fq.gz
+Approx 80% complete for 0-73_merged_L00_R1.fq.gz
+Approx 5% complete for 21-72_merged_L00_R2.fq.gz
+Approx 75% complete for 0-63_merged_L00_R2.fq.gz
+Approx 70% complete for 21-31_merged_L00_R1.fq.gz
+Approx 40% complete for 0-63_merged_L00_R1.fq.gz
+Approx 60% complete for 21-41_merged_L00_R2.fq.gz
+Approx 30% complete for 21-52_merged_L00_R1.fq.gz
+Approx 40% complete for 21-51_merged_L00_R1.fq.gz
+Approx 50% complete for 21-12_merged_L00_R2.fq.gz
+Approx 95% complete for 21-21_merged_L00_R2.fq.gz
+Approx 65% complete for 21-22_merged_L00_R1.fq.gz
+Approx 55% complete for 21-23_merged_L00_R2.fq.gz
+Started analysis of 21-81_merged_L00_R2.fq.gz
+Approx 15% complete for 21-61_merged_L00_R1.fq.gz
+Approx 45% complete for 21-21_merged_L00_R1.fq.gz
+Approx 55% complete for 0-62_merged_L00_R1.fq.gz
+Approx 75% complete for 21-22_merged_L00_R2.fq.gz
+Approx 15% complete for 21-33_merged_L00_R2.fq.gz
+Approx 25% complete for 21-42_merged_L00_R1.fq.gz
+Approx 10% complete for 21-63_merged_L00_R1.fq.gz
+Approx 10% complete for 21-71_merged_L00_R1.fq.gz
+Approx 95% complete for 0-52_merged_L00_R1.fq.gz
+Approx 35% complete for 21-52_merged_L00_R2.fq.gz
+Approx 85% complete for 21-12_merged_L00_R1.fq.gz
+Approx 90% complete for 0-32_merged_L00_R1.fq.gz
+Approx 40% complete for 0-82_merged_L00_R1.fq.gz
+Approx 70% complete for 21-32_merged_L00_R2.fq.gz
+Approx 10% complete for 21-53_merged_L00_R1.fq.gz
+Approx 25% complete for 21-23_merged_L00_R1.fq.gz
+Approx 65% complete for 21-41_merged_L00_R2.fq.gz
+Approx 25% complete for 21-32_merged_L00_R1.fq.gz
+Started analysis of 21-82_merged_L00_R1.fq.gz
+Approx 5% complete for 21-73_merged_L00_R1.fq.gz
+Approx 20% complete for 21-42_merged_L00_R2.fq.gz
+Approx 30% complete for 21-43_merged_L00_R1.fq.gz
+Approx 75% complete for 21-31_merged_L00_R1.fq.gz
+Approx 65% complete for 21-41_merged_L00_R1.fq.gz
+Approx 10% complete for 21-72_merged_L00_R1.fq.gz
+Analysis complete for 21-21_merged_L00_R2.fq.gz
+Approx 40% complete for 0-83_merged_L00_R2.fq.gz
+Approx 10% complete for 21-72_merged_L00_R2.fq.gz
+Approx 20% complete for 21-51_merged_L00_R2.fq.gz
+Approx 85% complete for 0-73_merged_L00_R2.fq.gz
+Started analysis of 21-82_merged_L00_R2.fq.gz
+Approx 35% complete for 21-52_merged_L00_R1.fq.gz
+Approx 30% complete for 21-13_merged_L00_R2.fq.gz
+Approx 80% complete for 21-22_merged_L00_R2.fq.gz
+Approx 45% complete for 21-51_merged_L00_R1.fq.gz
+Approx 70% complete for 21-22_merged_L00_R1.fq.gz
+Approx 80% complete for 0-82_merged_L00_R2.fq.gz
+Approx 80% complete for 0-63_merged_L00_R2.fq.gz
+Approx 5% complete for 21-81_merged_L00_R2.fq.gz
+Approx 30% complete for 21-42_merged_L00_R1.fq.gz
+Approx 60% complete for 21-23_merged_L00_R2.fq.gz
+Approx 15% complete for 21-63_merged_L00_R2.fq.gz
+Approx 10% complete for 21-62_merged_L00_R1.fq.gz
+Approx 40% complete for 0-83_merged_L00_R1.fq.gz
+Started analysis of 21-83_merged_L00_R1.fq.gz
+Approx 40% complete for 21-52_merged_L00_R2.fq.gz
+Approx 70% complete for 21-41_merged_L00_R2.fq.gz
+Approx 10% complete for 21-61_merged_L00_R2.fq.gz
+Approx 25% complete for 21-42_merged_L00_R2.fq.gz
+Approx 20% complete for 21-33_merged_L00_R1.fq.gz
+Approx 80% complete for 21-31_merged_L00_R1.fq.gz
+Approx 90% complete for 21-12_merged_L00_R1.fq.gz
+Approx 75% complete for 21-32_merged_L00_R2.fq.gz
+Approx 15% complete for 21-71_merged_L00_R1.fq.gz
+Started analysis of 21-83_merged_L00_R2.fq.gz
+Approx 15% complete for 21-53_merged_L00_R2.fq.gz
+Approx 90% complete for 0-33_merged_L00_R2.fq.gz
+Approx 25% complete for 21-51_merged_L00_R2.fq.gz
+Approx 55% complete for 21-12_merged_L00_R2.fq.gz
+Approx 70% complete for 21-41_merged_L00_R1.fq.gz
+Approx 5% complete for 21-71_merged_L00_R2.fq.gz
+Approx 20% complete for 21-61_merged_L00_R1.fq.gz
+Approx 50% complete for 21-21_merged_L00_R1.fq.gz
+Approx 15% complete for 21-63_merged_L00_R1.fq.gz
+Approx 70% complete for 0-72_merged_L00_R2.fq.gz
+Analysis complete for 0-52_merged_L00_R1.fq.gz
+Approx 85% complete for 21-22_merged_L00_R2.fq.gz
+Approx 40% complete for 21-31_merged_L00_R2.fq.gz
+Approx 95% complete for 0-32_merged_L00_R1.fq.gz
+Approx 15% complete for 21-72_merged_L00_R2.fq.gz
+Approx 60% complete for 0-62_merged_L00_R1.fq.gz
+Approx 40% complete for 21-52_merged_L00_R1.fq.gz
+Approx 15% complete for 21-72_merged_L00_R1.fq.gz
+Approx 75% complete for 21-22_merged_L00_R1.fq.gz
+Approx 10% complete for 21-62_merged_L00_R2.fq.gz
+Approx 50% complete for 21-51_merged_L00_R1.fq.gz
+Approx 15% complete for 21-43_merged_L00_R2.fq.gz
+Approx 40% complete for 0-62_merged_L00_R2.fq.gz
+Approx 35% complete for 21-43_merged_L00_R1.fq.gz
+Approx 90% complete for 0-73_merged_L00_R2.fq.gz
+Started analysis of 35-11_merged_L00_R1.fq.gz
+Approx 10% complete for 21-73_merged_L00_R1.fq.gz
+Approx 10% complete for 21-81_merged_L00_R2.fq.gz
+Approx 75% complete for 0-43_merged_L00_R1.fq.gz
+Approx 85% complete for 0-33_merged_L00_R1.fq.gz
+Approx 45% complete for 21-52_merged_L00_R2.fq.gz
+Approx 30% complete for 21-42_merged_L00_R2.fq.gz
+Approx 85% complete for 21-31_merged_L00_R1.fq.gz
+Approx 85% complete for 0-82_merged_L00_R2.fq.gz
+Approx 30% complete for 21-51_merged_L00_R2.fq.gz
+Approx 65% complete for 21-23_merged_L00_R2.fq.gz
+Approx 85% complete for 0-63_merged_L00_R2.fq.gz
+Approx 35% complete for 21-42_merged_L00_R1.fq.gz
+Approx 95% complete for 21-12_merged_L00_R1.fq.gz
+Approx 75% complete for 21-41_merged_L00_R1.fq.gz
+Approx 80% complete for 21-32_merged_L00_R2.fq.gz
+Approx 20% complete for 21-63_merged_L00_R2.fq.gz
+Approx 90% complete for 21-22_merged_L00_R2.fq.gz
+Approx 85% complete for 0-73_merged_L00_R1.fq.gz
+Approx 5% complete for 21-81_merged_L00_R1.fq.gz
+Approx 65% complete for 0-52_merged_L00_R2.fq.gz
+Approx 35% complete for 21-13_merged_L00_R1.fq.gz
+Approx 45% complete for 21-52_merged_L00_R1.fq.gz
+Approx 20% complete for 21-71_merged_L00_R1.fq.gz
+Approx 80% complete for 21-22_merged_L00_R1.fq.gz
+Approx 55% complete for 21-51_merged_L00_R1.fq.gz
+Approx 30% complete for 21-32_merged_L00_R1.fq.gz
+Approx 20% complete for 21-63_merged_L00_R1.fq.gz
+Approx 5% complete for 21-83_merged_L00_R2.fq.gz
+Approx 35% complete for 21-51_merged_L00_R2.fq.gz
+Approx 25% complete for 21-61_merged_L00_R1.fq.gz
+Approx 20% complete for 21-72_merged_L00_R2.fq.gz
+Approx 20% complete for 21-72_merged_L00_R1.fq.gz
+Approx 95% complete for 0-73_merged_L00_R2.fq.gz
+Approx 50% complete for 21-52_merged_L00_R2.fq.gz
+Approx 45% complete for 0-63_merged_L00_R1.fq.gz
+Approx 35% complete for 21-42_merged_L00_R2.fq.gz
+Approx 90% complete for 21-31_merged_L00_R1.fq.gz
+Analysis complete for 0-32_merged_L00_R1.fq.gz
+Approx 45% complete for 0-83_merged_L00_R2.fq.gz
+Approx 75% complete for 21-41_merged_L00_R2.fq.gz
+Approx 5% complete for 21-73_merged_L00_R2.fq.gz
+Approx 5% complete for 21-83_merged_L00_R1.fq.gz
+Approx 25% complete for 21-33_merged_L00_R1.fq.gz
+Approx 80% complete for 21-41_merged_L00_R1.fq.gz
+Approx 60% complete for 21-12_merged_L00_R2.fq.gz
+Approx 15% complete for 21-62_merged_L00_R1.fq.gz
+Approx 15% complete for 21-53_merged_L00_R1.fq.gz
+Approx 5% complete for 21-82_merged_L00_R2.fq.gz
+Approx 80% complete for 0-43_merged_L00_R1.fq.gz
+Approx 85% complete for 21-32_merged_L00_R2.fq.gz
+Approx 40% complete for 21-42_merged_L00_R1.fq.gz
+Approx 20% complete for 21-33_merged_L00_R2.fq.gz
+Approx 15% complete for 21-81_merged_L00_R2.fq.gz
+Approx 30% complete for 21-23_merged_L00_R1.fq.gz
+Approx 45% complete for 0-82_merged_L00_R1.fq.gz
+Analysis complete for 21-12_merged_L00_R1.fq.gz
+Approx 40% complete for 0-72_merged_L00_R1.fq.gz
+Approx 5% complete for 35-11_merged_L00_R1.fq.gz
+Approx 55% complete for 21-21_merged_L00_R1.fq.gz
+Approx 90% complete for 0-82_merged_L00_R2.fq.gz
+Approx 5% complete for 21-82_merged_L00_R1.fq.gz
+Approx 95% complete for 21-22_merged_L00_R2.fq.gz
+Approx 95% complete for 0-33_merged_L00_R2.fq.gz
+Approx 25% complete for 21-63_merged_L00_R2.fq.gz
+Approx 20% complete for 21-53_merged_L00_R2.fq.gz
+Approx 70% complete for 21-23_merged_L00_R2.fq.gz
+Approx 45% complete for 21-31_merged_L00_R2.fq.gz
+Approx 50% complete for 21-52_merged_L00_R1.fq.gz
+Approx 40% complete for 21-51_merged_L00_R2.fq.gz
+Approx 85% complete for 21-22_merged_L00_R1.fq.gz
+Approx 35% complete for 21-13_merged_L00_R2.fq.gz
+Started analysis of 35-11_merged_L00_R2.fq.gz
+Approx 40% complete for 21-43_merged_L00_R1.fq.gz
+Approx 25% complete for 21-72_merged_L00_R1.fq.gz
+Approx 15% complete for 21-73_merged_L00_R1.fq.gz
+Approx 85% complete for 21-41_merged_L00_R1.fq.gz
+Approx 55% complete for 21-52_merged_L00_R2.fq.gz
+Approx 60% complete for 21-51_merged_L00_R1.fq.gz
+Approx 65% complete for 0-62_merged_L00_R1.fq.gz
+Approx 40% complete for 21-42_merged_L00_R2.fq.gz
+Approx 95% complete for 21-31_merged_L00_R1.fq.gz
+Analysis complete for 0-73_merged_L00_R2.fq.gz
+Approx 90% complete for 21-32_merged_L00_R2.fq.gz
+Approx 25% complete for 21-72_merged_L00_R2.fq.gz
+Approx 15% complete for 21-61_merged_L00_R2.fq.gz
+Approx 45% complete for 0-83_merged_L00_R1.fq.gz
+Approx 10% complete for 21-71_merged_L00_R2.fq.gz
+Approx 25% complete for 21-63_merged_L00_R1.fq.gz
+Approx 80% complete for 21-41_merged_L00_R2.fq.gz
+Approx 15% complete for 21-62_merged_L00_R2.fq.gz
+Approx 45% complete for 21-42_merged_L00_R1.fq.gz
+Approx 90% complete for 0-73_merged_L00_R1.fq.gz
+Approx 25% complete for 21-71_merged_L00_R1.fq.gz
+Approx 10% complete for 21-83_merged_L00_R2.fq.gz
+Approx 20% complete for 21-43_merged_L00_R2.fq.gz
+Approx 20% complete for 21-81_merged_L00_R2.fq.gz
+Approx 90% complete for 0-63_merged_L00_R2.fq.gz
+Approx 45% complete for 0-62_merged_L00_R2.fq.gz
+Analysis complete for 21-22_merged_L00_R2.fq.gz
+Approx 10% complete for 21-82_merged_L00_R2.fq.gz
+Approx 35% complete for 21-32_merged_L00_R1.fq.gz
+Analysis complete for 0-33_merged_L00_R2.fq.gz
+Approx 85% complete for 0-43_merged_L00_R1.fq.gz
+Approx 30% complete for 21-33_merged_L00_R1.fq.gz
+Approx 45% complete for 21-51_merged_L00_R2.fq.gz
+Approx 40% complete for 21-13_merged_L00_R1.fq.gz
+Approx 75% complete for 0-72_merged_L00_R2.fq.gz
+Approx 95% complete for 0-82_merged_L00_R2.fq.gz
+Approx 55% complete for 21-52_merged_L00_R1.fq.gz
+Approx 30% complete for 21-61_merged_L00_R1.fq.gz
+Approx 25% complete for 21-53_merged_L00_R2.fq.gz
+Started analysis of 35-12_merged_L00_R1.fq.gz
+Approx 65% complete for 21-12_merged_L00_R2.fq.gz
+Approx 90% complete for 0-33_merged_L00_R1.fq.gz
+Approx 10% complete for 35-11_merged_L00_R1.fq.gz
+Approx 90% complete for 21-41_merged_L00_R1.fq.gz
+Approx 90% complete for 21-22_merged_L00_R1.fq.gz
+Approx 30% complete for 21-63_merged_L00_R2.fq.gz
+Approx 60% complete for 21-52_merged_L00_R2.fq.gz
+Analysis complete for 21-31_merged_L00_R1.fq.gz
+Approx 30% complete for 21-72_merged_L00_R1.fq.gz
+Approx 65% complete for 21-51_merged_L00_R1.fq.gz
+Approx 10% complete for 21-81_merged_L00_R1.fq.gz
+Started analysis of 35-12_merged_L00_R2.fq.gz
+Approx 95% complete for 21-32_merged_L00_R2.fq.gz
+Approx 60% complete for 21-21_merged_L00_R1.fq.gz
+Approx 45% complete for 21-42_merged_L00_R2.fq.gz
+Approx 85% complete for 21-41_merged_L00_R2.fq.gz
+Approx 50% complete for 21-31_merged_L00_R2.fq.gz
+Approx 20% complete for 21-62_merged_L00_R1.fq.gz
+Approx 45% complete for 0-72_merged_L00_R1.fq.gz
+Approx 35% complete for 21-23_merged_L00_R1.fq.gz
+Approx 70% complete for 0-52_merged_L00_R2.fq.gz
+Approx 50% complete for 0-83_merged_L00_R2.fq.gz
+Approx 25% complete for 21-81_merged_L00_R2.fq.gz
+Approx 50% complete for 21-42_merged_L00_R1.fq.gz
+Approx 15% complete for 21-83_merged_L00_R2.fq.gz
+Approx 25% complete for 21-43_merged_L00_R2.fq.gz
+Approx 20% complete for 21-62_merged_L00_R2.fq.gz
+Approx 50% complete for 21-51_merged_L00_R2.fq.gz
+Approx 95% complete for 21-41_merged_L00_R1.fq.gz
+Approx 40% complete for 21-32_merged_L00_R1.fq.gz
+Approx 75% complete for 21-23_merged_L00_R2.fq.gz
+Approx 20% complete for 21-53_merged_L00_R1.fq.gz
+Approx 10% complete for 21-82_merged_L00_R1.fq.gz
+Approx 45% complete for 21-43_merged_L00_R1.fq.gz
+Approx 60% complete for 21-52_merged_L00_R1.fq.gz
+Approx 15% complete for 21-82_merged_L00_R2.fq.gz
+Approx 10% complete for 21-73_merged_L00_R2.fq.gz
+Approx 30% complete for 21-53_merged_L00_R2.fq.gz
+Approx 30% complete for 21-71_merged_L00_R1.fq.gz
+Approx 90% complete for 21-41_merged_L00_R2.fq.gz
+Approx 20% complete for 21-73_merged_L00_R1.fq.gz
+Approx 65% complete for 21-52_merged_L00_R2.fq.gz
+Analysis complete for 0-82_merged_L00_R2.fq.gz
+Approx 95% complete for 0-63_merged_L00_R2.fq.gz
+Approx 90% complete for 0-43_merged_L00_R1.fq.gz
+Analysis complete for 21-32_merged_L00_R2.fq.gz
+Approx 95% complete for 21-22_merged_L00_R1.fq.gz
+Started analysis of 35-21_merged_L00_R1.fq.gz
+Approx 5% complete for 35-11_merged_L00_R2.fq.gz
+Approx 10% complete for 21-83_merged_L00_R1.fq.gz
+Approx 70% complete for 21-51_merged_L00_R1.fq.gz
+Approx 40% complete for 21-13_merged_L00_R2.fq.gz
+Approx 50% complete for 0-62_merged_L00_R2.fq.gz
+Approx 35% complete for 21-33_merged_L00_R1.fq.gz
+Approx 50% complete for 21-42_merged_L00_R2.fq.gz
+Approx 30% complete for 21-72_merged_L00_R2.fq.gz
+Approx 25% complete for 21-33_merged_L00_R2.fq.gz
+Approx 35% complete for 21-72_merged_L00_R1.fq.gz
+Approx 70% complete for 0-62_merged_L00_R1.fq.gz
+Approx 5% complete for 35-12_merged_L00_R2.fq.gz
+Approx 70% complete for 21-12_merged_L00_R2.fq.gz
+Approx 50% complete for 0-82_merged_L00_R1.fq.gz
+Approx 45% complete for 21-13_merged_L00_R1.fq.gz
+Approx 55% complete for 21-31_merged_L00_R2.fq.gz
+Started analysis of 35-21_merged_L00_R2.fq.gz
+Approx 5% complete for 35-12_merged_L00_R1.fq.gz
+Approx 50% complete for 0-83_merged_L00_R1.fq.gz
+Approx 30% complete for 21-63_merged_L00_R1.fq.gz
+Approx 35% complete for 21-63_merged_L00_R2.fq.gz
+Approx 15% complete for 35-11_merged_L00_R1.fq.gz
+Approx 50% complete for 0-63_merged_L00_R1.fq.gz
+Approx 15% complete for 21-71_merged_L00_R2.fq.gz
+Approx 35% complete for 21-61_merged_L00_R1.fq.gz
+Approx 30% complete for 21-81_merged_L00_R2.fq.gz
+Approx 25% complete for 21-62_merged_L00_R1.fq.gz
+Approx 20% complete for 21-61_merged_L00_R2.fq.gz
+Started analysis of 35-22_merged_L00_R1.fq.gz
+Analysis complete for 21-41_merged_L00_R1.fq.gz
+Approx 55% complete for 21-51_merged_L00_R2.fq.gz
+Approx 65% complete for 21-21_merged_L00_R1.fq.gz
+Approx 25% complete for 21-62_merged_L00_R2.fq.gz
+Approx 45% complete for 21-32_merged_L00_R1.fq.gz
+Approx 70% complete for 21-52_merged_L00_R2.fq.gz
+Approx 55% complete for 21-42_merged_L00_R1.fq.gz
+Approx 95% complete for 0-33_merged_L00_R1.fq.gz
+Approx 65% complete for 21-52_merged_L00_R1.fq.gz
+Approx 50% complete for 0-72_merged_L00_R1.fq.gz
+Started analysis of 35-22_merged_L00_R2.fq.gz
+Approx 95% complete for 0-73_merged_L00_R1.fq.gz
+Approx 95% complete for 21-41_merged_L00_R2.fq.gz
+Approx 15% complete for 21-81_merged_L00_R1.fq.gz
+Approx 40% complete for 21-23_merged_L00_R1.fq.gz
+Approx 20% complete for 21-83_merged_L00_R2.fq.gz
+Approx 35% complete for 21-53_merged_L00_R2.fq.gz
+Approx 20% complete for 21-82_merged_L00_R2.fq.gz
+Analysis complete for 21-22_merged_L00_R1.fq.gz
+Approx 75% complete for 21-51_merged_L00_R1.fq.gz
+Approx 75% complete for 21-12_merged_L00_R2.fq.gz
+Approx 80% complete for 21-23_merged_L00_R2.fq.gz
+Approx 95% complete for 0-43_merged_L00_R1.fq.gz
+Started analysis of 35-23_merged_L00_R1.fq.gz
+Approx 55% complete for 0-83_merged_L00_R2.fq.gz
+Approx 50% complete for 21-43_merged_L00_R1.fq.gz
+Approx 60% complete for 21-31_merged_L00_R2.fq.gz
+Approx 55% complete for 21-42_merged_L00_R2.fq.gz
+Approx 10% complete for 35-12_merged_L00_R2.fq.gz
+Approx 80% complete for 0-72_merged_L00_R2.fq.gz
+Analysis complete for 0-63_merged_L00_R2.fq.gz
+Approx 60% complete for 21-51_merged_L00_R2.fq.gz
+Approx 40% complete for 21-72_merged_L00_R1.fq.gz
+Approx 75% complete for 0-52_merged_L00_R2.fq.gz
+Approx 75% complete for 21-52_merged_L00_R2.fq.gz
+Approx 20% complete for 21-71_merged_L00_R2.fq.gz
+Approx 40% complete for 21-33_merged_L00_R1.fq.gz
+Approx 35% complete for 21-71_merged_L00_R1.fq.gz
+Approx 15% complete for 21-82_merged_L00_R1.fq.gz
+Approx 30% complete for 21-62_merged_L00_R2.fq.gz
+Analysis complete for 21-41_merged_L00_R2.fq.gz
+Approx 50% complete for 21-32_merged_L00_R1.fq.gz
+Approx 30% complete for 21-62_merged_L00_R1.fq.gz
+Approx 40% complete for 21-63_merged_L00_R2.fq.gz
+Approx 5% complete for 35-21_merged_L00_R2.fq.gz
+Approx 50% complete for 21-13_merged_L00_R1.fq.gz
+Approx 25% complete for 21-73_merged_L00_R1.fq.gz
+Approx 70% complete for 21-52_merged_L00_R1.fq.gz
+Approx 10% complete for 35-12_merged_L00_R1.fq.gz
+Approx 30% complete for 21-43_merged_L00_R2.fq.gz
+Approx 35% complete for 21-81_merged_L00_R2.fq.gz
+Approx 20% complete for 35-11_merged_L00_R1.fq.gz
+Started analysis of 35-23_merged_L00_R2.fq.gz
+Approx 60% complete for 21-42_merged_L00_R1.fq.gz
+Approx 5% complete for 35-22_merged_L00_R1.fq.gz
+Approx 25% complete for 21-53_merged_L00_R1.fq.gz
+Approx 80% complete for 21-12_merged_L00_R2.fq.gz
+Approx 10% complete for 35-11_merged_L00_R2.fq.gz
+Approx 35% complete for 21-72_merged_L00_R2.fq.gz
+Approx 25% complete for 21-83_merged_L00_R2.fq.gz
+Approx 70% complete for 21-21_merged_L00_R1.fq.gz
+Approx 45% complete for 21-13_merged_L00_R2.fq.gz
+Approx 40% complete for 21-53_merged_L00_R2.fq.gz
+Started analysis of 35-31_merged_L00_R1.fq.gz
+Approx 40% complete for 21-61_merged_L00_R1.fq.gz
+Approx 15% complete for 21-73_merged_L00_R2.fq.gz
+Approx 5% complete for 35-22_merged_L00_R2.fq.gz
+Approx 25% complete for 21-82_merged_L00_R2.fq.gz
+Approx 55% complete for 0-62_merged_L00_R2.fq.gz
+Approx 80% complete for 21-51_merged_L00_R1.fq.gz
+Approx 65% complete for 21-31_merged_L00_R2.fq.gz
+Approx 75% complete for 0-62_merged_L00_R1.fq.gz
+Approx 20% complete for 21-81_merged_L00_R1.fq.gz
+Approx 15% complete for 21-83_merged_L00_R1.fq.gz
+Analysis complete for 0-43_merged_L00_R1.fq.gz
+Approx 60% complete for 21-42_merged_L00_R2.fq.gz
+Approx 55% complete for 0-72_merged_L00_R1.fq.gz
+Approx 45% complete for 21-23_merged_L00_R1.fq.gz
+Approx 65% complete for 21-51_merged_L00_R2.fq.gz
+Approx 30% complete for 21-33_merged_L00_R2.fq.gz
+Approx 55% complete for 0-82_merged_L00_R1.fq.gz
+Started analysis of 35-31_merged_L00_R2.fq.gz
+Approx 5% complete for 35-21_merged_L00_R1.fq.gz
+Approx 35% complete for 21-62_merged_L00_R2.fq.gz
+Approx 80% complete for 21-52_merged_L00_R2.fq.gz
+Approx 55% complete for 0-83_merged_L00_R1.fq.gz
+Approx 5% complete for 35-23_merged_L00_R1.fq.gz
+Approx 25% complete for 21-61_merged_L00_R2.fq.gz
+Approx 85% complete for 21-23_merged_L00_R2.fq.gz
+Approx 55% complete for 21-43_merged_L00_R1.fq.gz
+Approx 15% complete for 35-12_merged_L00_R2.fq.gz
+Approx 75% complete for 21-52_merged_L00_R1.fq.gz
+Approx 45% complete for 21-72_merged_L00_R1.fq.gz
+Started analysis of 35-32_merged_L00_R1.fq.gz
+Approx 55% complete for 21-32_merged_L00_R1.fq.gz
+Approx 85% complete for 21-12_merged_L00_R2.fq.gz
+Approx 35% complete for 21-63_merged_L00_R1.fq.gz
+Analysis complete for 0-73_merged_L00_R1.fq.gz
+Analysis complete for 0-33_merged_L00_R1.fq.gz
+Approx 35% complete for 21-62_merged_L00_R1.fq.gz
+Approx 25% complete for 21-71_merged_L00_R2.fq.gz
+Approx 5% complete for 35-23_merged_L00_R2.fq.gz
+Approx 65% complete for 21-42_merged_L00_R1.fq.gz
+Approx 55% complete for 0-63_merged_L00_R1.fq.gz
+Approx 70% complete for 21-31_merged_L00_R2.fq.gz
+Approx 45% complete for 21-63_merged_L00_R2.fq.gz
+Approx 40% complete for 21-81_merged_L00_R2.fq.gz
+Approx 45% complete for 21-33_merged_L00_R1.fq.gz
+Approx 30% complete for 21-82_merged_L00_R2.fq.gz
+Approx 10% complete for 35-22_merged_L00_R2.fq.gz
+Started analysis of 35-32_merged_L00_R2.fq.gz
+Approx 40% complete for 21-71_merged_L00_R1.fq.gz
+Approx 45% complete for 21-53_merged_L00_R2.fq.gz
+Approx 60% complete for 0-83_merged_L00_R2.fq.gz
+Approx 25% complete for 35-11_merged_L00_R1.fq.gz
+Approx 85% complete for 21-51_merged_L00_R1.fq.gz
+Approx 15% complete for 35-12_merged_L00_R1.fq.gz
+Approx 55% complete for 21-13_merged_L00_R1.fq.gz
+Approx 70% complete for 21-51_merged_L00_R2.fq.gz
+Approx 75% complete for 21-21_merged_L00_R1.fq.gz
+Approx 30% complete for 21-83_merged_L00_R2.fq.gz
+Started analysis of 35-33_merged_L00_R1.fq.gz
+Approx 85% complete for 21-52_merged_L00_R2.fq.gz
+Approx 65% complete for 21-42_merged_L00_R2.fq.gz
+Approx 10% complete for 35-22_merged_L00_R1.fq.gz
+Approx 20% complete for 21-82_merged_L00_R1.fq.gz
+Approx 40% complete for 21-62_merged_L00_R2.fq.gz
+Approx 30% complete for 21-73_merged_L00_R1.fq.gz
+Approx 40% complete for 21-72_merged_L00_R2.fq.gz
+Approx 50% complete for 21-23_merged_L00_R1.fq.gz
+Approx 90% complete for 21-12_merged_L00_R2.fq.gz
+Approx 25% complete for 21-81_merged_L00_R1.fq.gz
+Approx 10% complete for 35-21_merged_L00_R2.fq.gz
+Approx 80% complete for 21-52_merged_L00_R1.fq.gz
+Approx 10% complete for 35-23_merged_L00_R1.fq.gz
+Approx 45% complete for 21-61_merged_L00_R1.fq.gz
+Approx 80% complete for 0-52_merged_L00_R2.fq.gz
+Approx 5% complete for 35-31_merged_L00_R2.fq.gz
+Approx 60% complete for 21-32_merged_L00_R1.fq.gz
+Approx 10% complete for 35-21_merged_L00_R1.fq.gz
+Approx 30% complete for 21-53_merged_L00_R1.fq.gz
+Approx 75% complete for 21-31_merged_L00_R2.fq.gz
+Approx 35% complete for 21-43_merged_L00_R2.fq.gz
+Approx 15% complete for 35-11_merged_L00_R2.fq.gz
+Approx 20% complete for 35-12_merged_L00_R2.fq.gz
+Approx 15% complete for 35-22_merged_L00_R2.fq.gz
+Approx 5% complete for 35-32_merged_L00_R1.fq.gz
+Approx 50% complete for 21-72_merged_L00_R1.fq.gz
+Started analysis of 35-33_merged_L00_R2.fq.gz
+Approx 40% complete for 21-62_merged_L00_R1.fq.gz
+Approx 90% complete for 21-23_merged_L00_R2.fq.gz
+Approx 50% complete for 21-13_merged_L00_R2.fq.gz
+Approx 70% complete for 21-42_merged_L00_R1.fq.gz
+Approx 60% complete for 0-72_merged_L00_R1.fq.gz
+Approx 60% complete for 0-62_merged_L00_R2.fq.gz
+Approx 85% complete for 0-72_merged_L00_R2.fq.gz
+Approx 75% complete for 21-51_merged_L00_R2.fq.gz
+Approx 10% complete for 35-23_merged_L00_R2.fq.gz
+Approx 50% complete for 21-53_merged_L00_R2.fq.gz
+Approx 20% complete for 21-73_merged_L00_R2.fq.gz
+Approx 35% complete for 21-82_merged_L00_R2.fq.gz
+Approx 45% complete for 21-81_merged_L00_R2.fq.gz
+Approx 90% complete for 21-51_merged_L00_R1.fq.gz
+Approx 5% complete for 35-32_merged_L00_R2.fq.gz
+Approx 30% complete for 21-71_merged_L00_R2.fq.gz
+Approx 90% complete for 21-52_merged_L00_R2.fq.gz
+Approx 60% complete for 21-43_merged_L00_R1.fq.gz
+Approx 50% complete for 21-63_merged_L00_R2.fq.gz
+Approx 45% complete for 21-62_merged_L00_R2.fq.gz
+Approx 95% complete for 21-12_merged_L00_R2.fq.gz
+Approx 45% complete for 21-71_merged_L00_R1.fq.gz
+Approx 80% complete for 0-62_merged_L00_R1.fq.gz
+Approx 20% complete for 35-12_merged_L00_R1.fq.gz
+Approx 60% complete for 0-83_merged_L00_R1.fq.gz
+Approx 5% complete for 35-33_merged_L00_R1.fq.gz
+Approx 70% complete for 21-42_merged_L00_R2.fq.gz
+Approx 35% complete for 21-33_merged_L00_R2.fq.gz
+Approx 20% complete for 21-83_merged_L00_R1.fq.gz
+Approx 50% complete for 21-33_merged_L00_R1.fq.gz
+Approx 60% complete for 0-82_merged_L00_R1.fq.gz
+Approx 30% complete for 35-11_merged_L00_R1.fq.gz
+Approx 5% complete for 35-31_merged_L00_R1.fq.gz
+Approx 85% complete for 21-52_merged_L00_R1.fq.gz
+Approx 30% complete for 21-61_merged_L00_R2.fq.gz
+Approx 35% complete for 21-83_merged_L00_R2.fq.gz
+Approx 80% complete for 21-21_merged_L00_R1.fq.gz
+Approx 60% complete for 21-13_merged_L00_R1.fq.gz
+Approx 65% complete for 0-83_merged_L00_R2.fq.gz
+Started analysis of 35-41_merged_L00_R1.fq.gz
+Approx 55% complete for 21-23_merged_L00_R1.fq.gz
+Approx 80% complete for 21-31_merged_L00_R2.fq.gz
+Approx 65% complete for 21-32_merged_L00_R1.fq.gz
+Approx 20% complete for 35-22_merged_L00_R2.fq.gz
+Approx 15% complete for 35-23_merged_L00_R1.fq.gz
+Approx 15% complete for 35-22_merged_L00_R1.fq.gz
+Approx 40% complete for 21-63_merged_L00_R1.fq.gz
+Analysis complete for 21-12_merged_L00_R2.fq.gz
+Approx 45% complete for 21-62_merged_L00_R1.fq.gz
+Approx 80% complete for 21-51_merged_L00_R2.fq.gz
+Approx 30% complete for 21-81_merged_L00_R1.fq.gz
+Approx 50% complete for 21-62_merged_L00_R2.fq.gz
+Approx 10% complete for 35-32_merged_L00_R1.fq.gz
+Approx 10% complete for 35-31_merged_L00_R2.fq.gz
+Approx 45% complete for 21-72_merged_L00_R2.fq.gz
+Approx 95% complete for 21-52_merged_L00_R2.fq.gz
+Approx 55% complete for 21-72_merged_L00_R1.fq.gz
+Approx 75% complete for 21-42_merged_L00_R1.fq.gz
+Approx 95% complete for 21-51_merged_L00_R1.fq.gz
+Approx 5% complete for 35-33_merged_L00_R2.fq.gz
+Approx 55% complete for 21-53_merged_L00_R2.fq.gz
+Approx 50% complete for 21-61_merged_L00_R1.fq.gz
+Approx 75% complete for 21-42_merged_L00_R2.fq.gz
+Approx 35% complete for 21-73_merged_L00_R1.fq.gz
+Approx 40% complete for 21-82_merged_L00_R2.fq.gz
+Approx 15% complete for 35-21_merged_L00_R1.fq.gz
+Approx 95% complete for 21-23_merged_L00_R2.fq.gz
+Approx 25% complete for 35-12_merged_L00_R2.fq.gz
+Approx 10% complete for 35-32_merged_L00_R2.fq.gz
+Approx 15% complete for 35-23_merged_L00_R2.fq.gz
+Approx 50% complete for 21-81_merged_L00_R2.fq.gz
+Approx 85% complete for 0-52_merged_L00_R2.fq.gz
+Approx 60% complete for 0-63_merged_L00_R1.fq.gz
+Approx 10% complete for 35-33_merged_L00_R1.fq.gz
+Approx 35% complete for 21-71_merged_L00_R2.fq.gz
+Approx 25% complete for 21-82_merged_L00_R1.fq.gz
+Approx 90% complete for 21-52_merged_L00_R1.fq.gz
+Approx 55% complete for 21-63_merged_L00_R2.fq.gz
+Approx 85% complete for 21-31_merged_L00_R2.fq.gz
+Approx 25% complete for 35-12_merged_L00_R1.fq.gz
+Approx 50% complete for 21-71_merged_L00_R1.fq.gz
+Approx 20% complete for 35-11_merged_L00_R2.fq.gz
+Approx 65% complete for 0-72_merged_L00_R1.fq.gz
+Approx 65% complete for 0-62_merged_L00_R2.fq.gz
+Approx 15% complete for 35-21_merged_L00_R2.fq.gz
+Approx 25% complete for 35-22_merged_L00_R2.fq.gz
+Approx 65% complete for 21-43_merged_L00_R1.fq.gz
+Approx 55% complete for 21-33_merged_L00_R1.fq.gz
+Analysis complete for 21-52_merged_L00_R2.fq.gz
+Analysis complete for 21-51_merged_L00_R1.fq.gz
+Approx 35% complete for 35-11_merged_L00_R1.fq.gz
+Approx 85% complete for 21-51_merged_L00_R2.fq.gz
+Approx 5% complete for 35-41_merged_L00_R1.fq.gz
+Approx 35% complete for 21-53_merged_L00_R1.fq.gz
+Approx 55% complete for 21-62_merged_L00_R2.fq.gz
+Approx 85% complete for 21-21_merged_L00_R1.fq.gz
+Approx 60% complete for 21-72_merged_L00_R1.fq.gz
+Approx 20% complete for 35-23_merged_L00_R1.fq.gz
+Approx 40% complete for 21-83_merged_L00_R2.fq.gz
+Approx 65% complete for 21-13_merged_L00_R1.fq.gz
+Approx 50% complete for 21-62_merged_L00_R1.fq.gz
+Approx 60% complete for 21-23_merged_L00_R1.fq.gz
+Approx 15% complete for 35-32_merged_L00_R1.fq.gz
+Approx 25% complete for 21-73_merged_L00_R2.fq.gz
+Approx 70% complete for 21-32_merged_L00_R1.fq.gz
+Approx 60% complete for 21-53_merged_L00_R2.fq.gz
+Approx 15% complete for 35-31_merged_L00_R2.fq.gz
+Approx 40% complete for 21-33_merged_L00_R2.fq.gz
+Approx 85% complete for 0-62_merged_L00_R1.fq.gz
+Approx 55% complete for 21-13_merged_L00_R2.fq.gz
+Approx 80% complete for 21-42_merged_L00_R2.fq.gz
+Approx 45% complete for 21-82_merged_L00_R2.fq.gz
+Approx 25% complete for 21-83_merged_L00_R1.fq.gz
+Approx 40% complete for 21-43_merged_L00_R2.fq.gz
+Approx 20% complete for 35-23_merged_L00_R2.fq.gz
+Approx 35% complete for 21-81_merged_L00_R1.fq.gz
+Approx 20% complete for 35-21_merged_L00_R1.fq.gz
+Approx 90% complete for 21-31_merged_L00_R2.fq.gz
+Approx 70% complete for 0-83_merged_L00_R2.fq.gz
+Approx 90% complete for 0-72_merged_L00_R2.fq.gz
+Approx 15% complete for 35-32_merged_L00_R2.fq.gz
+Approx 80% complete for 21-42_merged_L00_R1.fq.gz
+Approx 15% complete for 35-33_merged_L00_R1.fq.gz
+Analysis complete for 21-23_merged_L00_R2.fq.gz
+Approx 95% complete for 21-52_merged_L00_R1.fq.gz
+Approx 20% complete for 35-22_merged_L00_R1.fq.gz
+Approx 55% complete for 21-81_merged_L00_R2.fq.gz
+Approx 65% complete for 0-82_merged_L00_R1.fq.gz
+Started analysis of 35-41_merged_L00_R2.fq.gz
+Approx 30% complete for 35-22_merged_L00_R2.fq.gz
+Approx 50% complete for 21-72_merged_L00_R2.fq.gz
+Approx 65% complete for 0-83_merged_L00_R1.fq.gz
+Approx 40% complete for 21-71_merged_L00_R2.fq.gz
+Approx 10% complete for 35-33_merged_L00_R2.fq.gz
+Approx 35% complete for 21-61_merged_L00_R2.fq.gz
+Approx 90% complete for 21-51_merged_L00_R2.fq.gz
+Approx 55% complete for 21-61_merged_L00_R1.fq.gz
+Approx 60% complete for 21-63_merged_L00_R2.fq.gz
+Approx 45% complete for 21-63_merged_L00_R1.fq.gz
+Approx 55% complete for 21-62_merged_L00_R1.fq.gz
+Approx 20% complete for 35-32_merged_L00_R1.fq.gz
+Approx 40% complete for 21-73_merged_L00_R1.fq.gz
+Approx 60% complete for 21-62_merged_L00_R2.fq.gz
+Approx 25% complete for 35-23_merged_L00_R1.fq.gz
+Approx 70% complete for 0-62_merged_L00_R2.fq.gz
+Approx 30% complete for 35-12_merged_L00_R2.fq.gz
+Approx 65% complete for 21-72_merged_L00_R1.fq.gz
+Approx 10% complete for 35-41_merged_L00_R1.fq.gz
+Approx 70% complete for 0-72_merged_L00_R1.fq.gz
+Approx 95% complete for 21-31_merged_L00_R2.fq.gz
+Approx 30% complete for 35-12_merged_L00_R1.fq.gz
+Approx 70% complete for 21-43_merged_L00_R1.fq.gz
+Approx 60% complete for 21-33_merged_L00_R1.fq.gz
+Approx 65% complete for 21-53_merged_L00_R2.fq.gz
+Analysis complete for 21-52_merged_L00_R1.fq.gz
+Approx 45% complete for 21-83_merged_L00_R2.fq.gz
+Approx 25% complete for 35-23_merged_L00_R2.fq.gz
+Approx 70% complete for 21-13_merged_L00_R1.fq.gz
+Approx 85% complete for 21-42_merged_L00_R2.fq.gz
+Approx 50% complete for 21-82_merged_L00_R2.fq.gz
+Approx 10% complete for 35-31_merged_L00_R1.fq.gz
+Approx 20% complete for 35-32_merged_L00_R2.fq.gz
+Approx 60% complete for 21-81_merged_L00_R2.fq.gz
+Approx 90% complete for 0-52_merged_L00_R2.fq.gz
+Approx 20% complete for 35-33_merged_L00_R1.fq.gz
+Approx 25% complete for 35-21_merged_L00_R1.fq.gz
+Approx 35% complete for 35-22_merged_L00_R2.fq.gz
+Approx 20% complete for 35-31_merged_L00_R2.fq.gz
+Started analysis of 35-42_merged_L00_R1.fq.gz
+Approx 65% complete for 21-23_merged_L00_R1.fq.gz
+Approx 85% complete for 21-42_merged_L00_R1.fq.gz
+Approx 95% complete for 21-51_merged_L00_R2.fq.gz
+Approx 90% complete for 21-21_merged_L00_R1.fq.gz
+Approx 25% complete for 35-11_merged_L00_R2.fq.gz
+Approx 5% complete for 35-41_merged_L00_R2.fq.gz
+Started analysis of 35-42_merged_L00_R2.fq.gz
+Approx 40% complete for 21-81_merged_L00_R1.fq.gz
+Approx 60% complete for 21-62_merged_L00_R1.fq.gz
+Approx 75% complete for 21-32_merged_L00_R1.fq.gz
+Approx 25% complete for 35-32_merged_L00_R1.fq.gz
+Analysis complete for 21-31_merged_L00_R2.fq.gz
+Approx 45% complete for 21-71_merged_L00_R2.fq.gz
+Approx 30% complete for 35-23_merged_L00_R1.fq.gz
+Approx 65% complete for 21-62_merged_L00_R2.fq.gz
+Approx 55% complete for 21-71_merged_L00_R1.fq.gz
+Approx 15% complete for 35-41_merged_L00_R1.fq.gz
+Started analysis of 35-43_merged_L00_R1.fq.gz
+Approx 65% complete for 21-63_merged_L00_R2.fq.gz
+Approx 30% complete for 21-82_merged_L00_R1.fq.gz
+Approx 25% complete for 35-22_merged_L00_R1.fq.gz
+Approx 70% complete for 21-53_merged_L00_R2.fq.gz
+Approx 40% complete for 35-22_merged_L00_R2.fq.gz
+Approx 5% complete for 35-42_merged_L00_R1.fq.gz
+Approx 70% complete for 21-72_merged_L00_R1.fq.gz
+Approx 5% complete for 35-42_merged_L00_R2.fq.gz
+Approx 90% complete for 0-62_merged_L00_R1.fq.gz
+Approx 20% complete for 35-21_merged_L00_R2.fq.gz
+Approx 40% complete for 21-53_merged_L00_R1.fq.gz
+Approx 65% complete for 21-81_merged_L00_R2.fq.gz
+Approx 75% complete for 0-83_merged_L00_R2.fq.gz
+Analysis complete for 21-51_merged_L00_R2.fq.gz
+Approx 60% complete for 21-61_merged_L00_R1.fq.gz
+Approx 25% complete for 35-32_merged_L00_R2.fq.gz
+Approx 90% complete for 21-42_merged_L00_R2.fq.gz
+Approx 15% complete for 35-33_merged_L00_R2.fq.gz
+Approx 75% complete for 0-62_merged_L00_R2.fq.gz
+Approx 30% complete for 35-23_merged_L00_R2.fq.gz
+Approx 45% complete for 21-33_merged_L00_R2.fq.gz
+Approx 30% complete for 21-73_merged_L00_R2.fq.gz
+Approx 40% complete for 35-11_merged_L00_R1.fq.gz
+Approx 55% complete for 21-82_merged_L00_R2.fq.gz
+Approx 75% complete for 0-72_merged_L00_R1.fq.gz
+Approx 30% complete for 35-21_merged_L00_R1.fq.gz
+Approx 50% complete for 21-83_merged_L00_R2.fq.gz
+Approx 55% complete for 21-72_merged_L00_R2.fq.gz
+Approx 45% complete for 21-81_merged_L00_R1.fq.gz
+Approx 65% complete for 21-33_merged_L00_R1.fq.gz
+Approx 10% complete for 35-41_merged_L00_R2.fq.gz
+Approx 30% complete for 21-83_merged_L00_R1.fq.gz
+Approx 25% complete for 35-31_merged_L00_R2.fq.gz
+Approx 75% complete for 21-43_merged_L00_R1.fq.gz
+Approx 75% complete for 21-13_merged_L00_R1.fq.gz
+Approx 90% complete for 21-42_merged_L00_R1.fq.gz
+Approx 45% complete for 21-73_merged_L00_R1.fq.gz
+Approx 35% complete for 35-12_merged_L00_R1.fq.gz
+Approx 65% complete for 21-62_merged_L00_R1.fq.gz
+Approx 65% complete for 0-63_merged_L00_R1.fq.gz
+Approx 70% complete for 0-82_merged_L00_R1.fq.gz
+Approx 30% complete for 35-32_merged_L00_R1.fq.gz
+Approx 10% complete for 35-42_merged_L00_R1.fq.gz
+Approx 35% complete for 35-12_merged_L00_R2.fq.gz
+Approx 45% complete for 35-22_merged_L00_R2.fq.gz
+Started analysis of 35-43_merged_L00_R2.fq.gz
+Approx 70% complete for 21-23_merged_L00_R1.fq.gz
+Approx 95% complete for 21-21_merged_L00_R1.fq.gz
+Approx 70% complete for 21-62_merged_L00_R2.fq.gz
+Approx 75% complete for 21-53_merged_L00_R2.fq.gz
+Approx 50% complete for 21-63_merged_L00_R1.fq.gz
+Approx 40% complete for 21-61_merged_L00_R2.fq.gz
+Approx 50% complete for 21-71_merged_L00_R2.fq.gz
+Approx 20% complete for 35-41_merged_L00_R1.fq.gz
+Approx 10% complete for 35-42_merged_L00_R2.fq.gz
+Approx 25% complete for 35-33_merged_L00_R1.fq.gz
+Approx 35% complete for 35-23_merged_L00_R1.fq.gz
+Approx 70% complete for 21-63_merged_L00_R2.fq.gz
+Approx 70% complete for 21-81_merged_L00_R2.fq.gz
+Approx 60% complete for 21-13_merged_L00_R2.fq.gz
+Approx 95% complete for 0-72_merged_L00_R2.fq.gz
+Approx 70% complete for 0-83_merged_L00_R1.fq.gz
+Approx 95% complete for 21-42_merged_L00_R2.fq.gz
+Approx 30% complete for 35-32_merged_L00_R2.fq.gz
+Approx 45% complete for 21-43_merged_L00_R2.fq.gz
+Approx 75% complete for 21-72_merged_L00_R1.fq.gz
+Approx 95% complete for 0-52_merged_L00_R2.fq.gz
+Approx 80% complete for 21-32_merged_L00_R1.fq.gz
+Approx 50% complete for 35-22_merged_L00_R2.fq.gz
+Approx 35% complete for 35-23_merged_L00_R2.fq.gz
+Approx 30% complete for 35-31_merged_L00_R2.fq.gz
+Approx 60% complete for 21-82_merged_L00_R2.fq.gz
+Approx 50% complete for 21-81_merged_L00_R1.fq.gz
+Started analysis of 35-51_merged_L00_R1.fq.gz
+Approx 15% complete for 35-41_merged_L00_R2.fq.gz
+Approx 35% complete for 35-21_merged_L00_R1.fq.gz
+Approx 15% complete for 35-42_merged_L00_R1.fq.gz
+Approx 30% complete for 35-11_merged_L00_R2.fq.gz
+Approx 5% complete for 35-43_merged_L00_R2.fq.gz
+Approx 5% complete for 35-43_merged_L00_R1.fq.gz
+Approx 70% complete for 21-62_merged_L00_R1.fq.gz
+Approx 15% complete for 35-42_merged_L00_R2.fq.gz
+Approx 95% complete for 21-42_merged_L00_R1.fq.gz
+Approx 65% complete for 21-61_merged_L00_R1.fq.gz
+Approx 55% complete for 21-83_merged_L00_R2.fq.gz
+Started analysis of 35-51_merged_L00_R2.fq.gz
+Approx 20% complete for 35-33_merged_L00_R2.fq.gz
+Approx 70% complete for 21-33_merged_L00_R1.fq.gz
+Approx 30% complete for 35-22_merged_L00_R1.fq.gz
+Approx 35% complete for 35-32_merged_L00_R1.fq.gz
+Approx 75% complete for 21-62_merged_L00_R2.fq.gz
+Approx 80% complete for 21-53_merged_L00_R2.fq.gz
+Approx 80% complete for 21-13_merged_L00_R1.fq.gz
+Approx 95% complete for 0-62_merged_L00_R1.fq.gz
+Approx 25% complete for 35-41_merged_L00_R1.fq.gz
+Approx 55% complete for 21-71_merged_L00_R2.fq.gz
+Approx 75% complete for 21-81_merged_L00_R2.fq.gz
+Approx 80% complete for 0-72_merged_L00_R1.fq.gz
+Approx 80% complete for 0-62_merged_L00_R2.fq.gz
+Approx 80% complete for 21-43_merged_L00_R1.fq.gz
+Approx 55% complete for 35-22_merged_L00_R2.fq.gz
+Approx 5% complete for 35-51_merged_L00_R1.fq.gz
+Approx 75% complete for 21-23_merged_L00_R1.fq.gz
+Analysis complete for 21-42_merged_L00_R2.fq.gz
+Approx 20% complete for 35-42_merged_L00_R1.fq.gz
+Approx 75% complete for 21-63_merged_L00_R2.fq.gz
+Approx 80% complete for 0-83_merged_L00_R2.fq.gz
+Approx 60% complete for 21-71_merged_L00_R1.fq.gz
+Approx 40% complete for 35-23_merged_L00_R1.fq.gz
+Approx 35% complete for 35-32_merged_L00_R2.fq.gz
+Approx 20% complete for 35-42_merged_L00_R2.fq.gz
+Approx 60% complete for 21-72_merged_L00_R2.fq.gz
+Analysis complete for 21-21_merged_L00_R1.fq.gz
+Approx 40% complete for 35-12_merged_L00_R1.fq.gz
+Approx 80% complete for 21-72_merged_L00_R1.fq.gz
+Approx 15% complete for 35-31_merged_L00_R1.fq.gz
+Approx 35% complete for 35-31_merged_L00_R2.fq.gz
+Approx 50% complete for 21-33_merged_L00_R2.fq.gz
+Approx 65% complete for 21-82_merged_L00_R2.fq.gz
+Approx 35% complete for 21-82_merged_L00_R1.fq.gz
+Approx 40% complete for 35-21_merged_L00_R1.fq.gz
+Approx 75% complete for 21-62_merged_L00_R1.fq.gz
+Approx 20% complete for 35-41_merged_L00_R2.fq.gz
+Approx 45% complete for 21-53_merged_L00_R1.fq.gz
+Approx 10% complete for 35-43_merged_L00_R2.fq.gz
+Approx 40% complete for 35-12_merged_L00_R2.fq.gz
+Approx 40% complete for 35-23_merged_L00_R2.fq.gz
+Approx 5% complete for 35-51_merged_L00_R2.fq.gz
+Analysis complete for 21-42_merged_L00_R1.fq.gz
+Approx 30% complete for 35-33_merged_L00_R1.fq.gz
+Approx 55% complete for 21-81_merged_L00_R1.fq.gz
+Approx 25% complete for 35-33_merged_L00_R2.fq.gz
+Approx 25% complete for 35-21_merged_L00_R2.fq.gz
+Approx 75% complete for 0-82_merged_L00_R1.fq.gz
+Approx 25% complete for 35-42_merged_L00_R1.fq.gz
+Approx 10% complete for 35-51_merged_L00_R1.fq.gz
+Approx 25% complete for 35-42_merged_L00_R2.fq.gz
+Approx 35% complete for 21-83_merged_L00_R1.fq.gz
+Approx 40% complete for 35-32_merged_L00_R1.fq.gz
+Approx 60% complete for 35-22_merged_L00_R2.fq.gz
+Approx 80% complete for 21-62_merged_L00_R2.fq.gz
+Approx 60% complete for 21-83_merged_L00_R2.fq.gz
+Approx 85% complete for 21-53_merged_L00_R2.fq.gz
+Approx 75% complete for 21-33_merged_L00_R1.fq.gz
+Approx 70% complete for 21-61_merged_L00_R1.fq.gz
+Approx 45% complete for 35-23_merged_L00_R1.fq.gz
+Approx 55% complete for 21-63_merged_L00_R1.fq.gz
+Approx 50% complete for 21-73_merged_L00_R1.fq.gz
+Approx 35% complete for 21-73_merged_L00_R2.fq.gz
+Approx 45% complete for 35-11_merged_L00_R1.fq.gz
+Approx 30% complete for 35-41_merged_L00_R1.fq.gz
+Analysis complete for 0-52_merged_L00_R2.fq.gz
+Approx 85% complete for 21-13_merged_L00_R1.fq.gz
+Approx 40% complete for 35-32_merged_L00_R2.fq.gz
+Approx 80% complete for 21-81_merged_L00_R2.fq.gz
+Approx 85% complete for 21-32_merged_L00_R1.fq.gz
+Approx 40% complete for 35-31_merged_L00_R2.fq.gz
+Approx 60% complete for 21-71_merged_L00_R2.fq.gz
+Approx 45% complete for 21-61_merged_L00_R2.fq.gz
+Approx 85% complete for 0-72_merged_L00_R1.fq.gz
+Approx 80% complete for 21-62_merged_L00_R1.fq.gz
+Approx 80% complete for 21-63_merged_L00_R2.fq.gz
+Approx 30% complete for 35-42_merged_L00_R2.fq.gz
+Approx 70% complete for 0-63_merged_L00_R1.fq.gz
+Approx 85% complete for 21-72_merged_L00_R1.fq.gz
+Approx 10% complete for 35-51_merged_L00_R2.fq.gz
+Approx 30% complete for 35-42_merged_L00_R1.fq.gz
+Approx 70% complete for 21-82_merged_L00_R2.fq.gz
+Approx 15% complete for 35-51_merged_L00_R1.fq.gz
+Approx 85% complete for 21-43_merged_L00_R1.fq.gz
+Approx 35% complete for 35-22_merged_L00_R1.fq.gz
+Approx 45% complete for 35-21_merged_L00_R1.fq.gz
+Approx 65% complete for 35-22_merged_L00_R2.fq.gz
+Approx 25% complete for 35-41_merged_L00_R2.fq.gz
+Approx 80% complete for 21-23_merged_L00_R1.fq.gz
+Approx 15% complete for 35-43_merged_L00_R2.fq.gz
+Approx 45% complete for 35-23_merged_L00_R2.fq.gz
+Approx 85% complete for 0-62_merged_L00_R2.fq.gz
+Approx 35% complete for 35-11_merged_L00_R2.fq.gz
+Analysis complete for 0-72_merged_L00_R2.fq.gz
+Approx 65% complete for 21-13_merged_L00_R2.fq.gz
+Approx 75% complete for 0-83_merged_L00_R1.fq.gz
+Started analysis of 35-52_merged_L00_R1.fq.gz
+Analysis complete for 0-62_merged_L00_R1.fq.gz
+Approx 85% complete for 21-62_merged_L00_R2.fq.gz
+Approx 45% complete for 35-32_merged_L00_R1.fq.gz
+Approx 10% complete for 35-43_merged_L00_R1.fq.gz
+Approx 90% complete for 21-53_merged_L00_R2.fq.gz
+Approx 35% complete for 35-41_merged_L00_R1.fq.gz
+Started analysis of 35-52_merged_L00_R2.fq.gz
+Approx 60% complete for 21-81_merged_L00_R1.fq.gz
+Approx 35% complete for 35-42_merged_L00_R2.fq.gz
+Approx 45% complete for 35-31_merged_L00_R2.fq.gz
+Approx 45% complete for 35-12_merged_L00_R1.fq.gz
+Approx 50% complete for 21-43_merged_L00_R2.fq.gz
+Approx 65% complete for 21-83_merged_L00_R2.fq.gz
+Approx 45% complete for 35-32_merged_L00_R2.fq.gz
+Approx 85% complete for 21-62_merged_L00_R1.fq.gz
+Approx 85% complete for 0-83_merged_L00_R2.fq.gz
+Approx 35% complete for 35-42_merged_L00_R1.fq.gz
+Approx 50% complete for 35-23_merged_L00_R1.fq.gz
+Approx 90% complete for 21-13_merged_L00_R1.fq.gz
+Approx 65% complete for 21-72_merged_L00_R2.fq.gz
+Approx 70% complete for 35-22_merged_L00_R2.fq.gz
+Approx 85% complete for 21-81_merged_L00_R2.fq.gz
+Approx 20% complete for 35-51_merged_L00_R1.fq.gz
+Approx 15% complete for 35-51_merged_L00_R2.fq.gz
+Approx 30% complete for 35-33_merged_L00_R2.fq.gz
+Approx 80% complete for 21-33_merged_L00_R1.fq.gz
+Approx 45% complete for 35-12_merged_L00_R2.fq.gz
+Started analysis of 35-53_merged_L00_R1.fq.gz
+Approx 90% complete for 0-72_merged_L00_R1.fq.gz
+Approx 75% complete for 21-61_merged_L00_R1.fq.gz
+Approx 75% complete for 21-82_merged_L00_R2.fq.gz
+Approx 65% complete for 21-71_merged_L00_R2.fq.gz
+Started analysis of 35-53_merged_L00_R2.fq.gz
+Approx 30% complete for 35-41_merged_L00_R2.fq.gz
+Approx 90% complete for 21-72_merged_L00_R1.fq.gz
+Approx 35% complete for 35-33_merged_L00_R1.fq.gz
+Approx 40% complete for 35-42_merged_L00_R2.fq.gz
+Approx 5% complete for 35-52_merged_L00_R1.fq.gz
+Approx 55% complete for 21-33_merged_L00_R2.fq.gz
+Approx 85% complete for 21-63_merged_L00_R2.fq.gz
+Approx 50% complete for 35-23_merged_L00_R2.fq.gz
+Approx 20% complete for 35-43_merged_L00_R2.fq.gz
+Approx 50% complete for 35-32_merged_L00_R1.fq.gz
+Approx 90% complete for 21-62_merged_L00_R2.fq.gz
+Approx 50% complete for 21-53_merged_L00_R1.fq.gz
+Approx 50% complete for 35-21_merged_L00_R1.fq.gz
+Approx 40% complete for 35-42_merged_L00_R1.fq.gz
+Approx 90% complete for 21-32_merged_L00_R1.fq.gz
+Approx 5% complete for 35-52_merged_L00_R2.fq.gz
+Approx 75% complete for 35-22_merged_L00_R2.fq.gz
+Approx 65% complete for 21-71_merged_L00_R1.fq.gz
+Approx 40% complete for 21-83_merged_L00_R1.fq.gz
+Approx 50% complete for 35-31_merged_L00_R2.fq.gz
+Approx 90% complete for 21-62_merged_L00_R1.fq.gz
+Approx 90% complete for 21-43_merged_L00_R1.fq.gz
+Approx 95% complete for 21-53_merged_L00_R2.fq.gz
+Approx 40% complete for 35-41_merged_L00_R1.fq.gz
+Approx 90% complete for 0-62_merged_L00_R2.fq.gz
+Approx 80% complete for 0-82_merged_L00_R1.fq.gz
+Approx 40% complete for 21-82_merged_L00_R1.fq.gz
+Approx 85% complete for 21-23_merged_L00_R1.fq.gz
+Approx 50% complete for 35-32_merged_L00_R2.fq.gz
+Approx 5% complete for 35-53_merged_L00_R2.fq.gz
+Approx 5% complete for 35-53_merged_L00_R1.fq.gz
+Approx 20% complete for 35-31_merged_L00_R1.fq.gz
+Approx 40% complete for 35-22_merged_L00_R1.fq.gz
+Approx 95% complete for 21-13_merged_L00_R1.fq.gz
+Approx 60% complete for 21-63_merged_L00_R1.fq.gz
+Approx 20% complete for 35-51_merged_L00_R2.fq.gz
+Approx 65% complete for 21-81_merged_L00_R1.fq.gz
+Approx 25% complete for 35-51_merged_L00_R1.fq.gz
+Approx 70% complete for 21-83_merged_L00_R2.fq.gz
+Approx 55% complete for 35-23_merged_L00_R1.fq.gz
+Approx 50% complete for 35-11_merged_L00_R1.fq.gz
+Approx 30% complete for 35-21_merged_L00_R2.fq.gz
+Approx 45% complete for 35-42_merged_L00_R2.fq.gz
+Approx 10% complete for 35-52_merged_L00_R1.fq.gz
+Approx 90% complete for 21-81_merged_L00_R2.fq.gz
+Approx 45% complete for 35-42_merged_L00_R1.fq.gz
+Approx 35% complete for 35-41_merged_L00_R2.fq.gz
+Approx 90% complete for 21-63_merged_L00_R2.fq.gz
+Approx 80% complete for 21-82_merged_L00_R2.fq.gz
+Approx 55% complete for 35-32_merged_L00_R1.fq.gz
+Started analysis of 35-61_merged_L00_R1.fq.gz
+Approx 50% complete for 35-12_merged_L00_R1.fq.gz
+Approx 10% complete for 35-52_merged_L00_R2.fq.gz
+Approx 25% complete for 35-43_merged_L00_R2.fq.gz
+Approx 10% complete for 35-53_merged_L00_R2.fq.gz
+Approx 95% complete for 21-62_merged_L00_R1.fq.gz
+Approx 95% complete for 21-62_merged_L00_R2.fq.gz
+Started analysis of 35-61_merged_L00_R2.fq.gz
+Approx 85% complete for 21-33_merged_L00_R1.fq.gz
+Approx 95% complete for 21-72_merged_L00_R1.fq.gz
+Approx 10% complete for 35-53_merged_L00_R1.fq.gz
+Approx 55% complete for 35-31_merged_L00_R2.fq.gz
+Approx 55% complete for 35-23_merged_L00_R2.fq.gz
+Approx 70% complete for 21-71_merged_L00_R2.fq.gz
+Approx 50% complete for 21-61_merged_L00_R2.fq.gz
+Analysis complete for 21-53_merged_L00_R2.fq.gz
+Approx 80% complete for 35-22_merged_L00_R2.fq.gz
+Approx 70% complete for 21-72_merged_L00_R2.fq.gz
+Approx 40% complete for 35-11_merged_L00_R2.fq.gz
+Approx 95% complete for 0-72_merged_L00_R1.fq.gz
+Approx 40% complete for 21-73_merged_L00_R2.fq.gz
+Approx 55% complete for 35-32_merged_L00_R2.fq.gz
+Approx 90% complete for 0-83_merged_L00_R2.fq.gz
+Approx 45% complete for 35-41_merged_L00_R1.fq.gz
+Approx 80% complete for 0-83_merged_L00_R1.fq.gz
+Approx 50% complete for 35-12_merged_L00_R2.fq.gz
+Approx 25% complete for 35-51_merged_L00_R2.fq.gz
+Approx 50% complete for 35-42_merged_L00_R1.fq.gz
+Approx 75% complete for 0-63_merged_L00_R1.fq.gz
+Approx 55% complete for 35-21_merged_L00_R1.fq.gz
+Approx 70% complete for 21-13_merged_L00_R2.fq.gz
+Approx 15% complete for 35-53_merged_L00_R2.fq.gz
+Approx 50% complete for 35-42_merged_L00_R2.fq.gz
+Approx 35% complete for 35-33_merged_L00_R2.fq.gz
+Approx 30% complete for 35-51_merged_L00_R1.fq.gz
+Analysis complete for 21-13_merged_L00_R1.fq.gz
+Approx 40% complete for 35-41_merged_L00_R2.fq.gz
+Approx 15% complete for 35-52_merged_L00_R1.fq.gz
+Approx 15% complete for 35-53_merged_L00_R1.fq.gz
+Approx 40% complete for 35-33_merged_L00_R1.fq.gz
+Approx 60% complete for 35-32_merged_L00_R1.fq.gz
+Approx 95% complete for 21-43_merged_L00_R1.fq.gz
+Approx 75% complete for 21-83_merged_L00_R2.fq.gz
+Approx 15% complete for 35-52_merged_L00_R2.fq.gz
+Approx 55% complete for 21-73_merged_L00_R1.fq.gz
+Approx 90% complete for 21-23_merged_L00_R1.fq.gz
+Approx 60% complete for 35-23_merged_L00_R1.fq.gz
+Approx 70% complete for 21-81_merged_L00_R1.fq.gz
+Approx 95% complete for 21-81_merged_L00_R2.fq.gz
+Analysis complete for 21-62_merged_L00_R2.fq.gz
+Approx 85% complete for 21-82_merged_L00_R2.fq.gz
+Approx 95% complete for 0-62_merged_L00_R2.fq.gz
+Approx 15% complete for 35-43_merged_L00_R1.fq.gz
+Analysis complete for 21-62_merged_L00_R1.fq.gz
+Approx 60% complete for 35-31_merged_L00_R2.fq.gz
+Approx 30% complete for 35-43_merged_L00_R2.fq.gz
+Approx 20% complete for 35-53_merged_L00_R2.fq.gz
+Approx 60% complete for 21-33_merged_L00_R2.fq.gz
+Approx 95% complete for 21-63_merged_L00_R2.fq.gz
+Approx 95% complete for 21-32_merged_L00_R1.fq.gz
+Approx 45% complete for 35-22_merged_L00_R1.fq.gz
+Approx 85% complete for 35-22_merged_L00_R2.fq.gz
+Approx 5% complete for 35-61_merged_L00_R2.fq.gz
+Approx 55% complete for 21-53_merged_L00_R1.fq.gz
+Analysis complete for 21-72_merged_L00_R1.fq.gz
+Approx 55% complete for 21-43_merged_L00_R2.fq.gz
+Approx 60% complete for 35-23_merged_L00_R2.fq.gz
+Approx 20% complete for 35-53_merged_L00_R1.fq.gz
+Approx 5% complete for 35-61_merged_L00_R1.fq.gz
+Approx 90% complete for 21-33_merged_L00_R1.fq.gz
+Approx 60% complete for 35-32_merged_L00_R2.fq.gz
+Approx 30% complete for 35-51_merged_L00_R2.fq.gz
+Approx 75% complete for 21-71_merged_L00_R2.fq.gz
+Approx 55% complete for 35-42_merged_L00_R1.fq.gz
+Approx 55% complete for 35-42_merged_L00_R2.fq.gz
+Approx 45% complete for 35-41_merged_L00_R2.fq.gz
+Approx 55% complete for 35-12_merged_L00_R1.fq.gz
+Approx 20% complete for 35-52_merged_L00_R1.fq.gz
+Approx 65% complete for 35-32_merged_L00_R1.fq.gz
+Approx 45% complete for 21-82_merged_L00_R1.fq.gz
+Approx 45% complete for 21-83_merged_L00_R1.fq.gz
+Started analysis of 35-62_merged_L00_R1.fq.gz
+Approx 70% complete for 21-71_merged_L00_R1.fq.gz
+Approx 50% complete for 35-41_merged_L00_R1.fq.gz
+Approx 20% complete for 35-52_merged_L00_R2.fq.gz
+Approx 25% complete for 35-53_merged_L00_R2.fq.gz
+Approx 65% complete for 21-63_merged_L00_R1.fq.gz
+Approx 85% complete for 0-82_merged_L00_R1.fq.gz
+Started analysis of 35-62_merged_L00_R2.fq.gz
+Approx 80% complete for 21-61_merged_L00_R1.fq.gz
+Analysis complete for 0-72_merged_L00_R1.fq.gz
+Approx 65% complete for 35-23_merged_L00_R1.fq.gz
+Analysis complete for 21-43_merged_L00_R1.fq.gz
+Approx 25% complete for 35-53_merged_L00_R1.fq.gz
+Approx 65% complete for 35-31_merged_L00_R2.fq.gz
+Approx 60% complete for 35-21_merged_L00_R1.fq.gz
+Analysis complete for 21-81_merged_L00_R2.fq.gz
+Approx 90% complete for 21-82_merged_L00_R2.fq.gz
+Approx 90% complete for 35-22_merged_L00_R2.fq.gz
+Approx 80% complete for 21-83_merged_L00_R2.fq.gz
+Approx 35% complete for 35-43_merged_L00_R2.fq.gz
+Approx 55% complete for 35-11_merged_L00_R1.fq.gz
+Approx 60% complete for 35-42_merged_L00_R2.fq.gz
+Approx 75% complete for 21-81_merged_L00_R1.fq.gz
+Approx 75% complete for 21-72_merged_L00_R2.fq.gz
+Approx 95% complete for 21-23_merged_L00_R1.fq.gz
+Approx 50% complete for 35-41_merged_L00_R2.fq.gz
+Approx 25% complete for 35-31_merged_L00_R1.fq.gz
+Approx 65% complete for 35-32_merged_L00_R2.fq.gz
+Approx 30% complete for 35-53_merged_L00_R2.fq.gz
+Approx 60% complete for 35-42_merged_L00_R1.fq.gz
+Approx 35% complete for 35-51_merged_L00_R1.fq.gz
+Approx 35% complete for 35-51_merged_L00_R2.fq.gz
+Approx 55% complete for 35-12_merged_L00_R2.fq.gz
+Analysis complete for 21-63_merged_L00_R2.fq.gz
+Approx 65% complete for 35-23_merged_L00_R2.fq.gz
+Approx 10% complete for 35-61_merged_L00_R2.fq.gz
+Approx 95% complete for 0-83_merged_L00_R2.fq.gz
+Approx 25% complete for 35-52_merged_L00_R1.fq.gz
+Approx 25% complete for 35-52_merged_L00_R2.fq.gz
+Approx 35% complete for 35-21_merged_L00_R2.fq.gz
+Approx 40% complete for 35-33_merged_L00_R2.fq.gz
+Approx 80% complete for 21-71_merged_L00_R2.fq.gz
+Approx 85% complete for 0-83_merged_L00_R1.fq.gz
+Approx 70% complete for 35-32_merged_L00_R1.fq.gz
+Analysis complete for 21-32_merged_L00_R1.fq.gz
+Approx 55% complete for 21-61_merged_L00_R2.fq.gz
+Analysis complete for 0-62_merged_L00_R2.fq.gz
+Approx 95% complete for 21-33_merged_L00_R1.fq.gz
+Approx 95% complete for 35-22_merged_L00_R2.fq.gz
+Started analysis of 35-63_merged_L00_R1.fq.gz
+Approx 10% complete for 35-61_merged_L00_R1.fq.gz
+Approx 45% complete for 35-11_merged_L00_R2.fq.gz
+Approx 70% complete for 35-23_merged_L00_R1.fq.gz
+Approx 65% complete for 35-42_merged_L00_R2.fq.gz
+Approx 45% complete for 35-33_merged_L00_R1.fq.gz
+Approx 50% complete for 35-22_merged_L00_R1.fq.gz
+Approx 55% complete for 35-41_merged_L00_R1.fq.gz
+Approx 30% complete for 35-53_merged_L00_R1.fq.gz
+Approx 95% complete for 21-82_merged_L00_R2.fq.gz
+Approx 5% complete for 35-62_merged_L00_R1.fq.gz
+Approx 60% complete for 35-12_merged_L00_R1.fq.gz
+Started analysis of 35-63_merged_L00_R2.fq.gz
+Approx 5% complete for 35-62_merged_L00_R2.fq.gz
+Approx 55% complete for 35-41_merged_L00_R2.fq.gz
+Approx 35% complete for 35-53_merged_L00_R2.fq.gz
+Approx 70% complete for 35-32_merged_L00_R2.fq.gz
+Approx 85% complete for 21-83_merged_L00_R2.fq.gz
+Approx 75% complete for 21-13_merged_L00_R2.fq.gz
+Approx 70% complete for 35-31_merged_L00_R2.fq.gz
+Approx 65% complete for 21-33_merged_L00_R2.fq.gz
+Approx 20% complete for 35-43_merged_L00_R1.fq.gz
+Approx 60% complete for 21-53_merged_L00_R1.fq.gz
+Approx 30% complete for 35-52_merged_L00_R1.fq.gz
+Approx 65% complete for 35-42_merged_L00_R1.fq.gz
+Approx 40% complete for 35-51_merged_L00_R2.fq.gz
+Approx 70% complete for 35-23_merged_L00_R2.fq.gz
+Approx 40% complete for 35-43_merged_L00_R2.fq.gz
+Approx 80% complete for 0-63_merged_L00_R1.fq.gz
+Approx 65% complete for 35-21_merged_L00_R1.fq.gz
+Approx 45% complete for 21-73_merged_L00_R2.fq.gz
+Approx 30% complete for 35-52_merged_L00_R2.fq.gz
+Started analysis of 35-71_merged_L00_R1.fq.gz
+Approx 70% complete for 35-42_merged_L00_R2.fq.gz
+Approx 50% complete for 21-82_merged_L00_R1.fq.gz
+Analysis complete for 21-82_merged_L00_R2.fq.gz
+Approx 80% complete for 21-81_merged_L00_R1.fq.gz
+Approx 75% complete for 35-23_merged_L00_R1.fq.gz
+Analysis complete for 21-23_merged_L00_R1.fq.gz
+Approx 85% complete for 21-71_merged_L00_R2.fq.gz
+Analysis complete for 35-22_merged_L00_R2.fq.gz
+Approx 90% complete for 0-82_merged_L00_R1.fq.gz
+Approx 35% complete for 35-53_merged_L00_R1.fq.gz
+Approx 5% complete for 35-63_merged_L00_R2.fq.gz
+Approx 75% complete for 35-32_merged_L00_R1.fq.gz
+Approx 70% complete for 21-63_merged_L00_R1.fq.gz
+Approx 15% complete for 35-61_merged_L00_R2.fq.gz
+Started analysis of 35-71_merged_L00_R2.fq.gz
+Approx 40% complete for 35-53_merged_L00_R2.fq.gz
+Approx 50% complete for 21-83_merged_L00_R1.fq.gz
+Approx 75% complete for 35-32_merged_L00_R2.fq.gz
+Approx 60% complete for 21-43_merged_L00_R2.fq.gz
+Approx 60% complete for 21-73_merged_L00_R1.fq.gz
+Approx 60% complete for 35-41_merged_L00_R2.fq.gz
+Approx 10% complete for 35-62_merged_L00_R1.fq.gz
+Approx 45% complete for 35-33_merged_L00_R2.fq.gz
+Approx 5% complete for 35-63_merged_L00_R1.fq.gz
+Started analysis of 35-72_merged_L00_R1.fq.gz
+Approx 35% complete for 35-52_merged_L00_R1.fq.gz
+Approx 60% complete for 35-12_merged_L00_R2.fq.gz
+Analysis complete for 21-33_merged_L00_R1.fq.gz
+Approx 75% complete for 35-31_merged_L00_R2.fq.gz
+Approx 75% complete for 35-42_merged_L00_R2.fq.gz
+Approx 60% complete for 35-41_merged_L00_R1.fq.gz
+Analysis complete for 0-83_merged_L00_R2.fq.gz
+Approx 65% complete for 35-12_merged_L00_R1.fq.gz
+Approx 75% complete for 21-71_merged_L00_R1.fq.gz
+Approx 60% complete for 35-11_merged_L00_R1.fq.gz
+Approx 15% complete for 35-61_merged_L00_R1.fq.gz
+Approx 75% complete for 35-23_merged_L00_R2.fq.gz
+Approx 70% complete for 35-42_merged_L00_R1.fq.gz
+Approx 90% complete for 21-83_merged_L00_R2.fq.gz
+Approx 40% complete for 35-51_merged_L00_R1.fq.gz
+Approx 10% complete for 35-62_merged_L00_R2.fq.gz
+Approx 45% complete for 35-51_merged_L00_R2.fq.gz
+Started analysis of 35-72_merged_L00_R2.fq.gz
+Approx 35% complete for 35-52_merged_L00_R2.fq.gz
+Approx 80% complete for 21-72_merged_L00_R2.fq.gz
+Approx 10% complete for 35-63_merged_L00_R2.fq.gz
+Approx 45% complete for 35-43_merged_L00_R2.fq.gz
+Approx 55% complete for 35-22_merged_L00_R1.fq.gz
+Approx 40% complete for 35-53_merged_L00_R1.fq.gz
+Approx 45% complete for 35-53_merged_L00_R2.fq.gz
+Approx 90% complete for 21-71_merged_L00_R2.fq.gz
+Approx 65% complete for 35-41_merged_L00_R2.fq.gz
+Started analysis of 35-73_merged_L00_R1.fq.gz
+Approx 40% complete for 35-52_merged_L00_R1.fq.gz
+Approx 60% complete for 21-61_merged_L00_R2.fq.gz
+Approx 70% complete for 35-21_merged_L00_R1.fq.gz
+Approx 80% complete for 35-42_merged_L00_R2.fq.gz
+Approx 15% complete for 35-62_merged_L00_R1.fq.gz
+Approx 65% complete for 21-53_merged_L00_R1.fq.gz
+Approx 50% complete for 35-33_merged_L00_R1.fq.gz
+Approx 80% complete for 35-23_merged_L00_R1.fq.gz
+Approx 5% complete for 35-72_merged_L00_R1.fq.gz
+Approx 90% complete for 0-83_merged_L00_R1.fq.gz
+Approx 30% complete for 35-31_merged_L00_R1.fq.gz
+Approx 80% complete for 35-32_merged_L00_R1.fq.gz
+Approx 85% complete for 21-61_merged_L00_R1.fq.gz
+Started analysis of 35-73_merged_L00_R2.fq.gz
+Approx 70% complete for 21-33_merged_L00_R2.fq.gz
+Approx 80% complete for 35-32_merged_L00_R2.fq.gz
+Approx 40% complete for 35-21_merged_L00_R2.fq.gz
+Approx 80% complete for 35-23_merged_L00_R2.fq.gz
+Approx 75% complete for 35-42_merged_L00_R1.fq.gz
+Approx 10% complete for 35-63_merged_L00_R1.fq.gz
+Approx 85% complete for 21-81_merged_L00_R1.fq.gz
+Approx 80% complete for 35-31_merged_L00_R2.fq.gz
+Approx 20% complete for 35-61_merged_L00_R2.fq.gz
+Approx 50% complete for 35-11_merged_L00_R2.fq.gz
+Approx 5% complete for 35-71_merged_L00_R2.fq.gz
+Approx 50% complete for 35-51_merged_L00_R2.fq.gz
+Approx 65% complete for 35-41_merged_L00_R1.fq.gz
+Approx 40% complete for 35-52_merged_L00_R2.fq.gz
+Approx 20% complete for 35-61_merged_L00_R1.fq.gz
+Approx 25% complete for 35-43_merged_L00_R1.fq.gz
+Approx 55% complete for 21-82_merged_L00_R1.fq.gz
+Approx 15% complete for 35-63_merged_L00_R2.fq.gz
+Approx 5% complete for 35-72_merged_L00_R2.fq.gz
+Approx 15% complete for 35-62_merged_L00_R2.fq.gz
+Approx 95% complete for 21-83_merged_L00_R2.fq.gz
+Approx 50% complete for 35-53_merged_L00_R2.fq.gz
+Started analysis of 35-81_merged_L00_R1.fq.gz
+Approx 85% complete for 35-42_merged_L00_R2.fq.gz
+Approx 45% complete for 35-53_merged_L00_R1.fq.gz
+Approx 50% complete for 35-33_merged_L00_R2.fq.gz
+Approx 45% complete for 35-52_merged_L00_R1.fq.gz
+Approx 70% complete for 35-12_merged_L00_R1.fq.gz
+Approx 70% complete for 35-41_merged_L00_R2.fq.gz
+Approx 95% complete for 0-82_merged_L00_R1.fq.gz
+Approx 50% complete for 35-43_merged_L00_R2.fq.gz
+Approx 50% complete for 21-73_merged_L00_R2.fq.gz
+Started analysis of 35-81_merged_L00_R2.fq.gz
+Approx 75% complete for 21-63_merged_L00_R1.fq.gz
+Approx 10% complete for 35-72_merged_L00_R1.fq.gz
+Approx 85% complete for 0-63_merged_L00_R1.fq.gz
+Approx 80% complete for 21-13_merged_L00_R2.fq.gz
+Approx 95% complete for 21-71_merged_L00_R2.fq.gz
+Approx 15% complete for 35-63_merged_L00_R1.fq.gz
+Approx 65% complete for 35-12_merged_L00_R2.fq.gz
+Approx 5% complete for 35-71_merged_L00_R1.fq.gz
+Approx 85% complete for 35-23_merged_L00_R2.fq.gz
+Approx 75% complete for 35-21_merged_L00_R1.fq.gz
+Approx 80% complete for 35-42_merged_L00_R1.fq.gz
+Approx 45% complete for 35-52_merged_L00_R2.fq.gz
+Approx 20% complete for 35-63_merged_L00_R2.fq.gz
+Approx 85% complete for 35-32_merged_L00_R2.fq.gz
+Started analysis of 35-82_merged_L00_R1.fq.gz
+Approx 90% complete for 35-42_merged_L00_R2.fq.gz
+Approx 70% complete for 35-41_merged_L00_R1.fq.gz
+Approx 85% complete for 35-23_merged_L00_R1.fq.gz
+Approx 85% complete for 35-32_merged_L00_R1.fq.gz
+Approx 20% complete for 35-62_merged_L00_R1.fq.gz
+Approx 55% complete for 35-51_merged_L00_R2.fq.gz
+Approx 55% complete for 35-53_merged_L00_R2.fq.gz
+Approx 60% complete for 35-22_merged_L00_R1.fq.gz
+Approx 45% complete for 35-51_merged_L00_R1.fq.gz
+Approx 50% complete for 35-52_merged_L00_R1.fq.gz
+Approx 25% complete for 35-61_merged_L00_R1.fq.gz
+Approx 5% complete for 35-73_merged_L00_R2.fq.gz
+Approx 50% complete for 35-53_merged_L00_R1.fq.gz
+Approx 85% complete for 21-72_merged_L00_R2.fq.gz
+Started analysis of 35-82_merged_L00_R2.fq.gz
+Approx 25% complete for 35-61_merged_L00_R2.fq.gz
+Approx 5% complete for 35-81_merged_L00_R1.fq.gz
+Approx 5% complete for 35-73_merged_L00_R1.fq.gz
+Approx 85% complete for 35-31_merged_L00_R2.fq.gz
+Approx 65% complete for 35-11_merged_L00_R1.fq.gz
+Approx 90% complete for 21-81_merged_L00_R1.fq.gz
+Approx 75% complete for 35-41_merged_L00_R2.fq.gz
+Approx 10% complete for 35-72_merged_L00_R2.fq.gz
+Approx 10% complete for 35-71_merged_L00_R2.fq.gz
+Analysis complete for 21-83_merged_L00_R2.fq.gz
+Approx 20% complete for 35-62_merged_L00_R2.fq.gz
+Started analysis of 35-83_merged_L00_R1.fq.gz
+Approx 70% complete for 21-53_merged_L00_R1.fq.gz
+Approx 5% complete for 35-81_merged_L00_R2.fq.gz
+Approx 55% complete for 21-83_merged_L00_R1.fq.gz
+Approx 15% complete for 35-72_merged_L00_R1.fq.gz
+Approx 20% complete for 35-63_merged_L00_R1.fq.gz
+Approx 95% complete for 35-42_merged_L00_R2.fq.gz
+Approx 65% complete for 21-43_merged_L00_R2.fq.gz
+Approx 25% complete for 35-63_merged_L00_R2.fq.gz
+Approx 55% complete for 35-43_merged_L00_R2.fq.gz
+Approx 75% complete for 35-12_merged_L00_R1.fq.gz
+Approx 50% complete for 35-52_merged_L00_R2.fq.gz
+Approx 85% complete for 21-13_merged_L00_R2.fq.gz
+Analysis complete for 21-71_merged_L00_R2.fq.gz
+Approx 60% complete for 35-53_merged_L00_R2.fq.gz
+Started analysis of 35-83_merged_L00_R2.fq.gz
+Approx 55% complete for 35-53_merged_L00_R1.fq.gz
+Approx 90% complete for 35-23_merged_L00_R2.fq.gz
+Approx 95% complete for 0-83_merged_L00_R1.fq.gz
+Approx 85% complete for 35-42_merged_L00_R1.fq.gz
+Approx 55% complete for 35-33_merged_L00_R2.fq.gz
+Approx 60% complete for 35-51_merged_L00_R2.fq.gz
+Approx 80% complete for 35-21_merged_L00_R1.fq.gz
+Approx 90% complete for 35-32_merged_L00_R2.fq.gz
+Approx 65% complete for 21-61_merged_L00_R2.fq.gz
+Approx 80% complete for 21-71_merged_L00_R1.fq.gz
+Approx 55% complete for 35-52_merged_L00_R1.fq.gz
+Approx 65% complete for 21-73_merged_L00_R1.fq.gz
+Approx 55% complete for 35-33_merged_L00_R1.fq.gz
+Approx 5% complete for 35-82_merged_L00_R1.fq.gz
+Approx 90% complete for 35-32_merged_L00_R1.fq.gz
+Approx 75% complete for 35-41_merged_L00_R1.fq.gz
+Approx 5% complete for 35-82_merged_L00_R2.fq.gz
+Approx 90% complete for 35-23_merged_L00_R1.fq.gz
+Approx 75% complete for 21-33_merged_L00_R2.fq.gz
+Approx 10% complete for 35-81_merged_L00_R1.fq.gz
+Approx 25% complete for 35-62_merged_L00_R1.fq.gz
+Approx 30% complete for 35-61_merged_L00_R1.fq.gz
+Analysis complete for 35-42_merged_L00_R2.fq.gz
+Approx 45% complete for 35-21_merged_L00_R2.fq.gz
+Approx 25% complete for 35-63_merged_L00_R1.fq.gz
+Approx 25% complete for 35-62_merged_L00_R2.fq.gz
+Approx 90% complete for 21-61_merged_L00_R1.fq.gz
+Approx 70% complete for 35-12_merged_L00_R2.fq.gz
+Approx 30% complete for 35-63_merged_L00_R2.fq.gz
+Approx 15% complete for 35-72_merged_L00_R2.fq.gz
+Approx 60% complete for 35-53_merged_L00_R1.fq.gz
+Approx 90% complete for 35-31_merged_L00_R2.fq.gz
+Approx 80% complete for 35-41_merged_L00_R2.fq.gz
+Approx 20% complete for 35-72_merged_L00_R1.fq.gz
+Approx 95% complete for 21-81_merged_L00_R1.fq.gz
+Approx 60% complete for 21-82_merged_L00_R1.fq.gz
+Approx 65% complete for 35-53_merged_L00_R2.fq.gz
+Approx 30% complete for 35-61_merged_L00_R2.fq.gz
+Approx 35% complete for 35-31_merged_L00_R1.fq.gz
+Approx 55% complete for 35-11_merged_L00_R2.fq.gz
+Approx 10% complete for 35-73_merged_L00_R1.fq.gz
+Approx 55% complete for 35-52_merged_L00_R2.fq.gz
+Approx 30% complete for 35-43_merged_L00_R1.fq.gz
+Approx 10% complete for 35-81_merged_L00_R2.fq.gz
+Approx 10% complete for 35-73_merged_L00_R2.fq.gz
+Approx 15% complete for 35-71_merged_L00_R2.fq.gz
+Approx 65% complete for 35-22_merged_L00_R1.fq.gz
+Approx 80% complete for 21-63_merged_L00_R1.fq.gz
+Approx 60% complete for 35-43_merged_L00_R2.fq.gz
+Approx 90% complete for 21-72_merged_L00_R2.fq.gz
+Approx 90% complete for 35-42_merged_L00_R1.fq.gz
+Approx 55% complete for 21-73_merged_L00_R2.fq.gz
+Approx 95% complete for 35-23_merged_L00_R2.fq.gz
+Approx 65% complete for 35-51_merged_L00_R2.fq.gz
+Analysis complete for 0-82_merged_L00_R1.fq.gz
+Approx 60% complete for 35-52_merged_L00_R1.fq.gz
+Approx 90% complete for 21-13_merged_L00_R2.fq.gz
+Approx 95% complete for 35-32_merged_L00_R2.fq.gz
+Approx 65% complete for 35-53_merged_L00_R1.fq.gz
+Approx 85% complete for 35-21_merged_L00_R1.fq.gz
+Approx 5% complete for 35-83_merged_L00_R2.fq.gz
+Approx 50% complete for 35-51_merged_L00_R1.fq.gz
+Approx 30% complete for 35-63_merged_L00_R1.fq.gz
+Approx 10% complete for 35-82_merged_L00_R2.fq.gz
+Approx 80% complete for 35-12_merged_L00_R1.fq.gz
+Approx 10% complete for 35-71_merged_L00_R1.fq.gz
+Approx 30% complete for 35-62_merged_L00_R2.fq.gz
+Approx 10% complete for 35-82_merged_L00_R1.fq.gz
+Approx 95% complete for 35-32_merged_L00_R1.fq.gz
+Approx 75% complete for 21-53_merged_L00_R1.fq.gz
+Approx 35% complete for 35-61_merged_L00_R1.fq.gz
+Approx 90% complete for 0-63_merged_L00_R1.fq.gz
+Approx 70% complete for 35-53_merged_L00_R2.fq.gz
+Approx 95% complete for 35-23_merged_L00_R1.fq.gz
+Approx 80% complete for 35-41_merged_L00_R1.fq.gz
+Approx 25% complete for 35-72_merged_L00_R1.fq.gz
+Approx 35% complete for 35-63_merged_L00_R2.fq.gz
+Approx 70% complete for 35-11_merged_L00_R1.fq.gz
+Approx 60% complete for 35-52_merged_L00_R2.fq.gz
+Approx 30% complete for 35-62_merged_L00_R1.fq.gz
+Approx 20% complete for 35-72_merged_L00_R2.fq.gz
+Approx 85% complete for 35-41_merged_L00_R2.fq.gz
+Approx 70% complete for 35-53_merged_L00_R1.fq.gz
+Approx 95% complete for 35-31_merged_L00_R2.fq.gz
+Approx 95% complete for 35-42_merged_L00_R1.fq.gz
+Approx 15% complete for 35-73_merged_L00_R1.fq.gz
+Approx 75% complete for 35-12_merged_L00_R2.fq.gz
+Approx 65% complete for 35-43_merged_L00_R2.fq.gz
+Analysis complete for 21-81_merged_L00_R1.fq.gz
+Approx 70% complete for 35-51_merged_L00_R2.fq.gz
+Approx 70% complete for 21-43_merged_L00_R2.fq.gz
+Approx 15% complete for 35-81_merged_L00_R2.fq.gz
+Approx 20% complete for 35-71_merged_L00_R2.fq.gz
+Approx 35% complete for 35-61_merged_L00_R2.fq.gz
+Analysis complete for 35-23_merged_L00_R2.fq.gz
+Approx 65% complete for 35-52_merged_L00_R1.fq.gz
+Approx 60% complete for 35-33_merged_L00_R1.fq.gz
+Approx 60% complete for 35-33_merged_L00_R2.fq.gz
+Analysis complete for 0-83_merged_L00_R1.fq.gz
+Analysis complete for 35-32_merged_L00_R2.fq.gz
+Approx 75% complete for 35-53_merged_L00_R2.fq.gz
+Approx 15% complete for 35-73_merged_L00_R2.fq.gz
+Approx 35% complete for 35-62_merged_L00_R2.fq.gz
+Approx 35% complete for 35-63_merged_L00_R1.fq.gz
+Approx 10% complete for 35-83_merged_L00_R2.fq.gz
+Approx 95% complete for 21-13_merged_L00_R2.fq.gz
+Analysis complete for 35-32_merged_L00_R1.fq.gz
+Approx 15% complete for 35-82_merged_L00_R2.fq.gz
+Approx 90% complete for 35-21_merged_L00_R1.fq.gz
+Approx 15% complete for 35-81_merged_L00_R1.fq.gz
+Approx 15% complete for 35-82_merged_L00_R1.fq.gz
+Approx 75% complete for 35-53_merged_L00_R1.fq.gz
+Approx 40% complete for 35-63_merged_L00_R2.fq.gz
+Approx 65% complete for 35-52_merged_L00_R2.fq.gz
+Approx 25% complete for 35-72_merged_L00_R2.fq.gz
+Approx 60% complete for 21-83_merged_L00_R1.fq.gz
+Analysis complete for 35-23_merged_L00_R1.fq.gz
+Approx 75% complete for 35-51_merged_L00_R2.fq.gz
+Approx 5% complete for 35-83_merged_L00_R1.fq.gz
+Approx 90% complete for 35-41_merged_L00_R2.fq.gz
+Approx 95% complete for 21-72_merged_L00_R2.fq.gz
+Approx 30% complete for 35-72_merged_L00_R1.fq.gz
+Approx 85% complete for 35-41_merged_L00_R1.fq.gz
+Analysis complete for 35-42_merged_L00_R1.fq.gz
+Approx 70% complete for 35-43_merged_L00_R2.fq.gz
+Approx 80% complete for 35-53_merged_L00_R2.fq.gz
+Approx 20% complete for 35-81_merged_L00_R2.fq.gz
+Approx 40% complete for 35-61_merged_L00_R1.fq.gz
+Approx 50% complete for 35-21_merged_L00_R2.fq.gz
+Approx 85% complete for 35-12_merged_L00_R1.fq.gz
+Approx 35% complete for 35-62_merged_L00_R1.fq.gz
+Approx 70% complete for 21-61_merged_L00_R2.fq.gz
+Approx 25% complete for 35-71_merged_L00_R2.fq.gz
+Approx 70% complete for 35-52_merged_L00_R1.fq.gz
+Analysis complete for 35-31_merged_L00_R2.fq.gz
+Approx 95% complete for 21-61_merged_L00_R1.fq.gz
+Approx 70% complete for 35-22_merged_L00_R1.fq.gz
+Approx 40% complete for 35-62_merged_L00_R2.fq.gz
+Approx 85% complete for 21-71_merged_L00_R1.fq.gz
+Approx 80% complete for 35-53_merged_L00_R1.fq.gz
+Approx 55% complete for 35-51_merged_L00_R1.fq.gz
+Analysis complete for 21-13_merged_L00_R2.fq.gz
+Approx 15% complete for 35-83_merged_L00_R2.fq.gz
+Approx 35% complete for 35-43_merged_L00_R1.fq.gz
+Approx 40% complete for 35-63_merged_L00_R1.fq.gz
+Approx 65% complete for 21-82_merged_L00_R1.fq.gz
+Approx 20% complete for 35-82_merged_L00_R2.fq.gz
+Approx 80% complete for 21-33_merged_L00_R2.fq.gz
+Approx 60% complete for 35-11_merged_L00_R2.fq.gz
+Approx 80% complete for 35-51_merged_L00_R2.fq.gz
+Approx 40% complete for 35-31_merged_L00_R1.fq.gz
+Approx 85% complete for 35-53_merged_L00_R2.fq.gz
+Approx 85% complete for 21-63_merged_L00_R1.fq.gz
+Approx 40% complete for 35-61_merged_L00_R2.fq.gz
+Approx 95% complete for 35-21_merged_L00_R1.fq.gz
+Approx 70% complete for 35-52_merged_L00_R2.fq.gz
+Approx 45% complete for 35-63_merged_L00_R2.fq.gz
+Approx 95% complete for 35-41_merged_L00_R2.fq.gz
+Approx 20% complete for 35-82_merged_L00_R1.fq.gz
+Approx 75% complete for 35-43_merged_L00_R2.fq.gz
+Approx 20% complete for 35-73_merged_L00_R1.fq.gz
+Approx 70% complete for 21-73_merged_L00_R1.fq.gz
+Approx 80% complete for 35-12_merged_L00_R2.fq.gz
+Approx 25% complete for 35-81_merged_L00_R2.fq.gz
+Approx 30% complete for 35-72_merged_L00_R2.fq.gz
+Approx 20% complete for 35-73_merged_L00_R2.fq.gz
+Approx 65% complete for 35-33_merged_L00_R1.fq.gz
+Approx 85% complete for 35-53_merged_L00_R1.fq.gz
+Approx 30% complete for 35-71_merged_L00_R2.fq.gz
+Approx 35% complete for 35-72_merged_L00_R1.fq.gz
+Approx 75% complete for 35-52_merged_L00_R1.fq.gz
+Approx 90% complete for 35-41_merged_L00_R1.fq.gz
+Approx 45% complete for 35-62_merged_L00_R2.fq.gz
+Approx 90% complete for 35-53_merged_L00_R2.fq.gz
+Approx 80% complete for 21-53_merged_L00_R1.fq.gz
+Approx 15% complete for 35-71_merged_L00_R1.fq.gz
+Approx 85% complete for 35-51_merged_L00_R2.fq.gz
+Approx 45% complete for 35-61_merged_L00_R1.fq.gz
+Approx 45% complete for 35-63_merged_L00_R1.fq.gz
+Approx 75% complete for 35-11_merged_L00_R1.fq.gz
+Approx 40% complete for 35-62_merged_L00_R1.fq.gz
+Approx 95% complete for 0-63_merged_L00_R1.fq.gz
+Approx 20% complete for 35-83_merged_L00_R2.fq.gz
+Approx 60% complete for 21-73_merged_L00_R2.fq.gz
+Approx 75% complete for 35-52_merged_L00_R2.fq.gz
+Approx 25% complete for 35-82_merged_L00_R2.fq.gz
+Analysis complete for 35-41_merged_L00_R2.fq.gz
+Approx 65% complete for 35-33_merged_L00_R2.fq.gz
+Analysis complete for 21-72_merged_L00_R2.fq.gz
+Approx 90% complete for 35-53_merged_L00_R1.fq.gz
+Approx 25% complete for 35-82_merged_L00_R1.fq.gz
+Approx 50% complete for 35-63_merged_L00_R2.fq.gz
+Approx 80% complete for 35-43_merged_L00_R2.fq.gz
+Analysis complete for 35-21_merged_L00_R1.fq.gz
+Approx 90% complete for 35-12_merged_L00_R1.fq.gz
+Approx 30% complete for 35-81_merged_L00_R2.fq.gz
+Approx 35% complete for 35-72_merged_L00_R2.fq.gz
+Approx 95% complete for 35-53_merged_L00_R2.fq.gz
+Approx 45% complete for 35-61_merged_L00_R2.fq.gz
+Approx 90% complete for 35-51_merged_L00_R2.fq.gz
+Approx 60% complete for 35-51_merged_L00_R1.fq.gz
+Approx 25% complete for 35-73_merged_L00_R2.fq.gz
+Approx 75% complete for 21-43_merged_L00_R2.fq.gz
+Approx 50% complete for 35-62_merged_L00_R2.fq.gz
+Approx 20% complete for 35-81_merged_L00_R1.fq.gz
+Approx 35% complete for 35-71_merged_L00_R2.fq.gz
+Approx 50% complete for 35-63_merged_L00_R1.fq.gz
+Approx 80% complete for 35-52_merged_L00_R1.fq.gz
+Approx 95% complete for 35-41_merged_L00_R1.fq.gz
+Approx 40% complete for 35-72_merged_L00_R1.fq.gz
+Approx 25% complete for 35-73_merged_L00_R1.fq.gz
+Approx 95% complete for 35-53_merged_L00_R1.fq.gz
+Approx 65% complete for 21-83_merged_L00_R1.fq.gz
+Approx 45% complete for 35-62_merged_L00_R1.fq.gz
+Approx 85% complete for 35-12_merged_L00_R2.fq.gz
+Approx 75% complete for 35-22_merged_L00_R1.fq.gz
+Approx 55% complete for 35-21_merged_L00_R2.fq.gz
+Analysis complete for 35-53_merged_L00_R2.fq.gz
+Approx 50% complete for 35-61_merged_L00_R1.fq.gz
+Approx 30% complete for 35-82_merged_L00_R2.fq.gz
+Approx 25% complete for 35-83_merged_L00_R2.fq.gz
+Approx 80% complete for 35-52_merged_L00_R2.fq.gz
+Approx 55% complete for 35-63_merged_L00_R2.fq.gz
+Approx 75% complete for 21-61_merged_L00_R2.fq.gz
+Approx 40% complete for 35-72_merged_L00_R2.fq.gz
+Approx 90% complete for 21-71_merged_L00_R1.fq.gz
+Approx 85% complete for 35-43_merged_L00_R2.fq.gz
+Approx 65% complete for 35-11_merged_L00_R2.fq.gz
+Approx 70% complete for 35-33_merged_L00_R1.fq.gz
+Approx 35% complete for 35-81_merged_L00_R2.fq.gz
+Approx 70% complete for 21-82_merged_L00_R1.fq.gz
+Approx 40% complete for 35-43_merged_L00_R1.fq.gz
+Approx 95% complete for 35-51_merged_L00_R2.fq.gz
+Approx 10% complete for 35-83_merged_L00_R1.fq.gz
+Analysis complete for 21-61_merged_L00_R1.fq.gz
+Approx 30% complete for 35-82_merged_L00_R1.fq.gz
+Approx 45% complete for 35-31_merged_L00_R1.fq.gz
+Analysis complete for 35-53_merged_L00_R1.fq.gz
+Approx 55% complete for 35-62_merged_L00_R2.fq.gz
+Analysis complete for 35-41_merged_L00_R1.fq.gz
+Approx 70% complete for 35-33_merged_L00_R2.fq.gz
+Approx 95% complete for 35-12_merged_L00_R1.fq.gz
+Approx 85% complete for 35-52_merged_L00_R1.fq.gz
+Approx 45% complete for 35-72_merged_L00_R1.fq.gz
+Approx 85% complete for 21-53_merged_L00_R1.fq.gz
+Approx 55% complete for 35-63_merged_L00_R1.fq.gz
+Approx 50% complete for 35-61_merged_L00_R2.fq.gz
+Approx 30% complete for 35-73_merged_L00_R2.fq.gz
+Approx 60% complete for 35-63_merged_L00_R2.fq.gz
+Approx 85% complete for 21-33_merged_L00_R2.fq.gz
+Approx 90% complete for 21-63_merged_L00_R1.fq.gz
+Approx 50% complete for 35-62_merged_L00_R1.fq.gz
+Approx 40% complete for 35-71_merged_L00_R2.fq.gz
+Analysis complete for 35-51_merged_L00_R2.fq.gz
+Approx 35% complete for 35-82_merged_L00_R2.fq.gz
+Approx 45% complete for 35-72_merged_L00_R2.fq.gz
+Approx 85% complete for 35-52_merged_L00_R2.fq.gz
+Approx 90% complete for 35-43_merged_L00_R2.fq.gz
+Approx 75% complete for 21-73_merged_L00_R1.fq.gz
+Approx 30% complete for 35-83_merged_L00_R2.fq.gz
+Approx 55% complete for 35-61_merged_L00_R1.fq.gz
+Approx 40% complete for 35-81_merged_L00_R2.fq.gz
+Approx 30% complete for 35-73_merged_L00_R1.fq.gz
+Approx 20% complete for 35-71_merged_L00_R1.fq.gz
+Approx 65% complete for 35-51_merged_L00_R1.fq.gz
+Approx 90% complete for 35-12_merged_L00_R2.fq.gz
+Analysis complete for 0-63_merged_L00_R1.fq.gz
+Approx 35% complete for 35-82_merged_L00_R1.fq.gz
+Approx 90% complete for 35-52_merged_L00_R1.fq.gz
+Approx 80% complete for 35-11_merged_L00_R1.fq.gz
+Approx 75% complete for 35-33_merged_L00_R2.fq.gz
+Approx 60% complete for 35-62_merged_L00_R2.fq.gz
+Approx 65% complete for 35-63_merged_L00_R2.fq.gz
+Approx 50% complete for 35-72_merged_L00_R1.fq.gz
+Approx 90% complete for 35-52_merged_L00_R2.fq.gz
+Approx 25% complete for 35-81_merged_L00_R1.fq.gz
+Approx 40% complete for 35-82_merged_L00_R2.fq.gz
+Approx 75% complete for 35-33_merged_L00_R1.fq.gz
+Approx 50% complete for 35-72_merged_L00_R2.fq.gz
+Approx 55% complete for 35-61_merged_L00_R2.fq.gz
+Approx 95% complete for 35-43_merged_L00_R2.fq.gz
+Approx 60% complete for 35-63_merged_L00_R1.fq.gz
+Approx 55% complete for 35-62_merged_L00_R1.fq.gz
+Approx 45% complete for 35-71_merged_L00_R2.fq.gz
+Approx 65% complete for 21-73_merged_L00_R2.fq.gz
+Analysis complete for 35-12_merged_L00_R1.fq.gz
+Approx 45% complete for 35-81_merged_L00_R2.fq.gz
+Approx 35% complete for 35-73_merged_L00_R2.fq.gz
+Approx 35% complete for 35-83_merged_L00_R2.fq.gz
+Approx 70% complete for 35-11_merged_L00_R2.fq.gz
+Approx 80% complete for 35-22_merged_L00_R1.fq.gz
+Approx 60% complete for 35-21_merged_L00_R2.fq.gz
+Approx 95% complete for 35-52_merged_L00_R1.fq.gz
+Approx 75% complete for 21-82_merged_L00_R1.fq.gz
+Approx 95% complete for 21-71_merged_L00_R1.fq.gz
+Approx 40% complete for 35-82_merged_L00_R1.fq.gz
+Approx 80% complete for 21-43_merged_L00_R2.fq.gz
+Approx 70% complete for 35-63_merged_L00_R2.fq.gz
+Approx 80% complete for 21-61_merged_L00_R2.fq.gz
+Approx 70% complete for 21-83_merged_L00_R1.fq.gz
+Approx 80% complete for 35-33_merged_L00_R2.fq.gz
+Approx 35% complete for 35-73_merged_L00_R1.fq.gz
+Approx 90% complete for 21-53_merged_L00_R1.fq.gz
+Approx 95% complete for 35-52_merged_L00_R2.fq.gz
+Approx 60% complete for 35-61_merged_L00_R1.fq.gz
+Approx 50% complete for 35-31_merged_L00_R1.fq.gz
+Approx 65% complete for 35-62_merged_L00_R2.fq.gz
+Approx 45% complete for 35-82_merged_L00_R2.fq.gz
+Approx 70% complete for 35-51_merged_L00_R1.fq.gz
+Approx 15% complete for 35-83_merged_L00_R1.fq.gz
+Approx 55% complete for 35-72_merged_L00_R1.fq.gz
+Approx 45% complete for 35-43_merged_L00_R1.fq.gz
+Approx 55% complete for 35-72_merged_L00_R2.fq.gz
+Approx 95% complete for 35-12_merged_L00_R2.fq.gz
+Approx 65% complete for 35-63_merged_L00_R1.fq.gz
+Analysis complete for 35-43_merged_L00_R2.fq.gz
+Approx 50% complete for 35-81_merged_L00_R2.fq.gz
+Approx 60% complete for 35-62_merged_L00_R1.fq.gz
+Approx 50% complete for 35-71_merged_L00_R2.fq.gz
+Analysis complete for 35-52_merged_L00_R1.fq.gz
+Approx 60% complete for 35-61_merged_L00_R2.fq.gz
+Approx 40% complete for 35-83_merged_L00_R2.fq.gz
+Approx 45% complete for 35-82_merged_L00_R1.fq.gz
+Approx 85% complete for 35-33_merged_L00_R2.fq.gz
+Approx 75% complete for 35-63_merged_L00_R2.fq.gz
+Analysis complete for 35-52_merged_L00_R2.fq.gz
+Approx 40% complete for 35-73_merged_L00_R2.fq.gz
+Approx 90% complete for 21-33_merged_L00_R2.fq.gz
+Approx 25% complete for 35-71_merged_L00_R1.fq.gz
+Approx 80% complete for 35-33_merged_L00_R1.fq.gz
+Approx 95% complete for 21-63_merged_L00_R1.fq.gz
+Approx 30% complete for 35-81_merged_L00_R1.fq.gz
+Approx 80% complete for 21-73_merged_L00_R1.fq.gz
+Approx 50% complete for 35-82_merged_L00_R2.fq.gz
+Approx 85% complete for 35-11_merged_L00_R1.fq.gz
+Approx 70% complete for 35-62_merged_L00_R2.fq.gz
+Approx 85% complete for 35-22_merged_L00_R1.fq.gz
+Approx 60% complete for 35-72_merged_L00_R2.fq.gz
+Approx 75% complete for 35-51_merged_L00_R1.fq.gz
+Approx 60% complete for 35-72_merged_L00_R1.fq.gz
+Approx 40% complete for 35-73_merged_L00_R1.fq.gz
+Approx 75% complete for 35-11_merged_L00_R2.fq.gz
+Approx 70% complete for 35-63_merged_L00_R1.fq.gz
+Analysis complete for 35-12_merged_L00_R2.fq.gz
+Approx 95% complete for 21-53_merged_L00_R1.fq.gz
+Approx 65% complete for 35-61_merged_L00_R1.fq.gz
+Approx 80% complete for 21-82_merged_L00_R1.fq.gz
+Approx 55% complete for 35-81_merged_L00_R2.fq.gz
+Approx 65% complete for 35-21_merged_L00_R2.fq.gz
+Approx 65% complete for 35-62_merged_L00_R1.fq.gz
+Approx 70% complete for 21-73_merged_L00_R2.fq.gz
+Analysis complete for 21-71_merged_L00_R1.fq.gz
+Approx 65% complete for 35-61_merged_L00_R2.fq.gz
+Approx 80% complete for 35-63_merged_L00_R2.fq.gz
+Approx 50% complete for 35-82_merged_L00_R1.fq.gz
+Approx 85% complete for 21-43_merged_L00_R2.fq.gz
+Approx 85% complete for 35-33_merged_L00_R1.fq.gz
+Approx 75% complete for 21-83_merged_L00_R1.fq.gz
+Approx 45% complete for 35-83_merged_L00_R2.fq.gz
+Approx 55% complete for 35-71_merged_L00_R2.fq.gz
+Approx 90% complete for 35-33_merged_L00_R2.fq.gz
+Approx 85% complete for 21-61_merged_L00_R2.fq.gz
+Approx 55% complete for 35-31_merged_L00_R1.fq.gz
+Approx 55% complete for 35-82_merged_L00_R2.fq.gz
+Approx 50% complete for 35-43_merged_L00_R1.fq.gz
+Approx 75% complete for 35-62_merged_L00_R2.fq.gz
+Approx 80% complete for 35-51_merged_L00_R1.fq.gz
+Approx 20% complete for 35-83_merged_L00_R1.fq.gz
+Approx 45% complete for 35-73_merged_L00_R2.fq.gz
+Approx 65% complete for 35-72_merged_L00_R2.fq.gz
+Approx 65% complete for 35-72_merged_L00_R1.fq.gz
+Analysis complete for 21-53_merged_L00_R1.fq.gz
+Approx 35% complete for 35-81_merged_L00_R1.fq.gz
+Approx 60% complete for 35-81_merged_L00_R2.fq.gz
+Approx 90% complete for 35-22_merged_L00_R1.fq.gz
+Approx 95% complete for 21-33_merged_L00_R2.fq.gz
+Approx 75% complete for 35-63_merged_L00_R1.fq.gz
+Analysis complete for 21-63_merged_L00_R1.fq.gz
+Approx 85% complete for 35-63_merged_L00_R2.fq.gz
+Approx 70% complete for 35-62_merged_L00_R1.fq.gz
+Approx 90% complete for 35-33_merged_L00_R1.fq.gz
+Approx 55% complete for 35-82_merged_L00_R1.fq.gz
+Approx 45% complete for 35-73_merged_L00_R1.fq.gz
+Approx 95% complete for 35-33_merged_L00_R2.fq.gz
+Approx 70% complete for 35-61_merged_L00_R1.fq.gz
+Approx 85% complete for 21-73_merged_L00_R1.fq.gz
+Approx 70% complete for 35-61_merged_L00_R2.fq.gz
+Approx 90% complete for 35-11_merged_L00_R1.fq.gz
+Approx 30% complete for 35-71_merged_L00_R1.fq.gz
+Approx 60% complete for 35-82_merged_L00_R2.fq.gz
+Approx 50% complete for 35-83_merged_L00_R2.fq.gz
+Approx 85% complete for 21-82_merged_L00_R1.fq.gz
+Approx 90% complete for 21-43_merged_L00_R2.fq.gz
+Approx 85% complete for 35-51_merged_L00_R1.fq.gz
+Approx 70% complete for 35-21_merged_L00_R2.fq.gz
+Approx 80% complete for 35-11_merged_L00_R2.fq.gz
+Approx 80% complete for 35-62_merged_L00_R2.fq.gz
+Approx 70% complete for 35-72_merged_L00_R2.fq.gz
+Approx 75% complete for 21-73_merged_L00_R2.fq.gz
+Approx 70% complete for 35-72_merged_L00_R1.fq.gz
+Approx 90% complete for 35-63_merged_L00_R2.fq.gz
+Approx 65% complete for 35-81_merged_L00_R2.fq.gz
+Approx 95% complete for 35-33_merged_L00_R1.fq.gz
+Approx 80% complete for 35-63_merged_L00_R1.fq.gz
+Approx 60% complete for 35-71_merged_L00_R2.fq.gz
+Approx 50% complete for 35-73_merged_L00_R2.fq.gz
+Approx 55% complete for 35-43_merged_L00_R1.fq.gz
+Analysis complete for 35-33_merged_L00_R2.fq.gz
+Approx 40% complete for 35-81_merged_L00_R1.fq.gz
+Approx 80% complete for 21-83_merged_L00_R1.fq.gz
+Approx 90% complete for 21-61_merged_L00_R2.fq.gz
+Approx 75% complete for 35-62_merged_L00_R1.fq.gz
+Approx 60% complete for 35-82_merged_L00_R1.fq.gz
+Approx 60% complete for 35-31_merged_L00_R1.fq.gz
+Approx 95% complete for 35-22_merged_L00_R1.fq.gz
+Approx 65% complete for 35-82_merged_L00_R2.fq.gz
+Approx 90% complete for 35-51_merged_L00_R1.fq.gz
+Approx 75% complete for 35-61_merged_L00_R2.fq.gz
+Approx 25% complete for 35-83_merged_L00_R1.fq.gz
+Approx 75% complete for 35-61_merged_L00_R1.fq.gz
+Analysis complete for 21-33_merged_L00_R2.fq.gz
+Approx 50% complete for 35-73_merged_L00_R1.fq.gz
+Approx 55% complete for 35-83_merged_L00_R2.fq.gz
+Approx 85% complete for 35-62_merged_L00_R2.fq.gz
+Approx 75% complete for 35-72_merged_L00_R2.fq.gz
+Approx 95% complete for 21-43_merged_L00_R2.fq.gz
+Approx 90% complete for 21-73_merged_L00_R1.fq.gz
+Approx 95% complete for 35-63_merged_L00_R2.fq.gz
+Approx 75% complete for 35-72_merged_L00_R1.fq.gz
+Approx 90% complete for 21-82_merged_L00_R1.fq.gz
+Approx 95% complete for 35-11_merged_L00_R1.fq.gz
+Analysis complete for 35-33_merged_L00_R1.fq.gz
+Approx 75% complete for 35-21_merged_L00_R2.fq.gz
+Approx 70% complete for 35-81_merged_L00_R2.fq.gz
+Approx 85% complete for 35-63_merged_L00_R1.fq.gz
+Approx 35% complete for 35-71_merged_L00_R1.fq.gz
+Approx 85% complete for 35-11_merged_L00_R2.fq.gz
+Approx 65% complete for 35-82_merged_L00_R1.fq.gz
+Approx 70% complete for 35-82_merged_L00_R2.fq.gz
+Approx 45% complete for 35-81_merged_L00_R1.fq.gz
+Analysis complete for 35-22_merged_L00_R1.fq.gz
+Approx 95% complete for 35-51_merged_L00_R1.fq.gz
+Approx 80% complete for 35-62_merged_L00_R1.fq.gz
+Approx 60% complete for 35-43_merged_L00_R1.fq.gz
+Approx 65% complete for 35-71_merged_L00_R2.fq.gz
+Approx 55% complete for 35-73_merged_L00_R2.fq.gz
+Approx 80% complete for 21-73_merged_L00_R2.fq.gz
+Analysis complete for 35-63_merged_L00_R2.fq.gz
+Approx 65% complete for 35-31_merged_L00_R1.fq.gz
+Approx 95% complete for 21-61_merged_L00_R2.fq.gz
+Approx 85% complete for 21-83_merged_L00_R1.fq.gz
+Approx 80% complete for 35-61_merged_L00_R2.fq.gz
+Approx 80% complete for 35-72_merged_L00_R2.fq.gz
+Approx 90% complete for 35-62_merged_L00_R2.fq.gz
+Approx 80% complete for 35-61_merged_L00_R1.fq.gz
+Approx 60% complete for 35-83_merged_L00_R2.fq.gz
+Approx 75% complete for 35-81_merged_L00_R2.fq.gz
+Approx 80% complete for 35-72_merged_L00_R1.fq.gz
+Analysis complete for 21-43_merged_L00_R2.fq.gz
+Approx 90% complete for 35-63_merged_L00_R1.fq.gz
+Approx 75% complete for 35-82_merged_L00_R2.fq.gz
+Approx 70% complete for 35-82_merged_L00_R1.fq.gz
+Approx 30% complete for 35-83_merged_L00_R1.fq.gz
+Approx 55% complete for 35-73_merged_L00_R1.fq.gz
+Analysis complete for 35-51_merged_L00_R1.fq.gz
+Approx 95% complete for 21-82_merged_L00_R1.fq.gz
+Analysis complete for 35-11_merged_L00_R1.fq.gz
+Approx 95% complete for 21-73_merged_L00_R1.fq.gz
+Approx 50% complete for 35-81_merged_L00_R1.fq.gz
+Approx 80% complete for 35-21_merged_L00_R2.fq.gz
+Approx 90% complete for 35-11_merged_L00_R2.fq.gz
+Approx 40% complete for 35-71_merged_L00_R1.fq.gz
+Approx 85% complete for 35-62_merged_L00_R1.fq.gz
+Approx 65% complete for 35-43_merged_L00_R1.fq.gz
+Approx 85% complete for 35-72_merged_L00_R2.fq.gz
+Approx 70% complete for 35-71_merged_L00_R2.fq.gz
+Approx 95% complete for 35-62_merged_L00_R2.fq.gz
+Approx 95% complete for 35-63_merged_L00_R1.fq.gz
+Approx 70% complete for 35-31_merged_L00_R1.fq.gz
+Approx 60% complete for 35-73_merged_L00_R2.fq.gz
+Approx 85% complete for 35-61_merged_L00_R2.fq.gz
+Analysis complete for 21-61_merged_L00_R2.fq.gz
+Approx 75% complete for 35-82_merged_L00_R1.fq.gz
+Approx 80% complete for 35-82_merged_L00_R2.fq.gz
+Approx 80% complete for 35-81_merged_L00_R2.fq.gz
+Approx 90% complete for 21-83_merged_L00_R1.fq.gz
+Approx 85% complete for 21-73_merged_L00_R2.fq.gz
+Approx 85% complete for 35-72_merged_L00_R1.fq.gz
+Approx 65% complete for 35-83_merged_L00_R2.fq.gz
+Approx 85% complete for 35-61_merged_L00_R1.fq.gz
+Analysis complete for 21-82_merged_L00_R1.fq.gz
+Approx 55% complete for 35-81_merged_L00_R1.fq.gz
+Approx 95% complete for 35-11_merged_L00_R2.fq.gz
+Approx 35% complete for 35-83_merged_L00_R1.fq.gz
+Approx 85% complete for 35-21_merged_L00_R2.fq.gz
+Approx 60% complete for 35-73_merged_L00_R1.fq.gz
+Approx 70% complete for 35-43_merged_L00_R1.fq.gz
+Approx 90% complete for 35-62_merged_L00_R1.fq.gz
+Approx 90% complete for 35-72_merged_L00_R2.fq.gz
+Analysis complete for 21-73_merged_L00_R1.fq.gz
+Analysis complete for 35-63_merged_L00_R1.fq.gz
+Analysis complete for 35-62_merged_L00_R2.fq.gz
+Approx 85% complete for 35-82_merged_L00_R2.fq.gz
+Approx 45% complete for 35-71_merged_L00_R1.fq.gz
+Approx 75% complete for 35-71_merged_L00_R2.fq.gz
+Approx 80% complete for 35-82_merged_L00_R1.fq.gz
+Approx 85% complete for 35-81_merged_L00_R2.fq.gz
+Approx 90% complete for 35-72_merged_L00_R1.fq.gz
+Approx 75% complete for 35-31_merged_L00_R1.fq.gz
+Approx 90% complete for 35-61_merged_L00_R2.fq.gz
+Approx 70% complete for 35-83_merged_L00_R2.fq.gz
+Approx 95% complete for 21-83_merged_L00_R1.fq.gz
+Approx 65% complete for 35-73_merged_L00_R2.fq.gz
+Approx 90% complete for 21-73_merged_L00_R2.fq.gz
+Approx 90% complete for 35-61_merged_L00_R1.fq.gz
+Approx 60% complete for 35-81_merged_L00_R1.fq.gz
+Analysis complete for 35-11_merged_L00_R2.fq.gz
+Approx 95% complete for 35-72_merged_L00_R2.fq.gz
+Approx 75% complete for 35-43_merged_L00_R1.fq.gz
+Approx 90% complete for 35-21_merged_L00_R2.fq.gz
+Approx 90% complete for 35-82_merged_L00_R2.fq.gz
+Approx 95% complete for 35-62_merged_L00_R1.fq.gz
+Approx 40% complete for 35-83_merged_L00_R1.fq.gz
+Approx 90% complete for 35-81_merged_L00_R2.fq.gz
+Approx 65% complete for 35-73_merged_L00_R1.fq.gz
+Approx 85% complete for 35-82_merged_L00_R1.fq.gz
+Approx 95% complete for 35-72_merged_L00_R1.fq.gz
+Approx 50% complete for 35-71_merged_L00_R1.fq.gz
+Approx 80% complete for 35-71_merged_L00_R2.fq.gz
+Approx 95% complete for 35-61_merged_L00_R2.fq.gz
+Approx 75% complete for 35-83_merged_L00_R2.fq.gz
+Approx 80% complete for 35-31_merged_L00_R1.fq.gz
+Analysis complete for 21-83_merged_L00_R1.fq.gz
+Approx 70% complete for 35-73_merged_L00_R2.fq.gz
+Approx 95% complete for 35-82_merged_L00_R2.fq.gz
+Analysis complete for 35-72_merged_L00_R2.fq.gz
+Approx 65% complete for 35-81_merged_L00_R1.fq.gz
+Approx 95% complete for 21-73_merged_L00_R2.fq.gz
+Approx 95% complete for 35-61_merged_L00_R1.fq.gz
+Approx 95% complete for 35-21_merged_L00_R2.fq.gz
+Analysis complete for 35-62_merged_L00_R1.fq.gz
+Approx 80% complete for 35-43_merged_L00_R1.fq.gz
+Approx 90% complete for 35-82_merged_L00_R1.fq.gz
+Approx 95% complete for 35-81_merged_L00_R2.fq.gz
+Analysis complete for 35-72_merged_L00_R1.fq.gz
+Approx 45% complete for 35-83_merged_L00_R1.fq.gz
+Approx 70% complete for 35-73_merged_L00_R1.fq.gz
+Analysis complete for 35-61_merged_L00_R2.fq.gz
+Analysis complete for 35-82_merged_L00_R2.fq.gz
+Approx 80% complete for 35-83_merged_L00_R2.fq.gz
+Approx 85% complete for 35-31_merged_L00_R1.fq.gz
+Approx 70% complete for 35-81_merged_L00_R1.fq.gz
+Approx 75% complete for 35-73_merged_L00_R2.fq.gz
+Approx 55% complete for 35-71_merged_L00_R1.fq.gz
+Approx 95% complete for 35-82_merged_L00_R1.fq.gz
+Analysis complete for 35-21_merged_L00_R2.fq.gz
+Analysis complete for 35-81_merged_L00_R2.fq.gz
+Analysis complete for 35-61_merged_L00_R1.fq.gz
+Approx 85% complete for 35-71_merged_L00_R2.fq.gz
+Analysis complete for 21-73_merged_L00_R2.fq.gz
+Approx 85% complete for 35-43_merged_L00_R1.fq.gz
+Approx 50% complete for 35-83_merged_L00_R1.fq.gz
+Approx 75% complete for 35-73_merged_L00_R1.fq.gz
+Approx 75% complete for 35-81_merged_L00_R1.fq.gz
+Approx 85% complete for 35-83_merged_L00_R2.fq.gz
+Approx 90% complete for 35-31_merged_L00_R1.fq.gz
+Analysis complete for 35-82_merged_L00_R1.fq.gz
+Approx 90% complete for 35-71_merged_L00_R2.fq.gz
+Approx 60% complete for 35-71_merged_L00_R1.fq.gz
+Approx 80% complete for 35-73_merged_L00_R2.fq.gz
+Approx 90% complete for 35-43_merged_L00_R1.fq.gz
+Approx 80% complete for 35-81_merged_L00_R1.fq.gz
+Approx 90% complete for 35-83_merged_L00_R2.fq.gz
+Approx 95% complete for 35-31_merged_L00_R1.fq.gz
+Approx 55% complete for 35-83_merged_L00_R1.fq.gz
+Approx 80% complete for 35-73_merged_L00_R1.fq.gz
+Approx 95% complete for 35-71_merged_L00_R2.fq.gz
+Approx 65% complete for 35-71_merged_L00_R1.fq.gz
+Approx 95% complete for 35-43_merged_L00_R1.fq.gz
+Approx 85% complete for 35-73_merged_L00_R2.fq.gz
+Approx 85% complete for 35-81_merged_L00_R1.fq.gz
+Approx 95% complete for 35-83_merged_L00_R2.fq.gz
+Analysis complete for 35-31_merged_L00_R1.fq.gz
+Analysis complete for 35-71_merged_L00_R2.fq.gz
+Approx 60% complete for 35-83_merged_L00_R1.fq.gz
+Analysis complete for 35-43_merged_L00_R1.fq.gz
+Approx 85% complete for 35-73_merged_L00_R1.fq.gz
+Approx 70% complete for 35-71_merged_L00_R1.fq.gz
+Approx 90% complete for 35-73_merged_L00_R2.fq.gz
+Approx 90% complete for 35-81_merged_L00_R1.fq.gz
+Analysis complete for 35-83_merged_L00_R2.fq.gz
+Approx 65% complete for 35-83_merged_L00_R1.fq.gz
+Approx 75% complete for 35-71_merged_L00_R1.fq.gz
+Approx 90% complete for 35-73_merged_L00_R1.fq.gz
+Approx 95% complete for 35-81_merged_L00_R1.fq.gz
+Approx 95% complete for 35-73_merged_L00_R2.fq.gz
+Approx 70% complete for 35-83_merged_L00_R1.fq.gz
+Analysis complete for 35-81_merged_L00_R1.fq.gz
+Approx 80% complete for 35-71_merged_L00_R1.fq.gz
+Approx 95% complete for 35-73_merged_L00_R1.fq.gz
+Analysis complete for 35-73_merged_L00_R2.fq.gz
+Approx 75% complete for 35-83_merged_L00_R1.fq.gz
+Approx 85% complete for 35-71_merged_L00_R1.fq.gz
+Analysis complete for 35-73_merged_L00_R1.fq.gz
+Approx 80% complete for 35-83_merged_L00_R1.fq.gz
+Approx 90% complete for 35-71_merged_L00_R1.fq.gz
+Approx 85% complete for 35-83_merged_L00_R1.fq.gz
+Approx 95% complete for 35-71_merged_L00_R1.fq.gz
+Approx 90% complete for 35-83_merged_L00_R1.fq.gz
+Analysis complete for 35-71_merged_L00_R1.fq.gz
+Approx 95% complete for 35-83_merged_L00_R1.fq.gz
+Analysis complete for 35-83_merged_L00_R1.fq.gz
+>>> Step 2: Trimming V3-V4 primers using Cutadapt...
+Running with GNU Parallel...
+Processing Sample in Parallel: 0-13
+Processing Sample in Parallel: 0-12
+Processing Sample in Parallel: 0-23
+Processing Sample in Parallel: 0-22
+Processing Sample in Parallel: 0-33
+Processing Sample in Parallel: 0-42
+Processing Sample in Parallel: 0-32
+Processing Sample in Parallel: 0-43
+Processing Sample in Parallel: 0-53
+Processing Sample in Parallel: 0-52
+Processing Sample in Parallel: 21-11
+Processing Sample in Parallel: 0-73
+Processing Sample in Parallel: 0-63
+Processing Sample in Parallel: 0-82
+Processing Sample in Parallel: 0-72
+Processing Sample in Parallel: 0-83
+Processing Sample in Parallel: 0-62
+Processing Sample in Parallel: 21-12
+Processing Sample in Parallel: 21-21
+Processing Sample in Parallel: 21-31
+Processing Sample in Parallel: 21-32
+Processing Sample in Parallel: 21-22
+Processing Sample in Parallel: 21-13
+Processing Sample in Parallel: 21-33
+Processing Sample in Parallel: 21-23
+Processing Sample in Parallel: 21-41
+Processing Sample in Parallel: 21-42
+Processing Sample in Parallel: 21-52
+Processing Sample in Parallel: 21-51
+Processing Sample in Parallel: 21-43
+Processing Sample in Parallel: 21-53
+Processing Sample in Parallel: 21-62
+Processing Sample in Parallel: 21-61
+Processing Sample in Parallel: 21-63
+Processing Sample in Parallel: 21-72
+Processing Sample in Parallel: 21-71
+Processing Sample in Parallel: 21-82
+Processing Sample in Parallel: 21-81
+Processing Sample in Parallel: 21-73
+Processing Sample in Parallel: 21-83
+Processing Sample in Parallel: 35-11
+Processing Sample in Parallel: 35-12
+Processing Sample in Parallel: 35-21
+Processing Sample in Parallel: 35-22
+Processing Sample in Parallel: 35-23
+Processing Sample in Parallel: 35-32
+Processing Sample in Parallel: 35-42
+Processing Sample in Parallel: 35-33
+Processing Sample in Parallel: 35-31
+Processing Sample in Parallel: 35-41
+Processing Sample in Parallel: 35-51
+Processing Sample in Parallel: 35-43
+Processing Sample in Parallel: 35-53
+Processing Sample in Parallel: 35-52

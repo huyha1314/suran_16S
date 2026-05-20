@@ -51,7 +51,7 @@ cat("Database verification complete: SILVA training set and species database ver
 # -------------------------------------------------------------------------
 # Step 1: Read Fastq Files from Sample TSV
 # -------------------------------------------------------------------------
-sample_tsv_path <- Sys.getenv("SAMPLE_TSV", "data/sample.tsv")
+sample_tsv_path <- Sys.getenv("SAMPLE_TSV", "./sample.tsv")
 if (!file.exists(sample_tsv_path)) {
   stop("ERROR: Sample sheet not found at: ", sample_tsv_path, "\n",
        "Please generate it first by running: pixi run generate_samples")
@@ -177,8 +177,8 @@ cat("Percentage of non-chimeric reads kept: ",
 cat(">>> Assigning taxonomy using SILVA training set...\n")
 taxa <- assignTaxonomy(seqtab.nochim, silva_train_file, multithread = THREADS)
 
-cat(">>> Adding species-level assignment...\n")
-taxa <- addSpecies(taxa, silva_species_file)
+cat(">>> Adding species-level assignment in parallel...\n")
+taxa <- addSpecies(taxa, silva_species_file, multithread = THREADS)
 
 # -------------------------------------------------------------------------
 # Step 9.5: Standardize ASV Names (Crucial for BIOM & PICRUSt2 Compatibility)

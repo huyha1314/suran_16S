@@ -12,7 +12,7 @@ library(openxlsx)
 # Get parameters from environment variables (with default fallbacks)
 DADA2_DIR <- Sys.getenv("DADA2_DIR", "./results/02_dada2")
 PHYLO_DIR <- Sys.getenv("PHYLO_DIR", "./results/03_phyloseq")
-METADATA_PATH <- Sys.getenv("METADATA_PATH", "./data/metadata.tsv")
+METADATA_PATH <- Sys.getenv("METADATA_PATH", "./metadata.tsv")
 
 cat("=========================================================================\n")
 cat("Parameters:\n")

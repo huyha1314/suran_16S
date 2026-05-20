@@ -6,7 +6,7 @@ platforms = ["linux-64"]
 version = "0.1.0"
 
 [tasks]
-generate_samples = "bash script/generate_samples_tsv.sh data data/sample.tsv"
+generate_samples = "bash script/generate_samples_tsv.sh data ./sample.tsv"
 generate_metadata = "Rscript script/convert_metadata.R"
 check_md5 = "bash script/check_md5.sh data"
 qc_trim = "bash script/01_qc_trim.sh"
@@ -35,3 +35,4 @@ r-openxlsx = ">=4.2.8.1,<5"
 r-cowplot = ">=1.2.0,<2"
 r-dt = ">=0.34.0,<0.35"
 picrust2 = ">=2.6.3,<3"
+parallel = ">=20260422,<20260423"

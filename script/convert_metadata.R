@@ -6,8 +6,8 @@ library(stringr)
 library(readr)
 
 # Read environment variables or use default paths
-sample_tsv_path <- Sys.getenv("SAMPLE_TSV", "data/sample.tsv")
-metadata_tsv_path <- Sys.getenv("METADATA_PATH", "data/metadata.tsv")
+sample_tsv_path <- Sys.getenv("SAMPLE_TSV", "./sample.tsv")
+metadata_tsv_path <- Sys.getenv("METADATA_PATH", "./metadata.tsv")
 
 if (!file.exists(sample_tsv_path)) {
   stop("ERROR: Sample sheet not found at: ", sample_tsv_path, "\n",

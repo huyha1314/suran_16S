@@ -4,20 +4,41 @@
 # if an uninitialized variable is used, or if a piped command fails.
 set -euo pipefail
 
+# Setup automated run-level logging inside log/ directory
+LOG_DIR="log"
+mkdir -p "${LOG_DIR}"
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+LOG_FILE="${LOG_DIR}/pipeline_${TIMESTAMP}.log"
+
+# Redirect stdout and stderr to both console and the timestamped log file
+exec > >(tee -i "${LOG_FILE}") 2>&1
+
+echo "========================================================================="
+echo "📝 LOGGING ACTIVE: Live output is being saved to: ${LOG_FILE}"
+echo "========================================================================="
+
 # =========================================================================
 #      LONGITUDINAL 16S WORKFLOW ORCHESTRATOR & CONFIGURATION PANEL
 # =========================================================================
 
 # -------------------------------------------------------------------------
-# 1. Global Pipeline Configuration (Edit these parameters as needed)
+# 1. Global Pipeline & Parallel Resource Configuration
 # -------------------------------------------------------------------------
-export THREADS="${THREADS:-8}"                  # Number of CPU cores to allocate
+export THREADS="${THREADS:-64}"                    # Global threads fallback
+
+# Fine-grained parallel resource allocations (Optimized for 64 CPUs, 256GB RAM)
+export MD5_THREADS="${MD5_THREADS:-${THREADS}}"    # Threads for parallel md5sum validation
+export FASTQC_THREADS="${FASTQC_THREADS:-${THREADS}}" # Threads for FastQC parallel jobs
+export TRIM_CONCURRENCY="${TRIM_CONCURRENCY:-8}"   # Concurrency for Cutadapt jobs
+export TRIM_THREADS_PER_JOB="${TRIM_THREADS_PER_JOB:-8}" # Threads per Cutadapt job (8 x 8 = 64)
+export DADA2_THREADS="${DADA2_THREADS:-${THREADS}}" # Threads for DADA2 parallel algorithms
+export PICRUST2_THREADS="${PICRUST2_THREADS:-${THREADS}}" # Threads for PICRUSt2 predictions
 
 # Core Directory & File Configs
-export DATA_DIR="${DATA_DIR:-./data}"           # Path containing raw FASTQ files
-export SAMPLE_TSV="${SAMPLE_TSV:-${DATA_DIR}/sample.tsv}" # Standardized sample sheet TSV
-export METADATA_PATH="${METADATA_PATH:-${DATA_DIR}/metadata.tsv}" # Standardized metadata TSV
-export DB_DIR="${DB_DIR:-./data/db}"           # Directory for reference databases
+export DATA_DIR="${DATA_DIR:-./data}"             # Path containing raw FASTQ files
+export SAMPLE_TSV="${SAMPLE_TSV:-./sample.tsv}"   # Standardized sample sheet TSV
+export METADATA_PATH="${METADATA_PATH:-./metadata.tsv}" # Standardized metadata TSV
+export DB_DIR="${DB_DIR:-./data/db}"               # Directory for reference databases
 
 # Outputs Configs
 export RESULTS_DIR="${RESULTS_DIR:-./results}"
@@ -51,7 +72,14 @@ echo "    /_/  /_/ \\__,_/ \\___/  \\__/ \\___/   /_/ |_/ /____/                
 echo "                                                                         "
 echo "         Modular 16S rRNA Longitudinal Pipeline Orchestrator             "
 echo "========================================================================="
-echo "CPU Threads:            ${THREADS}"
+echo "Global Threads fallback: ${THREADS}"
+echo "------------------- Parallel Resource Allocations ---------------------"
+echo "1. MD5 Integrity Check: ${MD5_THREADS} cores (Parallel)"
+echo "2. Raw/Trimmed FastQC:  ${FASTQC_THREADS} cores (Parallel)"
+echo "3. Cutadapt Trimming:   ${TRIM_CONCURRENCY} concurrent jobs x ${TRIM_THREADS_PER_JOB} threads/job"
+echo "4. DADA2 Denoising:     ${DADA2_THREADS} cores (Parallel)"
+echo "5. PICRUSt2 Metagenome: ${PICRUST2_THREADS} cores (Parallel)"
+echo "-------------------------------------------------------------------------"
 echo "Raw Read Directory:     ${DATA_DIR}"
 echo "Sample Sheet TSV:       ${SAMPLE_TSV}"
 echo "Standard Metadata TSV:  ${METADATA_PATH}"
@@ -61,11 +89,20 @@ echo "DADA2 Truncation F/R:   ${TRUNC_LEN_F} / ${TRUNC_LEN_R} bp"
 echo "DADA2 Max EE F/R:       ${MAX_EE_F} / ${MAX_EE_R}"
 echo "========================================================================="
 
-# Helper Function: Display stage execution header
+# Helper Function: Display stage execution header and support resume checks
 run_stage() {
     local stage_num="$1"
     local stage_name="$2"
     local stage_cmd="$3"
+    local check_file="${4:-}"
+    
+    if [ -n "${check_file}" ] && [ -f "${check_file}" ] && [ -s "${check_file}" ]; then
+        echo ""
+        echo "⏭️  [RESUME] STAGE ${stage_num}: ${stage_name} already completed."
+        echo "    Verified output file exists: ${check_file}"
+        echo "    Skipping to next stage..."
+        return 0
+    fi
     
     echo ""
     echo "========================================================================="
@@ -86,25 +123,25 @@ run_stage() {
     fi
 }
 
-# Validate or auto-generate the sample TSV sheet
-validate_or_generate_samples() {
+# Validate that the standardized sample sheet exists
+validate_samples_exist() {
     if [ ! -f "${SAMPLE_TSV}" ]; then
         echo ""
-        echo "⚠️  WARNING: Standardized sample sheet not found at: ${SAMPLE_TSV}"
-        echo ">>> Auto-generating sample sheet from FASTQ files in data folder..."
-        bash script/generate_samples_tsv.sh "${DATA_DIR}" "${SAMPLE_TSV}"
+        echo "❌ ERROR: Standardized sample sheet not found at: ${SAMPLE_TSV}"
+        echo "Please generate it manually first by running: pixi run generate_samples"
+        exit 1
     else
         echo "✅ Verified sample sheet exists at: ${SAMPLE_TSV}"
     fi
 }
 
-# Validate or auto-generate the standardized metadata file
-validate_or_generate_metadata() {
+# Validate that the standardized metadata file exists
+validate_metadata_exist() {
     if [ ! -f "${METADATA_PATH}" ]; then
         echo ""
-        echo "⚠️  WARNING: Standardized metadata file not found at: ${METADATA_PATH}"
-        echo ">>> Automatically generating longitudinal metadata TSV based on sample sheet..."
-        Rscript script/convert_metadata.R
+        echo "❌ ERROR: Standardized metadata file not found at: ${METADATA_PATH}"
+        echo "Please generate it manually first by running: pixi run generate_metadata"
+        exit 1
     else
         echo "✅ Verified longitudinal metadata exists at: ${METADATA_PATH}"
     fi
@@ -114,35 +151,33 @@ validate_or_generate_metadata() {
 # 2. Pipeline Execution Sequence
 # -------------------------------------------------------------------------
 
-# Stage 0: Validate or generate input sample list
-validate_or_generate_samples
+# Stage 0: Strict Pre-flight Checks (Validate that manually generated TSVs exist)
+validate_samples_exist
+validate_metadata_exist
 
 # Stage 0.5: MD5 Raw Data Integrity Check
-run_stage "0.5" "MD5 Raw Data Integrity Check" "bash script/check_md5.sh ${DATA_DIR}"
+run_stage "0.5" "MD5 Raw Data Integrity Check" "THREADS=${MD5_THREADS} bash script/check_md5.sh ${DATA_DIR}" "log/.md5_verified"
 
 # Stage 1: Quality Control & Primer Trimming (Cutadapt, FastQC, MultiQC)
-run_stage "1" "QC & Cutadapt Primer Trimming" "bash script/01_qc_trim.sh"
+run_stage "1" "QC & Cutadapt Primer Trimming" "bash script/01_qc_trim.sh" "${RESULTS_DIR}/multiqc_report.html"
 
 # Stage 2: Download Reference Databases (SILVA v138.1)
-run_stage "2" "Reference Database Downloader" "bash script/download_db.sh"
+run_stage "2" "Reference Database Downloader" "bash script/download_db.sh" "${DB_DIR}/silva_species_assignment_v138.1.fa.gz"
 
 # Stage 3: ASV Denoising & Taxonomy Assignment (DADA2 + SILVA)
-run_stage "3" "DADA2 ASV Inference & Classification" "Rscript script/02_dada2.R"
-
-# Stage 3.5: Validate or auto-generate metadata mapping based on processed amplicons
-validate_or_generate_metadata
+run_stage "3" "DADA2 ASV Inference & Classification" "THREADS=${DADA2_THREADS} Rscript script/02_dada2.R" "${DADA2_DIR}/seqtab_nochim.rds"
 
 # Stage 4: Phyloseq Building & Table Export
-run_stage "4" "Phyloseq Assembler & Excel Abundance Export" "Rscript script/03_phyloseq_prep.R"
+run_stage "4" "Phyloseq Assembler & Excel Abundance Export" "Rscript script/03_phyloseq_prep.R" "${PHYLO_DIR}/phyloseq_obj.rds"
 
 # Stage 5: Longitudinal Repeated-Measures Statistics (LMM, PCoA, Volatility)
-run_stage "5" "Repeated-Measures LMM & Beta Ordinations" "Rscript script/04_longitudinal_stats.R"
+run_stage "5" "Repeated-Measures LMM & Beta Ordinations" "Rscript script/04_longitudinal_stats.R" "${STATS_DIR}/taxa_barplot_genus.png"
 
 # Stage 6: Group Ecological Co-occurrence Networks
-run_stage "6" "Ecological Interaction Network Mapping" "Rscript script/05_network_analysis.R"
+run_stage "6" "Ecological Interaction Network Mapping" "Rscript script/05_network_analysis.R" "${NETWORK_DIR}/network_topology_comparison.tsv"
 
 # Stage 7: Metagenome Functional Prediction (PICRUSt2)
-run_stage "7" "PICRUSt2 Metagenomic Functional Forecasting" "bash script/06_picrust2.sh"
+run_stage "7" "PICRUSt2 Metagenomic Functional Forecasting" "THREADS=${PICRUST2_THREADS} bash script/06_picrust2.sh" "${PICRUSt2_DIR}/pathways_out/path_abun_unstrat.tsv"
 
 echo ""
 echo "========================================================================="

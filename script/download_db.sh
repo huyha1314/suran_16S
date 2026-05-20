@@ -48,9 +48,15 @@ download_db_file() {
     fi
 }
 
-# Execute downloads
-download_db_file "${SILVA_TRAIN_URL}" "${SILVA_TRAIN_FILE}" "SILVA v138.1 Training Set"
-download_db_file "${SILVA_SPECIES_URL}" "${SILVA_SPECIES_FILE}" "SILVA v138.1 Species Assignment"
+# Execute downloads in parallel using background processes
+download_db_file "${SILVA_TRAIN_URL}" "${SILVA_TRAIN_FILE}" "SILVA v138.1 Training Set" &
+pid1=$!
+download_db_file "${SILVA_SPECIES_URL}" "${SILVA_SPECIES_FILE}" "SILVA v138.1 Species Assignment" &
+pid2=$!
+
+# Wait for both processes to finish
+wait $pid1
+wait $pid2
 
 echo "========================================================================="
 echo "🎉 Reference database download and verification complete!"
