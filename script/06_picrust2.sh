@@ -30,36 +30,42 @@ if [ ! -f "${FASTA_IN}" ] || [ ! -f "${TABLE_IN}" ]; then
     exit 1
 fi
 
-# Create output directory
-mkdir -p "${PICRUSt2_DIR}"
+# Clean up existing output directory to prevent PICRUSt2 from stopping
+rm -rf "${PICRUSt2_DIR}"
+
+# Convert to absolute paths so PICRUSt2 R subprocesses can find files
+# regardless of their working directory
+ABS_FASTA_IN="$(realpath "${FASTA_IN}")"
+ABS_TABLE_IN="$(realpath "${TABLE_IN}")"
+ABS_PICRUST2_DIR="$(cd "$(dirname "${PICRUSt2_DIR}")" && pwd)/$(basename "${PICRUSt2_DIR}")"
 
 # Run PICRUSt2 pipeline
 echo ">>> Running PICRUSt2 pipeline..."
 picrust2_pipeline.py \
-    -s "${FASTA_IN}" \
-    -i "${TABLE_IN}" \
-    -o "${PICRUSt2_DIR}" \
+    -s "${ABS_FASTA_IN}" \
+    -i "${ABS_TABLE_IN}" \
+    -o "${ABS_PICRUST2_DIR}" \
     -p "${THREADS}"
 
 # Decompress primary output tables for direct user visibility and downstream R analyses
 echo ">>> Decompressing predicted functional abundance tables..."
 
-if [ -f "${PICRUSt2_DIR}/pathways_out/path_abun_unstrat.tsv.gz" ]; then
-    gunzip -f "${PICRUSt2_DIR}/pathways_out/path_abun_unstrat.tsv.gz"
-    echo "Unstratified Pathway Abundance: ${PICRUSt2_DIR}/pathways_out/path_abun_unstrat.tsv"
+if [ -f "${ABS_PICRUST2_DIR}/pathways_out/path_abun_unstrat.tsv.gz" ]; then
+    gunzip -f "${ABS_PICRUST2_DIR}/pathways_out/path_abun_unstrat.tsv.gz"
+    echo "Unstratified Pathway Abundance: ${ABS_PICRUST2_DIR}/pathways_out/path_abun_unstrat.tsv"
 fi
 
-if [ -f "${PICRUSt2_DIR}/ec_metagenome_out/pred_metagenome_unstrat.tsv.gz" ]; then
-    gunzip -f "${PICRUSt2_DIR}/ec_metagenome_out/pred_metagenome_unstrat.tsv.gz"
-    echo "Unstratified EC Metagenome:    ${PICRUSt2_DIR}/ec_metagenome_out/pred_metagenome_unstrat.tsv"
+if [ -f "${ABS_PICRUST2_DIR}/ec_metagenome_out/pred_metagenome_unstrat.tsv.gz" ]; then
+    gunzip -f "${ABS_PICRUST2_DIR}/ec_metagenome_out/pred_metagenome_unstrat.tsv.gz"
+    echo "Unstratified EC Metagenome:    ${ABS_PICRUST2_DIR}/ec_metagenome_out/pred_metagenome_unstrat.tsv"
 fi
 
-if [ -f "${PICRUSt2_DIR}/ko_metagenome_out/pred_metagenome_unstrat.tsv.gz" ]; then
-    gunzip -f "${PICRUSt2_DIR}/ko_metagenome_out/pred_metagenome_unstrat.tsv.gz"
-    echo "Unstratified KO Metagenome:    ${PICRUSt2_DIR}/ko_metagenome_out/pred_metagenome_unstrat.tsv"
+if [ -f "${ABS_PICRUST2_DIR}/ko_metagenome_out/pred_metagenome_unstrat.tsv.gz" ]; then
+    gunzip -f "${ABS_PICRUST2_DIR}/ko_metagenome_out/pred_metagenome_unstrat.tsv.gz"
+    echo "Unstratified KO Metagenome:    ${ABS_PICRUST2_DIR}/ko_metagenome_out/pred_metagenome_unstrat.tsv"
 fi
 
 echo "========================================================================="
 echo "Functional prediction completed successfully!"
-echo "Outputs saved in: ${PICRUSt2_DIR}"
+echo "Outputs saved in: ${ABS_PICRUST2_DIR}"
 echo "========================================================================="

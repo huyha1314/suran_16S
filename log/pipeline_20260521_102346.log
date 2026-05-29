@@ -1,0 +1,68 @@
+=========================================================================
+📝 LOGGING ACTIVE: Live output is being saved to: log/pipeline_20260521_102346.log
+=========================================================================
+=========================================================================
+        __  ___               __            _   __ _____                 
+       /  |/  /____ _ _____  / /_ ___   __ / | / // ___/                 
+      / /|_/ // __ `// ___/ / __// _ \ /_//  |/ / \__ \                  
+     / /  / // /_/ // /__  / /_ /  __/   / /|  / ___/ /                  
+    /_/  /_/ \__,_/ \___/  \__/ \___/   /_/ |_/ /____/                   
+                                                                         
+         Modular 16S rRNA Longitudinal Pipeline Orchestrator             
+=========================================================================
+Global Threads fallback: 64
+------------------- Parallel Resource Allocations ---------------------
+1. MD5 Integrity Check: 64 cores (Parallel)
+2. Raw/Trimmed FastQC:  64 cores (Parallel)
+3. Cutadapt Trimming:   8 concurrent jobs x 8 threads/job
+4. DADA2 Denoising:     64 cores (Parallel)
+5. PICRUSt2 Metagenome: 64 cores (Parallel)
+-------------------------------------------------------------------------
+Raw Read Directory:     ./data
+Sample Sheet TSV:       ./sample.tsv
+Standard Metadata TSV:  ./metadata.tsv
+V3-V4 Primer Forward:   CCTACGGGNGGCWGCAG
+V3-V4 Primer Reverse:   GACTACHVGGGTATCTAATCC
+DADA2 Truncation F/R:   270 / 210 bp
+DADA2 Max EE F/R:       2 / 5
+=========================================================================
+✅ Verified sample sheet exists at: ./sample.tsv
+✅ Verified longitudinal metadata exists at: ./metadata.tsv
+
+⏭️  [RESUME] STAGE 0.5: MD5 Raw Data Integrity Check already completed.
+    Verified output file exists: log/.md5_verified
+    Skipping to next stage...
+
+⏭️  [RESUME] STAGE 1: QC & Cutadapt Primer Trimming already completed.
+    Verified output file exists: ./results/multiqc_report.html
+    Skipping to next stage...
+
+⏭️  [RESUME] STAGE 2: Reference Database Downloader already completed.
+    Verified output file exists: ./data/db/silva_species_assignment_v138.1.fa.gz
+    Skipping to next stage...
+
+⏭️  [RESUME] STAGE 3: DADA2 ASV Inference & Classification already completed.
+    Verified output file exists: ./results/02_dada2/seqtab_nochim.rds
+    Skipping to next stage...
+
+⏭️  [RESUME] STAGE 4: Phyloseq Assembler & Excel Abundance Export already completed.
+    Verified output file exists: ./results/03_phyloseq/phyloseq_obj.rds
+    Skipping to next stage...
+
+⏭️  [RESUME] STAGE 5: Repeated-Measures LMM & Beta Ordinations already completed.
+    Verified output file exists: ./results/04_stats/taxa_barplot_genus.png
+    Skipping to next stage...
+
+⏭️  [RESUME] STAGE 6: Ecological Interaction Network Mapping already completed.
+    Verified output file exists: ./results/05_network/network_topology_comparison.tsv
+    Skipping to next stage...
+
+⏭️  [RESUME] STAGE 7: PICRUSt2 Metagenomic Functional Forecasting already completed.
+    Verified output file exists: ./results/06_picrust2/pathways_out/path_abun_unstrat.tsv
+    Skipping to next stage...
+
+=========================================================================
+🎉 SUCCESS: The entire Longitudinal 16S Workflow has finished!
+All statistics, ecological networks, abundance sheets, and functional
+predictions are compiled inside: ./results/
+=========================================================================

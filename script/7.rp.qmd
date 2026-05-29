@@ -1,0 +1,321 @@
+---
+title: "16S Microbiome Profiling Report"
+date: today
+date-format: long
+
+number-sections: true
+highlight-style: pygments
+format:
+  html:
+    toc: true
+    toc-title: Contents
+    include-in-header:
+      - text: |
+          <style>
+          /* Make all iframes responsive */
+          .iframe-container {
+            position: relative;
+            width: 100%;
+            height: 800px;
+            overflow: hidden;
+            margin-bottom: 1em;
+          }
+          .iframe-container iframe, .iframe-container embed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+          }
+          /* Fix for Bootstrap dropdowns in Quarto */
+          .dropdown-menu { z-index: 1050 !important; }
+          
+          /* Force all table headers to be a professional dark blue */
+          .table thead th, table thead th {
+            background-color: #2C3E50 !important; 
+            color: #ffffff !important;
+            border-bottom: 2px solid #1A252F !important;
+          }
+          </style>
+      - file: header_footer/header1.html
+    include-after-body:
+      - file: header_footer/footer1.html
+    grid: 
+      body-width: 1200px
+      sidebar-width: 258px
+    code-fold: false
+    code-tools: false
+editor: visual
+---
+
+::: {#wrn-1 .callout-important}
+## Important
+Please keep this interactive report inside its designated folder so the linked interactive plots and data files continue to function properly.
+:::
+
+# Project Workflow
+
+This report details the taxonomic composition, diversity metrics, and predicted functional pathways of the microbial communities identified via 16S rRNA amplicon sequencing. Click on any section below to expand and view the details of the pipeline.
+
+::: {.callout-note collapse="true"}
+## 1. Quality Control & Preprocessing
+* **Process:** Raw sequencing reads were quality-filtered and adapters were removed using **Cutadapt**. Quality was assessed using **FastQC** and aggregated via **MultiQC**.
+:::
+
+::: {.callout-note collapse="true"}
+## 2. ASV Inference & Taxonomy
+* **Process:** The **DADA2** pipeline was used to filter, dereplicate, and denoise the reads to resolve exact Amplicon Sequence Variants (ASVs). Taxonomy was assigned against a reference database.
+:::
+
+::: {.callout-note collapse="true"}
+## 3. Diversity Analysis
+* **Process:** **Alpha diversity** (within-sample) was calculated to assess community richness and evenness. **Beta diversity** (between-sample) was analyzed using Principal Coordinates Analysis (PCoA) to identify structural shifts across groups.
+:::
+
+::: {.callout-note collapse="true"}
+## 4. Biomarker & Functional Prediction
+* **Process:** Differential abundance testing highlighted specific taxa driving the variations between cohorts. **PICRUSt2** was utilized to predict the metabolic and functional potential of the microbial communities based on their 16S profile.
+:::
+
+# Bioinformatic Pipeline
+
+```{mermaid}
+%%{init: {'themeVariables': { 'fontSize': '16px'}, 'flowchart': {'nodeSpacing': 40, 'rankSpacing': 50}}}%%
+flowchart TD
+    %% Nodes
+    A[("FASTQ Raw Data")] 
+    B["1. QC & Trimming<br/>(Cutadapt/FastQC)"]
+    C["2. Denoising & ASVs<br/>(DADA2)"]
+    D["3. Taxonomy Assignment<br/>(SILVA)"]
+    E{"4. Diversity Analysis<br/>(Phyloseq)"}
+    F["5. Biomarker Discovery<br/>(Differential Abundance)"]
+    G["6. Functional Prediction<br/>(PICRUSt2)"]
+    H["7. Visualizations<br/>(Plotly/ggplot2)"]
+    I[("Final Interactive<br/>Report")]
+
+    %% Connections
+    A --> B --> C --> D --> E --> F --> G --> H --> I
+
+    %% Styling
+    classDef input fill:#2b2d42,color:#fff,stroke:none
+    classDef process fill:#edf2f4,stroke:#8d99ae,color:#2b2d42
+    classDef check fill:#ffddd2,stroke:#e29578,color:#2b2d42
+    classDef output fill:#83c5be,stroke:#006d77,color:#fff,stroke-width:2px
+
+    class A input
+    class B,C,D,F,G,H process
+    class E check
+    class I output
+```
+# Quality Control
+::: {.callout-tip}
+Raw sequencing data requires initial quality control to remove low-quality bases and sequencing adapters. The MultiQC report aggregates the FastQC and Cutadapt metrics across all samples.
+:::
+
+```{=html}
+<div class="iframe-container">
+  <iframe src="multiqc_report.html" title="MultiQC Report" data-external="1"></iframe>
+</div>
+<br>
+<div class="dropdown" style="margin-top: 10px;">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-download"></i> Download QC Data
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="multiqc_report.html" download="multiqc_report.html">Full MultiQC HTML Report</a></li>
+  </ul>
+</div>
+```
+
+# Taxonomic Composition
+::: {.callout-tip}
+The relative abundance of microbial taxa across samples. Use the tabs below to switch between Phylum, Genus, and Species levels. Hover over the bars for exact percentage values.
+:::
+
+::: {.panel-tabset}
+
+## Phylum Level
+```{=html}
+<div class="iframe-container" style="height: 700px;">
+  <iframe src="interactive_reports/01_taxa_phylum.html" title="Phylum Composition" data-external="1"></iframe>
+</div>
+```
+## Class Level
+```{=html}
+<div class="iframe-container" style="height: 700px;">
+  <iframe src="interactive_reports/01_taxa_class.html" title="Class Composition" data-external="1"></iframe>
+</div>
+```
+
+## Order Level
+```{=html}
+<div class="iframe-container" style="height: 700px;">
+  <iframe src="interactive_reports/01_taxa_order.html" title="Order Composition" data-external="1"></iframe>
+</div>
+```
+
+## Family Level
+```{=html}
+<div class="iframe-container" style="height: 700px;">
+  <iframe src="interactive_reports/01_taxa_family.html" title="Family Composition" data-external="1"></iframe>
+</div>
+```
+
+## Genus Level
+```{=html}
+<div class="iframe-container" style="height: 700px;">
+  <iframe src="interactive_reports/01_taxa_genus.html" title="Genus Composition" data-external="1"></iframe>
+</div>
+```
+
+## Species Level
+```{=html}
+<div class="iframe-container" style="height: 700px;">
+  <iframe src="interactive_reports/01_taxa_species.html" title="Species Composition" data-external="1"></iframe>
+</div>
+```
+:::
+
+# Rarefaction Analysis
+::: {.callout-tip}
+Rarefaction curves determine if the sequencing depth was sufficient to capture the full microbial diversity. Curves that plateau indicate that further sequencing would likely not yield additional ASVs.
+:::
+
+
+```{=html}
+<div class="iframe-container" style="height: 600px;">
+  <iframe src="interactive_reports/02b_rarefaction_curve.html" title="Rarefaction Curve" data-external="1"></iframe>
+</div>
+```
+
+# Alpha Diversity (Within-Sample)
+::: {.callout-tip}
+Alpha diversity measures the complexity (richness and evenness) of the microbiome within a single sample. The table below the plot details the Shannon and Chao1 indices for each sample.
+:::
+
+```{=html}
+<div class="iframe-container" style="height: 750px;">
+  <iframe src="interactive_reports/02_alpha_diversity_with_table.html" title="Alpha Diversity" data-external="1"></iframe>
+</div>
+<br>
+<div class="dropdown" style="margin-top: 10px;">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-download"></i> Download Alpha Diversity Data
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="04_stats/alpha/alpha_diversity_table.tsv" download="alpha_diversity_table.tsv">Alpha Diversity Metrics (TSV)</a></li>
+    <li><a class="dropdown-item" href="04_stats/alpha/kruskal_shannon.tsv" download="kruskal_shannon.tsv">Kruskal-Wallis Stats (TSV)</a></li>
+  </ul>
+</div>
+```
+# Beta Diversity (Between-Sample)
+::: {.callout-tip}
+Beta diversity measures the structural differences between microbial communities. Samples that cluster closely together on the Principal Coordinates Analysis (PCoA) plot share similar microbiomes. Significance is calculated via PERMANOVA.
+:::
+```{=html}
+<div class="iframe-container" style="height: 800px;">
+  <iframe src="interactive_reports/03_beta_diversity_with_stats.html" title="Beta Diversity PCoA" data-external="1"></iframe>
+</div>
+<br>
+<div class="dropdown" style="margin-top: 10px;">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-download"></i> Download Beta Diversity Data
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="04_stats/beta/permanova_bray_curtis.tsv" download="permanova_bray_curtis.tsv">PERMANOVA Results (TSV)</a></li>
+  </ul>
+</div>
+```
+
+# Differential Abundance (Biomarkers)
+::: {.callout-important}
+This section highlights the specific microbial genera driving the differences between experimental cohorts. Use the tabs below to switch between the Multi-Group overview and the Pairwise Volcano plots.
+:::
+
+::: {.panel-tabset}
+## Global Multi-Group Plot
+```{=html}
+<div class="iframe-container" style="height: 800px;">
+  <iframe src="interactive_reports/04_diff_multi.html" title="Multi-Group Biomarkers" data-external="1"></iframe>
+</div>
+<br>
+<div class="dropdown" style="margin-top: 10px;">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-download"></i> Download ANOVA Biomarker Data
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="04_stats/differential/differential_abundance_genus.tsv" download="differential_abundance_genus.tsv">Multi-Group ANOVA Results (TSV)</a></li>
+  </ul>
+</div>
+```
+
+## Pairwise Volcano Plot
+```{=html}
+<div class="iframe-container" style="height: 800px;">
+  <iframe src="interactive_reports/04_diff_pairwise.html" title="Pairwise Biomarkers" data-external="1"></iframe>
+</div>
+<br>
+<div class="dropdown" style="margin-top: 10px;">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-download"></i> Download Pairwise Fold-Change Data
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="04_stats/differential/pairwise_differential_abundance.tsv" download="pairwise_differential_abundance.tsv">Pairwise Log2FC Results (TSV)</a></li>
+  </ul>
+</div>
+```
+:::
+
+# Functional Prediction (PICRUSt2)
+::: {.callout-tip}
+PICRUSt2 predicts the metabolic pathways present based on the 16S profile. The heatmap displays the top most variable MetaCyc pathways, illustrating functional shifts between the microbial communities.
+:::
+```{=html}
+<div class="iframe-container" style="height: 600px;">
+  <iframe src="interactive_reports/05_functional_pathways.html" title="Functional Pathways Heatmap" data-external="1"></iframe>
+</div>
+<br>
+<div class="dropdown" style="margin-top: 10px;">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-download"></i> Download Functional Data
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="06_picrust2/pathways_out/path_abun_unstrat.tsv" download="path_abun_unstrat.tsv">Raw Pathway Abundance (TSV)</a></li>
+  </ul>
+</div>
+```
+# References
+
+Callahan, B. J., McMurdie, P. J., Rosen, M. J., Han, A. W., Johnson, A. J., & Holmes, S. P. (2016). DADA2: High-resolution sample inference from Illumina amplicon data. *Nature Methods*, 13(7), 581-583. https://doi.org/10.1038/nmeth.3869
+
+Douglas, G. M., Maffei, V. J., Zaneveld, J. R., Yurgel, S. N., Brown, J. R., Taylor, C. M., ... & Langille, M. G. (2020). PICRUSt2 for prediction of metagenome functions. *Nature Biotechnology*, 38(6), 685-688. https://doi.org/10.1038/s41587-020-0548-6
+
+Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. *Bioinformatics*, 32(19), 3047-3048. https://doi.org/10.1093/bioinformatics/btw354
+
+Martin, M. (2011). Cutadapt removes adapter sequences from high-throughput sequencing reads. *EMBnet.journal*, 17(1), 10-12. https://doi.org/10.14806/ej.17.1.200
+
+McMurdie, P. J., & Holmes, S. (2013). phyloseq: an R package for reproducible interactive analysis and graphics of microbiome census data. *PLoS One*, 8(4), e61217. https://doi.org/10.1371/journal.pone.0061217
+
+Oksanen, J., Blanchet, F. G., Friendly, M., Kindt, R., Legendre, P., McGlinn, D., ... & Wagner, H. (2020). vegan: Community Ecology Package. R package version 2.5-7. https://CRAN.R-project.org/package=vegan
+
+# Software and Database Versions
+
+To ensure computational reproducibility, the following software tools and packages were utilized in this pipeline, managed via a reproducible Pixi (Conda/Bioconda) environment:
+
+| Software / Package | Version | Purpose |
+|:---|:---|:---|
+| **FastQC** | v0.12.1+ | Raw read quality assessment |
+| **Cutadapt** | v5.2+ | Primer and adapter trimming |
+| **MultiQC** | v1.35+ | Quality control report aggregation |
+| **DADA2** (R) | v1.38.0+ | ASV inference and denoising |
+| **Phyloseq** (R) | v1.54.0+ | Microbiome data handling and diversity metrics |
+| **Vegan** (R) | v2.7-3+ | Ecological diversity and PERMANOVA statistics |
+| **PICRUSt2** | v2.6.3+ | Metagenomic functional prediction |
+| **Plotly** (R) | v4.10.4+ | Interactive HTML data visualization |
+| **Quarto** | v1.4+ | Scientific report generation and rendering |
+
+: {.striped .hover}
+
+*Note: Taxonomy was assigned using the standard SILVA reference database for 16S rRNA sequences. Functional predictions were mapped against the MetaCyc metabolic pathway database.*

@@ -46,7 +46,7 @@ physeq_genus_filt <- prune_taxa(prev_mask, physeq_genus)
 cat("Genera kept for network analysis after filtering:", ntaxa(physeq_genus_filt), "\n")
 
 # Extract count data and taxonomy mapping
-count_matrix <- as.matrix(otu_table(physeq_genus_filt))
+count_matrix <- as(otu_table(physeq_genus_filt), "matrix")
 if (taxa_are_rows(physeq_genus_filt)) {
   count_matrix <- t(count_matrix)
 }
@@ -85,11 +85,18 @@ for (grp in groups) {
   # Calculate Spearman Correlation
   cor_res <- cor(grp_counts, method = "spearman")
   
+  # Replace any NA/NaN correlations (due to zero variance/constant values) with 0
+  cor_res[is.na(cor_res)] <- 0
+  
   # Get p-values for correlations using corr.p approximation
-  # We construct a simple p-value calculation based on t-statistics
   n <- nrow(grp_counts)
-  t_stat <- cor_res * sqrt((n - 2) / (1 - cor_res^2))
+  # Prevent division by zero if cor_res is exactly 1 or -1
+  cor_for_t <- cor_res
+  cor_for_t[abs(cor_for_t) >= 0.9999] <- 0.9999 * sign(cor_for_t[abs(cor_for_t) >= 0.9999])
+  
+  t_stat <- cor_for_t * sqrt((n - 2) / (1 - cor_for_t^2))
   p_vals <- 2 * (1 - pt(abs(t_stat), df = n - 2))
+  p_vals[is.na(p_vals)] <- 1
   diag(p_vals) <- 1 # diagonal is self-correlation
   
   # Adjust p-values for multiple testing (FDR)
@@ -159,7 +166,7 @@ for (grp in groups) {
   png(file.path(NETWORK_DIR, paste0("network_plot_", tolower(grp), ".png")), width = 800, height = 800)
   set.seed(42) # For reproducible layout
   plot(g, 
-       layout = layout_with_fr(g), 
+       layout = layout_with_fr(g, weights = abs(E(g)$weight)), 
        vertex.size = 6 + degree(g)*0.3,
        vertex.label.color = "black",
        vertex.label.cex = 0.8,

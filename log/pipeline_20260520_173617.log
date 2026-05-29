@@ -1,0 +1,567 @@
+=========================================================================
+📝 LOGGING ACTIVE: Live output is being saved to: log/pipeline_20260520_173617.log
+=========================================================================
+=========================================================================
+        __  ___               __            _   __ _____                 
+       /  |/  /____ _ _____  / /_ ___   __ / | / // ___/                 
+      / /|_/ // __ `// ___/ / __// _ \ /_//  |/ / \__ \                  
+     / /  / // /_/ // /__  / /_ /  __/   / /|  / ___/ /                  
+    /_/  /_/ \__,_/ \___/  \__/ \___/   /_/ |_/ /____/                   
+                                                                         
+         Modular 16S rRNA Longitudinal Pipeline Orchestrator             
+=========================================================================
+Global Threads fallback: 64
+------------------- Parallel Resource Allocations ---------------------
+1. MD5 Integrity Check: 64 cores (Parallel)
+2. Raw/Trimmed FastQC:  64 cores (Parallel)
+3. Cutadapt Trimming:   8 concurrent jobs x 8 threads/job
+4. DADA2 Denoising:     64 cores (Parallel)
+5. PICRUSt2 Metagenome: 64 cores (Parallel)
+-------------------------------------------------------------------------
+Raw Read Directory:     ./data
+Sample Sheet TSV:       ./sample.tsv
+Standard Metadata TSV:  ./metadata.tsv
+V3-V4 Primer Forward:   CCTACGGGNGGCWGCAG
+V3-V4 Primer Reverse:   GACTACHVGGGTATCTAATCC
+DADA2 Truncation F/R:   270 / 210 bp
+DADA2 Max EE F/R:       2 / 5
+=========================================================================
+✅ Verified sample sheet exists at: ./sample.tsv
+✅ Verified longitudinal metadata exists at: ./metadata.tsv
+
+⏭️  [RESUME] STAGE 0.5: MD5 Raw Data Integrity Check already completed.
+    Verified output file exists: log/.md5_verified
+    Skipping to next stage...
+
+⏭️  [RESUME] STAGE 1: QC & Cutadapt Primer Trimming already completed.
+    Verified output file exists: ./results/multiqc_report.html
+    Skipping to next stage...
+
+⏭️  [RESUME] STAGE 2: Reference Database Downloader already completed.
+    Verified output file exists: ./data/db/silva_species_assignment_v138.1.fa.gz
+    Skipping to next stage...
+
+=========================================================================
+ >>> STAGE 3: DADA2 ASV Inference & Classification
+     Running command: THREADS=64 Rscript script/02_dada2.R
+=========================================================================
+Loading required libraries...
+Loading required package: Rcpp
+=========================================================================
+Parameters:
+Trimmed Fastq Dir:       ./results/01_trimmed 
+DADA2 Output Dir:        ./results/02_dada2 
+Database Dir:            ./data/db 
+Threads:                 64 
+Truncation Length F/R:   270  /  210 
+Max Expected Errors F/R: 2  /  5 
+=========================================================================
+Database verification complete: SILVA training set and species database verified.
+Reading sample sheet from: ./sample.tsv ...
+Processing 63 samples with verified trimmed FASTQs:
+ [1] "0-12"  "0-13"  "0-22"  "0-23"  "0-32"  "0-33"  "0-42"  "0-43"  "0-52" 
+[10] "0-53"  "0-62"  "0-63"  "0-72"  "0-73"  "0-82"  "0-83"  "21-11" "21-12"
+[19] "21-13" "21-21" "21-22" "21-23" "21-31" "21-32" "21-33" "21-41" "21-42"
+[28] "21-43" "21-51" "21-52" "21-53" "21-61" "21-62" "21-63" "21-71" "21-72"
+[37] "21-73" "21-81" "21-82" "21-83" "35-11" "35-12" "35-21" "35-22" "35-23"
+[46] "35-31" "35-32" "35-33" "35-41" "35-42" "35-43" "35-51" "35-52" "35-53"
+[55] "35-61" "35-62" "35-63" "35-71" "35-72" "35-73" "35-81" "35-82" "35-83"
+>>> Generating Quality Profile Plots...
+Warning message:
+Removed 463 rows containing missing values or values outside the scale range
+(`geom_tile()`). 
+Warning message:
+Removed 477 rows containing missing values or values outside the scale range
+(`geom_tile()`). 
+>>> Filtering and trimming reads...
+Filtering stats summary:
+                          reads.in reads.out
+0-12_trimmed_R1.fastq.gz    446112    193611
+0-13_trimmed_R1.fastq.gz    382603    187634
+0-22_trimmed_R1.fastq.gz    488334    224688
+0-23_trimmed_R1.fastq.gz    456478    227488
+0-32_trimmed_R1.fastq.gz    610127    260659
+0-33_trimmed_R1.fastq.gz    572530    284920
+0-42_trimmed_R1.fastq.gz    634550    301936
+0-43_trimmed_R1.fastq.gz    597471    309701
+0-52_trimmed_R1.fastq.gz    675309    295783
+0-53_trimmed_R1.fastq.gz    333847    135024
+0-62_trimmed_R1.fastq.gz    985173    403878
+0-63_trimmed_R1.fastq.gz    775940    362773
+0-72_trimmed_R1.fastq.gz    875856    334605
+0-73_trimmed_R1.fastq.gz    681048    330840
+0-82_trimmed_R1.fastq.gz    683291    292819
+0-83_trimmed_R1.fastq.gz    655689    306753
+21-11_trimmed_R1.fastq.gz   338543    143190
+21-12_trimmed_R1.fastq.gz   489279    210672
+21-13_trimmed_R1.fastq.gz   697939    307254
+21-21_trimmed_R1.fastq.gz   476231    222129
+21-22_trimmed_R1.fastq.gz   554365    280101
+21-23_trimmed_R1.fastq.gz   730936    333031
+21-31_trimmed_R1.fastq.gz   480343    238518
+21-32_trimmed_R1.fastq.gz   585765    284012
+21-33_trimmed_R1.fastq.gz   702017    339220
+21-41_trimmed_R1.fastq.gz   462542    219170
+21-42_trimmed_R1.fastq.gz   566016    279533
+21-43_trimmed_R1.fastq.gz   772283    352725
+21-51_trimmed_R1.fastq.gz   497753    227580
+21-52_trimmed_R1.fastq.gz   464385    213487
+21-53_trimmed_R1.fastq.gz   578395    253892
+21-61_trimmed_R1.fastq.gz   782696    332364
+21-62_trimmed_R1.fastq.gz   572696    263843
+21-63_trimmed_R1.fastq.gz   718992    301291
+21-71_trimmed_R1.fastq.gz   720351    279949
+21-72_trimmed_R1.fastq.gz   592166    248614
+21-73_trimmed_R1.fastq.gz   859700    323528
+21-81_trimmed_R1.fastq.gz   685604    288990
+21-82_trimmed_R1.fastq.gz   618088    252572
+21-83_trimmed_R1.fastq.gz   741855    327023
+35-11_trimmed_R1.fastq.gz   708101    309162
+35-12_trimmed_R1.fastq.gz   523478    263095
+35-21_trimmed_R1.fastq.gz   720395    332252
+35-22_trimmed_R1.fastq.gz   546684    271064
+35-23_trimmed_R1.fastq.gz   615873    298684
+35-31_trimmed_R1.fastq.gz   657380    301144
+35-32_trimmed_R1.fastq.gz   557226    271349
+35-33_trimmed_R1.fastq.gz   526899    257854
+35-41_trimmed_R1.fastq.gz   602733    283273
+35-42_trimmed_R1.fastq.gz   519225    268292
+35-43_trimmed_R1.fastq.gz   649631    322997
+35-51_trimmed_R1.fastq.gz   546557    248426
+35-52_trimmed_R1.fastq.gz   482656    221955
+35-53_trimmed_R1.fastq.gz   435482    198226
+35-61_trimmed_R1.fastq.gz   750454    336857
+35-62_trimmed_R1.fastq.gz   677430    304896
+35-63_trimmed_R1.fastq.gz   599864    293543
+35-71_trimmed_R1.fastq.gz   758733    329665
+35-72_trimmed_R1.fastq.gz   631085    277993
+35-73_trimmed_R1.fastq.gz   880549    401836
+35-81_trimmed_R1.fastq.gz   670686    297973
+35-82_trimmed_R1.fastq.gz   567309    253879
+35-83_trimmed_R1.fastq.gz   765950    318164
+>>> Learning error rates...
+102936150 total bases in 381245 reads from 2 samples will be used for learning the error rates.
+Initializing error rates to maximum possible estimate.
+selfConsist step 1 ..
+   selfConsist step 2
+   selfConsist step 3
+   selfConsist step 4
+   selfConsist step 5
+   selfConsist step 6
+   selfConsist step 7
+   selfConsist step 8
+Convergence after  8  rounds.
+127245930 total bases in 605933 reads from 3 samples will be used for learning the error rates.
+Initializing error rates to maximum possible estimate.
+selfConsist step 1 ...
+   selfConsist step 2
+   selfConsist step 3
+   selfConsist step 4
+   selfConsist step 5
+Convergence after  5  rounds.
+Warning messages:
+1: In scale_y_log10() : log-10 transformation introduced infinite values.
+2: Removed 164 rows containing missing values or values outside the scale range
+(`geom_line()`). 
+3: Removed 164 rows containing missing values or values outside the scale range
+(`geom_line()`). 
+null device 
+          1 
+Warning messages:
+1: In scale_y_log10() : log-10 transformation introduced infinite values.
+2: Removed 164 rows containing missing values or values outside the scale range
+(`geom_line()`). 
+3: Removed 164 rows containing missing values or values outside the scale range
+(`geom_line()`). 
+null device 
+          1 
+>>> Running DADA2 denoising algorithm (ASV inference)...
+Sample 1 - 193611 reads in 46756 unique sequences.
+Sample 2 - 187634 reads in 49148 unique sequences.
+Sample 3 - 224688 reads in 53977 unique sequences.
+Sample 4 - 227488 reads in 59047 unique sequences.
+Sample 5 - 260659 reads in 69489 unique sequences.
+Sample 6 - 284920 reads in 72672 unique sequences.
+Sample 7 - 301936 reads in 64370 unique sequences.
+Sample 8 - 309701 reads in 74846 unique sequences.
+Sample 9 - 295783 reads in 71585 unique sequences.
+Sample 10 - 135024 reads in 41355 unique sequences.
+Sample 11 - 403878 reads in 92820 unique sequences.
+Sample 12 - 362773 reads in 88101 unique sequences.
+Sample 13 - 334605 reads in 78992 unique sequences.
+Sample 14 - 330840 reads in 71345 unique sequences.
+Sample 15 - 292819 reads in 67158 unique sequences.
+Sample 16 - 306753 reads in 76523 unique sequences.
+Sample 17 - 143190 reads in 38768 unique sequences.
+Sample 18 - 210672 reads in 44616 unique sequences.
+Sample 19 - 307254 reads in 70902 unique sequences.
+Sample 20 - 222129 reads in 54101 unique sequences.
+Sample 21 - 280101 reads in 62946 unique sequences.
+Sample 22 - 333031 reads in 81475 unique sequences.
+Sample 23 - 238518 reads in 57986 unique sequences.
+Sample 24 - 284012 reads in 46436 unique sequences.
+Sample 25 - 339220 reads in 78221 unique sequences.
+Sample 26 - 219170 reads in 49613 unique sequences.
+Sample 27 - 279533 reads in 68260 unique sequences.
+Sample 28 - 352725 reads in 76678 unique sequences.
+Sample 29 - 227580 reads in 54201 unique sequences.
+Sample 30 - 213487 reads in 56851 unique sequences.
+Sample 31 - 253892 reads in 52366 unique sequences.
+Sample 32 - 332364 reads in 82447 unique sequences.
+Sample 33 - 263843 reads in 71113 unique sequences.
+Sample 34 - 301291 reads in 63479 unique sequences.
+Sample 35 - 279949 reads in 78298 unique sequences.
+Sample 36 - 248614 reads in 69573 unique sequences.
+Sample 37 - 323528 reads in 77189 unique sequences.
+Sample 38 - 288990 reads in 71262 unique sequences.
+Sample 39 - 252572 reads in 62920 unique sequences.
+Sample 40 - 327023 reads in 65597 unique sequences.
+Sample 41 - 309162 reads in 72113 unique sequences.
+Sample 42 - 263095 reads in 47695 unique sequences.
+Sample 43 - 332252 reads in 79844 unique sequences.
+Sample 44 - 271064 reads in 63541 unique sequences.
+Sample 45 - 298684 reads in 70854 unique sequences.
+Sample 46 - 301144 reads in 79717 unique sequences.
+Sample 47 - 271349 reads in 68606 unique sequences.
+Sample 48 - 257854 reads in 66079 unique sequences.
+Sample 49 - 283273 reads in 65260 unique sequences.
+Sample 50 - 268292 reads in 57884 unique sequences.
+Sample 51 - 322997 reads in 66125 unique sequences.
+Sample 52 - 248426 reads in 50839 unique sequences.
+Sample 53 - 221955 reads in 60013 unique sequences.
+Sample 54 - 198226 reads in 43792 unique sequences.
+Sample 55 - 336857 reads in 85719 unique sequences.
+Sample 56 - 304896 reads in 67523 unique sequences.
+Sample 57 - 293543 reads in 59202 unique sequences.
+Sample 58 - 329665 reads in 83280 unique sequences.
+Sample 59 - 277993 reads in 68663 unique sequences.
+Sample 60 - 401836 reads in 80956 unique sequences.
+Sample 61 - 297973 reads in 72483 unique sequences.
+Sample 62 - 253879 reads in 67549 unique sequences.
+Sample 63 - 318164 reads in 71189 unique sequences.
+Sample 1 - 193611 reads in 57721 unique sequences.
+Sample 2 - 187634 reads in 57053 unique sequences.
+Sample 3 - 224688 reads in 62574 unique sequences.
+Sample 4 - 227488 reads in 67354 unique sequences.
+Sample 5 - 260659 reads in 79818 unique sequences.
+Sample 6 - 284920 reads in 81986 unique sequences.
+Sample 7 - 301936 reads in 83105 unique sequences.
+Sample 8 - 309701 reads in 84385 unique sequences.
+Sample 9 - 295783 reads in 83661 unique sequences.
+Sample 10 - 135024 reads in 28823 unique sequences.
+Sample 11 - 403878 reads in 116099 unique sequences.
+Sample 12 - 362773 reads in 102121 unique sequences.
+Sample 13 - 334605 reads in 94854 unique sequences.
+Sample 14 - 330840 reads in 79380 unique sequences.
+Sample 15 - 292819 reads in 76157 unique sequences.
+Sample 16 - 306753 reads in 87737 unique sequences.
+Sample 17 - 143190 reads in 46253 unique sequences.
+Sample 18 - 210672 reads in 44739 unique sequences.
+Sample 19 - 307254 reads in 77084 unique sequences.
+Sample 20 - 222129 reads in 67582 unique sequences.
+Sample 21 - 280101 reads in 72440 unique sequences.
+Sample 22 - 333031 reads in 99646 unique sequences.
+Sample 23 - 238518 reads in 68120 unique sequences.
+Sample 24 - 284012 reads in 42959 unique sequences.
+Sample 25 - 339220 reads in 97684 unique sequences.
+Sample 26 - 219170 reads in 68746 unique sequences.
+Sample 27 - 279533 reads in 82104 unique sequences.
+Sample 28 - 352725 reads in 94643 unique sequences.
+Sample 29 - 227580 reads in 64555 unique sequences.
+Sample 30 - 213487 reads in 65760 unique sequences.
+Sample 31 - 253892 reads in 58242 unique sequences.
+Sample 32 - 332364 reads in 101462 unique sequences.
+Sample 33 - 263843 reads in 86978 unique sequences.
+Sample 34 - 301291 reads in 77783 unique sequences.
+Sample 35 - 279949 reads in 89384 unique sequences.
+Sample 36 - 248614 reads in 78247 unique sequences.
+Sample 37 - 323528 reads in 84459 unique sequences.
+Sample 38 - 288990 reads in 85537 unique sequences.
+Sample 39 - 252572 reads in 69638 unique sequences.
+Sample 40 - 327023 reads in 84915 unique sequences.
+Sample 41 - 309162 reads in 88217 unique sequences.
+Sample 42 - 263095 reads in 60068 unique sequences.
+Sample 43 - 332252 reads in 95020 unique sequences.
+Sample 44 - 271064 reads in 78642 unique sequences.
+Sample 45 - 298684 reads in 81857 unique sequences.
+Sample 46 - 301144 reads in 93977 unique sequences.
+Sample 47 - 271349 reads in 85859 unique sequences.
+Sample 48 - 257854 reads in 89217 unique sequences.
+Sample 49 - 283273 reads in 76507 unique sequences.
+Sample 50 - 268292 reads in 66754 unique sequences.
+Sample 51 - 322997 reads in 80841 unique sequences.
+Sample 52 - 248426 reads in 69868 unique sequences.
+Sample 53 - 221955 reads in 73651 unique sequences.
+Sample 54 - 198226 reads in 49026 unique sequences.
+Sample 55 - 336857 reads in 100619 unique sequences.
+Sample 56 - 304896 reads in 98324 unique sequences.
+Sample 57 - 293543 reads in 73223 unique sequences.
+Sample 58 - 329665 reads in 89764 unique sequences.
+Sample 59 - 277993 reads in 79756 unique sequences.
+Sample 60 - 401836 reads in 117279 unique sequences.
+Sample 61 - 297973 reads in 84748 unique sequences.
+Sample 62 - 253879 reads in 84693 unique sequences.
+Sample 63 - 318164 reads in 77494 unique sequences.
+>>> Merging read pairs...
+188336 paired-reads (in 388 unique pairings) successfully merged out of 192416 (in 717 pairings) input.
+183382 paired-reads (in 582 unique pairings) successfully merged out of 186292 (in 946 pairings) input.
+219813 paired-reads (in 522 unique pairings) successfully merged out of 223306 (in 966 pairings) input.
+222494 paired-reads (in 631 unique pairings) successfully merged out of 225985 (in 1124 pairings) input.
+253953 paired-reads (in 793 unique pairings) successfully merged out of 258672 (in 1396 pairings) input.
+278843 paired-reads (in 731 unique pairings) successfully merged out of 283132 (in 1341 pairings) input.
+296007 paired-reads (in 461 unique pairings) successfully merged out of 301156 (in 778 pairings) input.
+304171 paired-reads (in 806 unique pairings) successfully merged out of 307848 (in 1329 pairings) input.
+288442 paired-reads (in 633 unique pairings) successfully merged out of 294568 (in 1123 pairings) input.
+132010 paired-reads (in 449 unique pairings) successfully merged out of 133789 (in 802 pairings) input.
+395596 paired-reads (in 821 unique pairings) successfully merged out of 402471 (in 1393 pairings) input.
+356356 paired-reads (in 652 unique pairings) successfully merged out of 360947 (in 1205 pairings) input.
+327396 paired-reads (in 513 unique pairings) successfully merged out of 333159 (in 1072 pairings) input.
+325298 paired-reads (in 618 unique pairings) successfully merged out of 328947 (in 1335 pairings) input.
+286975 paired-reads (in 568 unique pairings) successfully merged out of 291135 (in 999 pairings) input.
+299816 paired-reads (in 696 unique pairings) successfully merged out of 305160 (in 1301 pairings) input.
+140822 paired-reads (in 347 unique pairings) successfully merged out of 142593 (in 519 pairings) input.
+208897 paired-reads (in 381 unique pairings) successfully merged out of 210118 (in 526 pairings) input.
+302175 paired-reads (in 619 unique pairings) successfully merged out of 306465 (in 921 pairings) input.
+216985 paired-reads (in 629 unique pairings) successfully merged out of 220611 (in 1121 pairings) input.
+274934 paired-reads (in 502 unique pairings) successfully merged out of 278383 (in 851 pairings) input.
+327214 paired-reads (in 619 unique pairings) successfully merged out of 331500 (in 1020 pairings) input.
+232722 paired-reads (in 623 unique pairings) successfully merged out of 236590 (in 1145 pairings) input.
+282008 paired-reads (in 390 unique pairings) successfully merged out of 283109 (in 589 pairings) input.
+332553 paired-reads (in 724 unique pairings) successfully merged out of 338355 (in 1127 pairings) input.
+212807 paired-reads (in 490 unique pairings) successfully merged out of 217809 (in 908 pairings) input.
+273058 paired-reads (in 660 unique pairings) successfully merged out of 278304 (in 1020 pairings) input.
+348318 paired-reads (in 552 unique pairings) successfully merged out of 351698 (in 887 pairings) input.
+221465 paired-reads (in 497 unique pairings) successfully merged out of 226068 (in 978 pairings) input.
+209215 paired-reads (in 420 unique pairings) successfully merged out of 212725 (in 678 pairings) input.
+250980 paired-reads (in 470 unique pairings) successfully merged out of 253239 (in 679 pairings) input.
+325109 paired-reads (in 804 unique pairings) successfully merged out of 330916 (in 1302 pairings) input.
+255759 paired-reads (in 720 unique pairings) successfully merged out of 261874 (in 1263 pairings) input.
+297052 paired-reads (in 430 unique pairings) successfully merged out of 300689 (in 709 pairings) input.
+273527 paired-reads (in 691 unique pairings) successfully merged out of 278081 (in 1261 pairings) input.
+243049 paired-reads (in 810 unique pairings) successfully merged out of 246985 (in 1342 pairings) input.
+319545 paired-reads (in 728 unique pairings) successfully merged out of 322145 (in 1129 pairings) input.
+283055 paired-reads (in 510 unique pairings) successfully merged out of 287312 (in 951 pairings) input.
+249627 paired-reads (in 691 unique pairings) successfully merged out of 251728 (in 1058 pairings) input.
+321537 paired-reads (in 425 unique pairings) successfully merged out of 326234 (in 772 pairings) input.
+301338 paired-reads (in 495 unique pairings) successfully merged out of 308184 (in 816 pairings) input.
+255664 paired-reads (in 320 unique pairings) successfully merged out of 262300 (in 489 pairings) input.
+326968 paired-reads (in 664 unique pairings) successfully merged out of 330657 (in 1125 pairings) input.
+266159 paired-reads (in 454 unique pairings) successfully merged out of 269849 (in 755 pairings) input.
+292882 paired-reads (in 595 unique pairings) successfully merged out of 297315 (in 950 pairings) input.
+295175 paired-reads (in 724 unique pairings) successfully merged out of 299491 (in 1169 pairings) input.
+265601 paired-reads (in 838 unique pairings) successfully merged out of 269940 (in 1294 pairings) input.
+252095 paired-reads (in 621 unique pairings) successfully merged out of 256569 (in 968 pairings) input.
+278527 paired-reads (in 620 unique pairings) successfully merged out of 282250 (in 957 pairings) input.
+264221 paired-reads (in 482 unique pairings) successfully merged out of 267261 (in 765 pairings) input.
+317684 paired-reads (in 562 unique pairings) successfully merged out of 321614 (in 894 pairings) input.
+240984 paired-reads (in 416 unique pairings) successfully merged out of 247476 (in 703 pairings) input.
+213607 paired-reads (in 588 unique pairings) successfully merged out of 220689 (in 1021 pairings) input.
+194911 paired-reads (in 321 unique pairings) successfully merged out of 197868 (in 457 pairings) input.
+330173 paired-reads (in 621 unique pairings) successfully merged out of 335339 (in 1094 pairings) input.
+296435 paired-reads (in 647 unique pairings) successfully merged out of 303621 (in 1078 pairings) input.
+288258 paired-reads (in 384 unique pairings) successfully merged out of 292805 (in 670 pairings) input.
+322740 paired-reads (in 895 unique pairings) successfully merged out of 327920 (in 1476 pairings) input.
+271843 paired-reads (in 815 unique pairings) successfully merged out of 276251 (in 1341 pairings) input.
+393197 paired-reads (in 577 unique pairings) successfully merged out of 400794 (in 1029 pairings) input.
+292457 paired-reads (in 569 unique pairings) successfully merged out of 296683 (in 1004 pairings) input.
+246678 paired-reads (in 700 unique pairings) successfully merged out of 252526 (in 1158 pairings) input.
+313742 paired-reads (in 633 unique pairings) successfully merged out of 317091 (in 1022 pairings) input.
+>>> Constructing ASV table...
+Initial ASV table dimension (samples x ASVs): 63 5923 
+ASV sequence length distribution:
+
+ 270  292  294  354  385  386  400  401  402  403  404  405  406  407  408  409 
+  51    1    1    1    2   17   14  241 1068  399  287  505   15  124   38   17 
+ 410  411  412  413  414  415  416  418  419  420  421  422  423  424  425  426 
+  11   27    5    1    4    2    1    7   19   36  228 1112   65   17    7  153 
+ 427  428  429 
+1226  219    2 
+>>> Removing chimeras (Bimeras)...
+Identified 1187 bimeras out of 5923 input sequences.
+Dimension after chimera removal (samples x ASVs): 63 4736 
+Percentage of non-chimeric reads kept:  99.66 %
+>>> Assigning taxonomy using SILVA training set...
+>>> Adding species-level assignment...
+>>> Renaming ASV sequences to standard clean identifiers (ASV_00001 style)...
+>>> Compiling read-tracking summary...
+Read tracking table:
+       input filtered denoised_F denoised_R merged non_chimera
+0-12  446112   193611     192740     193048 188336      187840
+0-13  382603   187634     186633     187000 183382      182920
+0-22  488334   224688     223628     224104 219813      219056
+0-23  456478   227488     226314     226922 222494      220847
+0-32  610127   260659     259148     259881 253953      252849
+0-33  572530   284920     283586     284204 278843      275907
+0-42  634550   301936     301380     301513 296007      295471
+0-43  597471   309701     308284     309008 304171      302839
+0-52  675309   295783     294821     295312 288442      287643
+0-53  333847   135024     134064     134500 132010      131561
+0-62  985173   403878     402870     403216 395596      393777
+0-63  775940   362773     361532     361926 356356      355479
+0-72  875856   334605     333611     333876 327396      326538
+0-73  681048   330840     329557     329941 325298      320369
+0-82  683291   292819     291565     292166 286975      286081
+0-83  655689   306753     305635     306018 299816      298546
+21-11 338543   143190     142777     142847 140822      140549
+21-12 489279   210672     210348     210371 208897      208633
+21-13 697939   307254     306661     306989 302175      300737
+21-21 476231   222129     221048     221365 216985      216405
+21-22 554365   280101     278974     279254 274934      274155
+21-23 730936   333031     331995     332335 327214      326426
+21-31 480343   238518     237104     237714 232722      231851
+21-32 585765   284012     283329     283635 282008      281923
+21-33 702017   339220     338617     338854 332553      331629
+21-41 462542   219170     218255     218479 212807      211842
+21-42 566016   279533     278718     278902 273058      272171
+21-43 772283   352725     352094     352197 348318      347413
+21-51 497753   227580     226500     226952 221465      219893
+21-52 464385   213487     212913     213129 209215      208532
+21-53 578395   253892     253509     253517 250980      249763
+21-61 782696   332364     331345     331703 325109      324161
+21-62 572696   263843     262421     262983 255759      254971
+21-63 718992   301291     300915     300983 297052      295615
+21-71 720351   279949     278549     279275 273527      271301
+21-72 592166   248614     247519     247862 243049      241562
+21-73 859700   323528     322622     322837 319545      318611
+21-81 685604   288990     287946     288144 283055      282015
+21-82 618088   252572     251954     252212 249627      249116
+21-83 741855   327023     326508     326640 321537      320650
+35-11 708101   309162     308533     308645 301338      301053
+35-12 523478   263095     262684     262589 255664      255466
+35-21 720395   332252     331097     331613 326968      325580
+35-22 546684   271064     270060     270666 266159      265617
+35-23 615873   298684     297785     297981 292882      292055
+35-31 657380   301144     300062     300338 295175      294763
+35-32 557226   271349     270476     270565 265601      265356
+35-33 526899   257854     257098     257122 252095      251699
+35-41 602733   283273     282569     282778 278527      277957
+35-42 519225   268292     267643     267724 264221      263618
+35-43 649631   322997     322256     322178 317684      317144
+35-51 546557   248426     247725     247992 240984      240599
+35-52 482656   221955     220892     221516 213607      212978
+35-53 435482   198226     197947     198081 194911      193264
+35-61 750454   336857     335797     336202 330173      329346
+35-62 677430   304896     303944     304308 296435      295950
+35-63 599864   293543     292991     293174 288258      288028
+35-71 758733   329665     328299     329016 322740      321404
+35-72 631085   277993     276843     277199 271843      270385
+35-73 880549   401836     401168     401273 393197      392489
+35-81 670686   297973     297007     297418 292457      291831
+35-82 567309   253879     252980     253187 246678      246407
+35-83 765950   318164     317378     317724 313742      312830
+=========================================================================
+DADA2 Denoising and Taxonomic Classification Completed Successfully!
+ASV Table RDS:      ./results/02_dada2/seqtab_nochim.rds 
+Taxonomy RDS:       ./results/02_dada2/taxonomy.rds 
+ASV FASTA:          ./results/02_dada2/asvs.fasta 
+Read Tracking TSV:  ./results/02_dada2/read_tracking.tsv 
+=========================================================================
+ >>> STAGE 3 completed successfully in 3186s.
+
+=========================================================================
+ >>> STAGE 4: Phyloseq Assembler & Excel Abundance Export
+     Running command: Rscript script/03_phyloseq_prep.R
+=========================================================================
+Loading required libraries...
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+=========================================================================
+Parameters:
+DADA2 Output Dir:    ./results/02_dada2 
+Phyloseq Output Dir: ./results/03_phyloseq 
+Metadata File Path:  ./metadata.tsv 
+=========================================================================
+>>> Reading standardized metadata TSV from: ./metadata.tsv 
+Rows: 63 Columns: 5
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: "\t"
+chr (4): SampleID, Group, Day, SubjectID
+dbl (1): STT
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+Found 63 matching samples between ASV table and metadata.
+>>> Constructing Phyloseq object...
+Phyloseq object saved to:  ./results/03_phyloseq/phyloseq_obj.rds 
+>>> Exporting abundance tables at different taxonomic ranks...
+Processing rank:  ASV 
+Processing rank:  Phylum 
+Processing rank:  Class 
+Processing rank:  Order 
+Processing rank:  Family 
+Processing rank:  Genus 
+>>> Exporting standard ASV count table for PICRUSt2...
+=========================================================================
+Phyloseq Building & Export Completed successfully!
+Excel Workbook:  ./results/03_phyloseq/taxa_abundance_tables.xlsx 
+Phyloseq RDS:    ./results/03_phyloseq/phyloseq_obj.rds 
+=========================================================================
+ >>> STAGE 4 completed successfully in 50s.
+
+=========================================================================
+ >>> STAGE 5: Repeated-Measures LMM & Beta Ordinations
+     Running command: Rscript script/04_longitudinal_stats.R
+=========================================================================
+Loading required libraries...
+Loading required package: permute
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following objects are masked from ‘package:tidyr’:
+
+    expand, pack, unpack
+
+
+Attaching package: ‘lmerTest’
+
+The following object is masked from ‘package:lme4’:
+
+    lmer
+
+The following object is masked from ‘package:stats’:
+
+    step
+
+Registered S3 method overwritten by 'car':
+  method           from
+  na.action.merMod lme4
+
+Attaching package: ‘cowplot’
+
+The following object is masked from ‘package:ggpubr’:
+
+    get_legend
+
+The following object is masked from ‘package:lubridate’:
+
+    stamp
+
+=========================================================================
+Parameters:
+Phyloseq Dir:  ./results/03_phyloseq 
+Stats Dir:     ./results/04_stats 
+=========================================================================
+>>> Section 1: Running Alpha Diversity LMM Analysis...
+Modeling longitudinal Shannon with LMM...
+Error: number of levels of each grouping factor must be < number of observations (problems: SubjectID)
+Execution halted
+❌ ERROR: STAGE 5 (Repeated-Measures LMM & Beta Ordinations) failed!

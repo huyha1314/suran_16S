@@ -8,6 +8,9 @@ cat("Loading required libraries...\n")
 library(phyloseq)
 library(tidyverse)
 library(openxlsx)
+library(DECIPHER)
+library(Biostrings)
+library(ape)
 
 # Get parameters from environment variables (with default fallbacks)
 DADA2_DIR <- Sys.getenv("DADA2_DIR", "./results/02_dada2")
@@ -54,12 +57,12 @@ cat(">>> Reading standardized metadata TSV from:", METADATA_PATH, "\n")
 metadata <- read_tsv(METADATA_PATH)
 
 # Check required columns
-required_cols <- c("SampleID", "Group", "Day", "SubjectID")
+required_cols <- c("SampleID", "Group")
 missing_cols <- setdiff(required_cols, colnames(metadata))
 if (length(missing_cols) > 0) {
   stop("ERROR: Standardized metadata is missing required columns: ", 
        paste(missing_cols, collapse = ", "), 
-       "\nPlease ensure your TSV contains 'SampleID', 'Group', 'Day', and 'SubjectID'.")
+       "\nPlease ensure your TSV contains 'SampleID' and 'Group'.")
 }
 
 # Align metadata and sequence table sample names
@@ -76,15 +79,32 @@ metadata <- metadata %>% filter(SampleID %in% common_samples) %>% as.data.frame(
 rownames(metadata) <- metadata$SampleID
 
 # -------------------------------------------------------------------------
-# Step 2: Build Phyloseq Object
+# Step 2: Build Phylogenetic Tree & Phyloseq Object
 # -------------------------------------------------------------------------
+cat(">>> Aligning ASV sequences with DECIPHER...\n")
+asv_fasta_path <- file.path(DADA2_DIR, "asvs.fasta")
+seqs <- readDNAStringSet(asv_fasta_path)
+alignment <- AlignSeqs(seqs, anchor=NA, processors=1)
+
+cat(">>> Building phylogenetic tree with FastTree...\n")
+aligned_fasta <- file.path(PHYLO_DIR, "aligned_seqs.fasta")
+tree_out <- file.path(PHYLO_DIR, "tree.nwk")
+writeXStringSet(alignment, aligned_fasta)
+
+# Run FastTree (GTR+CAT model for nucleotides)
+exit_code <- system2("fasttree", args = c("-nt", "-gtr", aligned_fasta), stdout = tree_out)
+if (exit_code != 0) {
+  stop("ERROR: FastTree failed to build the phylogenetic tree.")
+}
+tree <- read.tree(tree_out)
+
 cat(">>> Constructing Phyloseq object...\n")
 OTU <- otu_table(seqtab, taxa_are_rows = FALSE)
 TAX <- tax_table(taxa)
 META <- sample_data(metadata)
 
-# Create raw phyloseq object
-physeq <- phyloseq(OTU, TAX, META)
+# Create raw phyloseq object with tree
+physeq <- phyloseq(OTU, TAX, META, phy_tree(tree))
 
 # Standardize tax table names (replace NA or empty assignments with placeholder)
 tax_table(physeq)[is.na(tax_table(physeq))] <- "Unclassified"
@@ -103,8 +123,8 @@ cat(">>> Exporting abundance tables at different taxonomic ranks...\n")
 
 wb <- createWorkbook()
 
-# We will export tables for: ASV, Phylum, Class, Order, Family, Genus
-ranks <- c("ASV", "Phylum", "Class", "Order", "Family", "Genus")
+# We will export tables for: ASV, Phylum, Class, Order, Family, Genus, Species
+ranks <- c("ASV", "Phylum", "Class", "Order", "Family", "Genus", "Species")
 
 for (rank in ranks) {
   cat("Processing rank: ", rank, "\n")

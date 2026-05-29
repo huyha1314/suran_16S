@@ -21,35 +21,24 @@ if (!"SampleID" %in% colnames(df_samples)) {
   stop("ERROR: The sample sheet must contain a 'SampleID' column.")
 }
 
-cat("Inferring longitudinal study groups, days, and SubjectIDs...\n")
+cat("Inferring longitudinal study groups...\n")
 parsed_metadata <- df_samples %>%
   mutate(
-    # Extract the timepoint suffix (e.g. 21-3.2 -> Day2)
-    DayNum = str_match(SampleID, "\\.(\\d+)$")[,2],
-    Day = ifelse(!is.na(DayNum), paste0("Day", DayNum), "Day1"),
+    # Extract GroupPrefix (before dash)
+    GroupPrefix = str_match(SampleID, "^(\\d+)-")[,2],
     
-    # Extract prefix subject codes (e.g. 21-3.2 -> Subject_21_3)
-    SubjPrefix = str_match(SampleID, "^(\\d+)-(\\d+)\\.")[,2],
-    SubjNum = str_match(SampleID, "^(\\d+)-(\\d+)\\.")[,3],
-    SubjectID = ifelse(!is.na(SubjPrefix) & !is.na(SubjNum), 
-                       paste0("Subject_", SubjPrefix, "_", SubjNum), 
-                       paste0("Subject_", SampleID)),
-    
-    # Automatically infer experimental groups based on the subject prefix range:
-    # Prefix '0' -> Group1 (Nhóm 1)
-    # Prefix '21' -> Group2 (Nhóm 2)
-    # Prefix '35' -> Group3 (Nhóm 3)
+    # Standardize Groups: 0 -> Group1, 21 -> Group2, 35 -> Group3
     Group = case_when(
-      SubjPrefix == "0"  ~ "Group1",
-      SubjPrefix == "21" ~ "Group2",
-      SubjPrefix == "35" ~ "Group3",
-      TRUE ~ ifelse(!is.na(SubjPrefix), paste0("Group_", SubjPrefix), "Group1")
+      GroupPrefix == "0"  ~ "Group1",
+      GroupPrefix == "21" ~ "Group2",
+      GroupPrefix == "35" ~ "Group3",
+      TRUE ~ ifelse(!is.na(GroupPrefix), paste0("Group_", GroupPrefix), "Group1")
     ),
     
     # Add sequential sample counter (STT)
     STT = row_number()
   ) %>%
-  select(SampleID, Group, Day, SubjectID, STT)
+  select(SampleID, Group, STT)
 
 # Ensure data folder exists
 dir.create(dirname(metadata_tsv_path), showWarnings = FALSE, recursive = TRUE)
@@ -59,3 +48,4 @@ write_tsv(parsed_metadata, metadata_tsv_path)
 
 cat("SUCCESS: Automated metadata generated and saved to:", metadata_tsv_path, "\n")
 print(head(parsed_metadata, 10))
+

@@ -1,0 +1,281 @@
+=========================================================================
+📝 LOGGING ACTIVE: Live output is being saved to: log/pipeline_20260521_105418.log
+=========================================================================
+=========================================================================
+        __  ___               __            _   __ _____                 
+       /  |/  /____ _ _____  / /_ ___   __ / | / // ___/                 
+      / /|_/ // __ `// ___/ / __// _ \ /_//  |/ / \__ \                  
+     / /  / // /_/ // /__  / /_ /  __/   / /|  / ___/ /                  
+    /_/  /_/ \__,_/ \___/  \__/ \___/   /_/ |_/ /____/                   
+                                                                         
+         Modular 16S rRNA Longitudinal Pipeline Orchestrator             
+=========================================================================
+Global Threads fallback: 64
+------------------- Parallel Resource Allocations ---------------------
+1. MD5 Integrity Check: 64 cores (Parallel)
+2. Raw/Trimmed FastQC:  64 cores (Parallel)
+3. Cutadapt Trimming:   8 concurrent jobs x 8 threads/job
+4. DADA2 Denoising:     64 cores (Parallel)
+5. PICRUSt2 Metagenome: 64 cores (Parallel)
+-------------------------------------------------------------------------
+Raw Read Directory:     ./data
+Sample Sheet TSV:       ./sample.tsv
+Standard Metadata TSV:  ./metadata.tsv
+V3-V4 Primer Forward:   CCTACGGGNGGCWGCAG
+V3-V4 Primer Reverse:   GACTACHVGGGTATCTAATCC
+DADA2 Truncation F/R:   270 / 210 bp
+DADA2 Max EE F/R:       2 / 5
+=========================================================================
+✅ Verified sample sheet exists at: ./sample.tsv
+✅ Verified longitudinal metadata exists at: ./metadata.tsv
+
+⏭️  [RESUME] STAGE 0.5: MD5 Raw Data Integrity Check already completed.
+    Verified output file exists: log/.md5_verified
+    Skipping to next stage...
+
+⏭️  [RESUME] STAGE 1: QC & Cutadapt Primer Trimming already completed.
+    Verified output file exists: ./results/multiqc_report.html
+    Skipping to next stage...
+
+⏭️  [RESUME] STAGE 2: Reference Database Downloader already completed.
+    Verified output file exists: ./data/db/silva_species_assignment_v138.1.fa.gz
+    Skipping to next stage...
+
+⏭️  [RESUME] STAGE 3: DADA2 ASV Inference & Classification already completed.
+    Verified output file exists: ./results/02_dada2/seqtab_nochim.rds
+    Skipping to next stage...
+
+=========================================================================
+ >>> STAGE 4: Phyloseq Assembler & Excel Abundance Export
+     Running command: Rscript script/03_phyloseq_prep.R
+=========================================================================
+Loading required libraries...
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+=========================================================================
+Parameters:
+DADA2 Output Dir:    ./results/02_dada2 
+Phyloseq Output Dir: ./results/03_phyloseq 
+Metadata File Path:  ./metadata.tsv 
+=========================================================================
+>>> Reading standardized metadata TSV from: ./metadata.tsv 
+Rows: 63 Columns: 3
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: "\t"
+chr (2): SampleID, Group
+dbl (1): STT
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+Found 63 matching samples between ASV table and metadata.
+>>> Constructing Phyloseq object...
+Phyloseq object saved to:  ./results/03_phyloseq/phyloseq_obj.rds 
+>>> Exporting abundance tables at different taxonomic ranks...
+Processing rank:  ASV 
+Processing rank:  Phylum 
+Processing rank:  Class 
+Processing rank:  Order 
+Processing rank:  Family 
+Processing rank:  Genus 
+>>> Exporting standard ASV count table for PICRUSt2...
+=========================================================================
+Phyloseq Building & Export Completed successfully!
+Excel Workbook:  ./results/03_phyloseq/taxa_abundance_tables.xlsx 
+Phyloseq RDS:    ./results/03_phyloseq/phyloseq_obj.rds 
+=========================================================================
+ >>> STAGE 4 completed successfully in 44s.
+
+=========================================================================
+ >>> STAGE 5: Repeated-Measures LMM & Beta Ordinations
+     Running command: Rscript script/04_longitudinal_stats.R
+=========================================================================
+Loading required libraries...
+Loading required package: permute
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+
+Attaching package: ‘cowplot’
+
+The following object is masked from ‘package:ggpubr’:
+
+    get_legend
+
+The following object is masked from ‘package:lubridate’:
+
+    stamp
+
+=========================================================================
+Parameters:
+Phyloseq Dir:  ./results/03_phyloseq 
+Stats Dir:     ./results/04_stats 
+=========================================================================
+>>> Section 1: Running Alpha Diversity Group Comparison...
+Comparing Shannon across groups...
+Comparing Observed across groups...
+Warning message:
+`aes_string()` was deprecated in ggplot2 3.0.0.
+ℹ Please use tidy evaluation idioms with `aes()`.
+ℹ See also `vignette("ggplot2-in-packages")` for more information. 
+>>> Section 1.5: Generating Rarefaction Curves...
+There were 27 warnings (use warnings() to see them)
+Warning message:
+Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead. 
+>>> Section 2: Running Beta Diversity PERMANOVA...
+Analyzing Bray-Curtis beta diversity...
+Analyzing Jaccard beta diversity...
+>>> Section 3: Running Compositional ANOVA Differential Abundance...
+Genera kept for testing after prevalence filter (>=20%): 230 
+Differential abundance results saved.
+>>> Section 4: Generating Taxonomic Composition Charts...
+>>> Section 4.5: Generating Genus-level Stacked Barplots...
+=========================================================================
+Statistical Group Comparison Analysis Completed Successfully!
+All plots and tables exported to:  ./results/04_stats 
+=========================================================================
+ >>> STAGE 5 completed successfully in 34s.
+
+=========================================================================
+ >>> STAGE 6: Ecological Interaction Network Mapping
+     Running command: Rscript script/05_network_analysis.R
+=========================================================================
+Loading required libraries...
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+
+Attaching package: ‘igraph’
+
+The following objects are masked from ‘package:lubridate’:
+
+    %--%, union
+
+The following objects are masked from ‘package:dplyr’:
+
+    as_data_frame, groups, union
+
+The following objects are masked from ‘package:purrr’:
+
+    compose, simplify
+
+The following object is masked from ‘package:tidyr’:
+
+    crossing
+
+The following object is masked from ‘package:tibble’:
+
+    as_data_frame
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+
+Attaching package: ‘cowplot’
+
+The following object is masked from ‘package:lubridate’:
+
+    stamp
+
+=========================================================================
+Parameters:
+Phyloseq Dir:  ./results/03_phyloseq 
+Network Dir:   ./results/05_network 
+=========================================================================
+Genera kept for network analysis after filtering: 118 
+
+Processing network for Group: Group1 ...
+Group Group1 Network contains 56 nodes and 58 edges.
+Fontconfig warning: using without calling FcInit()
+
+Processing network for Group: Group2 ...
+Group Group2 Network contains 106 nodes and 360 edges.
+
+Processing network for Group: Group3 ...
+Group Group3 Network contains 103 nodes and 396 edges.
+Warning message:
+In cor(grp_counts, method = "spearman") : the standard deviation is zero
+
+=========================================================================
+Co-occurrence Network Analysis Completed successfully!
+Topology Table:  ./results/05_network/network_topology_comparison.tsv 
+Topology Plot:   ./results/05_network/network_topology_comparison.png 
+=========================================================================
+ >>> STAGE 6 completed successfully in 26s.
+
+=========================================================================
+ >>> STAGE 7: PICRUSt2 Metagenomic Functional Forecasting
+     Running command: THREADS=64 bash script/06_picrust2.sh
+=========================================================================
+=========================================================================
+               16S rRNA PICRUSt2 Functional Prediction                   
+=========================================================================
+ASV Fasta:       ./results/02_dada2/asvs.fasta
+ASV Count Table: ./results/03_phyloseq/asv_table_picrust.tsv
+Output Directory: ./results/06_picrust2
+Threads:         64
+=========================================================================
+>>> Running PICRUSt2 pipeline...
+Warning - 20 input sequences aligned poorly to reference sequences (--min_align option specified a minimum proportion of 0.8 aligning to reference sequences). These input sequences will not be placed and will be excluded from downstream steps.
+
+This is the set of poorly aligned input sequences to be excluded: ASV_00244, ASV_03184, ASV_00513, ASV_03239, ASV_01111, ASV_01117, ASV_00131, ASV_00182, ASV_00212, ASV_00845, ASV_04701, ASV_00807, ASV_04361, ASV_04604, ASV_03483, ASV_00127, ASV_01248, ASV_00987, ASV_02324, ASV_00635
+
+
+Warning - 794 input sequences aligned poorly to reference sequences (--min_align option specified a minimum proportion of 0.8 aligning to reference sequences). These input sequences will not be placed and will be excluded from downstream steps.
+
+This is the set of poorly aligned input sequences to be excluded: ASV_01745, ASV_02545, ASV_02546, ASV_03727, ASV_03910, ASV_04631, ASV_01834, ASV_02963, ASV_01732, ASV_03322, ASV_00359, ASV_01921, ASV_03474, ASV_03396, ASV_04578, ASV_02085, ASV_03693, ASV_00150, ASV_01697, ASV_03299, ASV_01198, ASV_01001, ASV_02261, ASV_04365, ASV_02244, ASV_00980, ASV_01333, ASV_02967, ASV_03458, ASV_01446, ASV_02260, ASV_04604, ASV_02991, ASV_01029, ASV_00247, ASV_00841, ASV_01910, ASV_03208, ASV_01021, ASV_01874, ASV_01684, ASV_02107, ASV_01222, ASV_04085, ASV_00800, ASV_02257, ASV_02574, ASV_01367, ASV_03901, ASV_03361, ASV_03608, ASV_01939, ASV_04177, ASV_04508, ASV_02619, ASV_01282, ASV_01961, ASV_01075, ASV_01196, ASV_03709, ASV_04372, ASV_00893, ASV_04619, ASV_02752, ASV_03986, ASV_03792, ASV_03418, ASV_01504, ASV_00059, ASV_02989, ASV_01872, ASV_03980, ASV_03181, ASV_01634, ASV_02007, ASV_04182, ASV_03404, ASV_03859, ASV_03060, ASV_03204, ASV_03040, ASV_00599, ASV_02482, ASV_03094, ASV_03633, ASV_03967, ASV_01432, ASV_00503, ASV_03003, ASV_01349, ASV_02526, ASV_03203, ASV_03005, ASV_03050, ASV_04155, ASV_00409, ASV_01331, ASV_03943, ASV_04280, ASV_03903, ASV_04429, ASV_02498, ASV_03446, ASV_03736, ASV_02106, ASV_03636, ASV_04250, ASV_01707, ASV_04113, ASV_00973, ASV_03951, ASV_02518, ASV_02626, ASV_03613, ASV_02394, ASV_02095, ASV_01576, ASV_00749, ASV_04193, ASV_01755, ASV_03306, ASV_02252, ASV_03070, ASV_03101, ASV_01772, ASV_01525, ASV_04574, ASV_03867, ASV_01252, ASV_01141, ASV_01329, ASV_02848, ASV_03836, ASV_03289, ASV_01078, ASV_01641, ASV_00992, ASV_01803, ASV_02879, ASV_04146, ASV_00085, ASV_02782, ASV_00786, ASV_00172, ASV_01062, ASV_03071, ASV_04587, ASV_02474, ASV_01637, ASV_03063, ASV_01223, ASV_02930, ASV_02117, ASV_01685, ASV_00140, ASV_01341, ASV_00685, ASV_03886, ASV_04229, ASV_00590, ASV_02609, ASV_01658, ASV_04594, ASV_02345, ASV_00210, ASV_03667, ASV_01804, ASV_01533, ASV_00710, ASV_04010, ASV_03870, ASV_00449, ASV_03330, ASV_00669, ASV_00416, ASV_04078, ASV_01439, ASV_04313, ASV_02816, ASV_04603, ASV_02313, ASV_04003, ASV_00600, ASV_04144, ASV_03184, ASV_02611, ASV_00668, ASV_03307, ASV_00584, ASV_02851, ASV_02893, ASV_02728, ASV_01492, ASV_03898, ASV_04275, ASV_00810, ASV_01421, ASV_00734, ASV_02932, ASV_00068, ASV_02733, ASV_00861, ASV_00981, ASV_03933, ASV_03537, ASV_00648, ASV_01383, ASV_02789, ASV_02730, ASV_00805, ASV_01626, ASV_04196, ASV_01552, ASV_00236, ASV_03143, ASV_04308, ASV_00589, ASV_02661, ASV_02901, ASV_02897, ASV_04133, ASV_01459, ASV_00043, ASV_02521, ASV_01714, ASV_03735, ASV_02464, ASV_03076, ASV_02072, ASV_02438, ASV_01216, ASV_02904, ASV_02627, ASV_03100, ASV_01116, ASV_01182, ASV_01571, ASV_01855, ASV_03657, ASV_01568, ASV_03702, ASV_03351, ASV_03751, ASV_03516, ASV_01163, ASV_03027, ASV_01274, ASV_02747, ASV_02685, ASV_01844, ASV_02843, ASV_03721, ASV_03043, ASV_03240, ASV_03950, ASV_03788, ASV_02852, ASV_03477, ASV_03748, ASV_01028, ASV_03048, ASV_04541, ASV_02349, ASV_03423, ASV_00320, ASV_03381, ASV_04502, ASV_02168, ASV_02275, ASV_02573, ASV_03645, ASV_03253, ASV_03764, ASV_04349, ASV_02891, ASV_03649, ASV_02412, ASV_01762, ASV_02037, ASV_00438, ASV_02232, ASV_02374, ASV_00877, ASV_02441, ASV_02821, ASV_04223, ASV_01648, ASV_00820, ASV_04529, ASV_00638, ASV_01733, ASV_00835, ASV_01005, ASV_03450, ASV_03684, ASV_03022, ASV_02585, ASV_00473, ASV_02812, ASV_01795, ASV_03223, ASV_00211, ASV_04616, ASV_01690, ASV_02294, ASV_01320, ASV_01361, ASV_03820, ASV_02529, ASV_04553, ASV_03745, ASV_04723, ASV_03272, ASV_01750, ASV_02144, ASV_03274, ASV_03198, ASV_02274, ASV_01984, ASV_02491, ASV_03128, ASV_03175, ASV_00682, ASV_04035, ASV_01553, ASV_01954, ASV_04446, ASV_02351, ASV_04119, ASV_03214, ASV_03713, ASV_01352, ASV_01968, ASV_03464, ASV_03595, ASV_00356, ASV_02062, ASV_02334, ASV_03621, ASV_01627, ASV_01615, ASV_02035, ASV_04733, ASV_01556, ASV_01481, ASV_00931, ASV_03700, ASV_02058, ASV_03033, ASV_00540, ASV_02523, ASV_02203, ASV_03360, ASV_02418, ASV_01448, ASV_02818, ASV_04571, ASV_00472, ASV_04214, ASV_03037, ASV_04680, ASV_03115, ASV_01605, ASV_01612, ASV_00349, ASV_01158, ASV_02828, ASV_01014, ASV_01584, ASV_00238, ASV_02296, ASV_00653, ASV_02924, ASV_01572, ASV_00249, ASV_01737, ASV_02657, ASV_00889, ASV_01599, ASV_02288, ASV_02188, ASV_02880, ASV_01841, ASV_03061, ASV_00536, ASV_00990, ASV_03207, ASV_02152, ASV_04555, ASV_00377, ASV_04062, ASV_03918, ASV_01987, ASV_00689, ASV_00231, ASV_02906, ASV_04403, ASV_02182, ASV_02401, ASV_02398, ASV_00155, ASV_03697, ASV_00979, ASV_03430, ASV_01144, ASV_00451, ASV_01812, ASV_01423, ASV_00903, ASV_01356, ASV_02483, ASV_01769, ASV_01622, ASV_01794, ASV_03908, ASV_00715, ASV_01018, ASV_00225, ASV_00649, ASV_03970, ASV_00863, ASV_00537, ASV_01009, ASV_03607, ASV_03808, ASV_00927, ASV_01160, ASV_03293, ASV_02525, ASV_03654, ASV_04131, ASV_02877, ASV_04575, ASV_03609, ASV_01305, ASV_02673, ASV_03824, ASV_03329, ASV_01508, ASV_00425, ASV_02531, ASV_03610, ASV_01739, ASV_02958, ASV_00579, ASV_01701, ASV_02282, ASV_03586, ASV_02976, ASV_01323, ASV_00507, ASV_02527, ASV_02787, ASV_01032, ASV_01670, ASV_04187, ASV_02145, ASV_00967, ASV_00509, ASV_01278, ASV_03909, ASV_00074, ASV_03142, ASV_04117, ASV_00106, ASV_02770, ASV_02973, ASV_03058, ASV_00546, ASV_04731, ASV_00948, ASV_01883, ASV_03589, ASV_00888, ASV_03561, ASV_03572, ASV_03138, ASV_02710, ASV_01994, ASV_02101, ASV_01856, ASV_02753, ASV_00076, ASV_00066, ASV_01266, ASV_03562, ASV_02285, ASV_03049, ASV_02310, ASV_02607, ASV_02905, ASV_03305, ASV_00671, ASV_02071, ASV_01815, ASV_00838, ASV_01015, ASV_02763, ASV_01895, ASV_03326, ASV_01162, ASV_02273, ASV_01728, ASV_02878, ASV_03753, ASV_03955, ASV_02189, ASV_04400, ASV_01385, ASV_00087, ASV_01219, ASV_00308, ASV_04012, ASV_04524, ASV_01820, ASV_04440, ASV_01860, ASV_00660, ASV_04580, ASV_00330, ASV_01583, ASV_00458, ASV_04090, ASV_03692, ASV_00631, ASV_01811, ASV_04528, ASV_02350, ASV_03708, ASV_01024, ASV_02639, ASV_01241, ASV_02027, ASV_04424, ASV_03463, ASV_03020, ASV_02551, ASV_02219, ASV_03714, ASV_02338, ASV_02485, ASV_04067, ASV_00275, ASV_02819, ASV_01426, ASV_01639, ASV_03382, ASV_00436, ASV_00971, ASV_03302, ASV_04732, ASV_03225, ASV_01928, ASV_02150, ASV_03301, ASV_01813, ASV_03695, ASV_03662, ASV_04560, ASV_00670, ASV_01359, ASV_04103, ASV_01835, ASV_02281, ASV_03315, ASV_01475, ASV_03629, ASV_03716, ASV_04043, ASV_02155, ASV_03631, ASV_00956, ASV_04197, ASV_04176, ASV_00799, ASV_02223, ASV_03828, ASV_03010, ASV_01434, ASV_01840, ASV_01249, ASV_02009, ASV_04530, ASV_02651, ASV_01624, ASV_04486, ASV_01128, ASV_03743, ASV_02972, ASV_02684, ASV_02428, ASV_02868, ASV_03468, ASV_04730, ASV_01797, ASV_04075, ASV_04394, ASV_02579, ASV_02987, ASV_04339, ASV_01681, ASV_03759, ASV_04491, ASV_01225, ASV_01309, ASV_04670, ASV_03313, ASV_02096, ASV_00594, ASV_02061, ASV_01610, ASV_02755, ASV_00459, ASV_01478, ASV_01495, ASV_01899, ASV_04322, ASV_00755, ASV_01585, ASV_02258, ASV_03675, ASV_00779, ASV_00122, ASV_03410, ASV_01712, ASV_01901, ASV_02166, ASV_02167, ASV_04346, ASV_00241, ASV_03554, ASV_01146, ASV_04272, ASV_03683, ASV_01256, ASV_02337, ASV_03615, ASV_00610, ASV_01752, ASV_04645, ASV_03264, ASV_04116, ASV_02853, ASV_04363, ASV_02764, ASV_02686, ASV_02847, ASV_01172, ASV_01588, ASV_04111, ASV_02856, ASV_03095, ASV_02742, ASV_00080, ASV_02016, ASV_01593, ASV_00593, ASV_03167, ASV_00887, ASV_00168, ASV_03872, ASV_02903, ASV_02653, ASV_00315, ASV_00343, ASV_03291, ASV_04022, ASV_02148, ASV_01905, ASV_03592, ASV_01480, ASV_02554, ASV_03884, ASV_03455, ASV_00120, ASV_01594, ASV_00200, ASV_01749, ASV_00421, ASV_01355, ASV_03218, ASV_00486, ASV_02869, ASV_01567, ASV_01992, ASV_01386, ASV_02667, ASV_01120, ASV_00523, ASV_02552, ASV_00260, ASV_03337, ASV_01887, ASV_03041, ASV_01415, ASV_04438, ASV_02434, ASV_01401, ASV_01995, ASV_01574, ASV_03403, ASV_04736, ASV_03655, ASV_03762, ASV_04084, ASV_02746, ASV_01194, ASV_01240, ASV_03854, ASV_01868, ASV_00107, ASV_00994, ASV_00462, ASV_01959, ASV_03141, ASV_02178, ASV_03806, ASV_04097, ASV_04019, ASV_02671, ASV_03928, ASV_01748, ASV_03173, ASV_03952, ASV_02895, ASV_03209, ASV_02634, ASV_02488, ASV_01471, ASV_02066, ASV_03269, ASV_00969, ASV_02968, ASV_03442, ASV_04471, ASV_01334, ASV_03377, ASV_03617, ASV_04020, ASV_01088, ASV_03078, ASV_03082, ASV_03239, ASV_02105, ASV_02913, ASV_00560, ASV_02262, ASV_01016, ASV_00176, ASV_03029, ASV_02054, ASV_01157, ASV_02395, ASV_03408, ASV_02844, ASV_03660, ASV_03914, ASV_00422, ASV_00762, ASV_03172, ASV_03670, ASV_03712, ASV_02456, ASV_04605, ASV_03502, ASV_03054, ASV_02925, ASV_04384, ASV_01953, ASV_02141, ASV_04689, ASV_03796, ASV_04290, ASV_02586, ASV_02370, ASV_01688, ASV_00729, ASV_03179, ASV_02202, ASV_02099, ASV_02309, ASV_01297, ASV_04018, ASV_02164, ASV_02224, ASV_03887, ASV_04655, ASV_02520, ASV_02200, ASV_00697, ASV_01801, ASV_00726, ASV_03416, ASV_00563
+
+
+
+
+
+
+
+
+1 of 4733 ASVs were above the max NSTI cut-off of 2.0 and were removed from the downstream analyses.
+
+1 of 4733 ASVs were above the max NSTI cut-off of 2.0 and were removed from the downstream analyses.
+
+
+['bac_KO', 'arc_KO'] {'bac_marker': '/worker_data2/huyha/precisiongene/suran_16S/results/06_picrust2/bac_reduced_marker_predicted_and_nsti.tsv.gz', 'arc_marker': '/worker_data2/huyha/precisiongene/suran_16S/results/06_picrust2/arc_reduced_marker_predicted_and_nsti.tsv.gz', 'bac_EC': '/worker_data2/huyha/precisiongene/suran_16S/results/06_picrust2/bac_EC_predicted.tsv.gz', 'bac_KO': '/worker_data2/huyha/precisiongene/suran_16S/results/06_picrust2/bac_KO_predicted.tsv.gz', 'arc_EC': '/worker_data2/huyha/precisiongene/suran_16S/results/06_picrust2/arc_EC_predicted.tsv.gz', 'arc_KO': '/worker_data2/huyha/precisiongene/suran_16S/results/06_picrust2/arc_KO_predicted.tsv.gz'}
+['bac_EC', 'arc_EC'] {'bac_marker': '/worker_data2/huyha/precisiongene/suran_16S/results/06_picrust2/bac_reduced_marker_predicted_and_nsti.tsv.gz', 'arc_marker': '/worker_data2/huyha/precisiongene/suran_16S/results/06_picrust2/arc_reduced_marker_predicted_and_nsti.tsv.gz', 'bac_EC': '/worker_data2/huyha/precisiongene/suran_16S/results/06_picrust2/bac_EC_predicted.tsv.gz', 'bac_KO': '/worker_data2/huyha/precisiongene/suran_16S/results/06_picrust2/bac_KO_predicted.tsv.gz', 'arc_EC': '/worker_data2/huyha/precisiongene/suran_16S/results/06_picrust2/arc_EC_predicted.tsv.gz', 'arc_KO': '/worker_data2/huyha/precisiongene/suran_16S/results/06_picrust2/arc_KO_predicted.tsv.gz'}
+>>> Decompressing predicted functional abundance tables...
+Unstratified Pathway Abundance: /worker_data2/huyha/precisiongene/suran_16S/results/06_picrust2/pathways_out/path_abun_unstrat.tsv
+=========================================================================
+Functional prediction completed successfully!
+Outputs saved in: /worker_data2/huyha/precisiongene/suran_16S/results/06_picrust2
+=========================================================================
+ >>> STAGE 7 completed successfully in 1755s.
+
+=========================================================================
+🎉 SUCCESS: The entire Longitudinal 16S Workflow has finished!
+All statistics, ecological networks, abundance sheets, and functional
+predictions are compiled inside: ./results/
+=========================================================================

@@ -1,15 +1,13 @@
 #!/usr/bin/env Rscript
 
 # =========================================================================
-#       16S rRNA Longitudinal Statistical Analysis & Visualization
+#       16S rRNA Statistical Analysis & Visualization (Group-wise)
 # =========================================================================
 
 cat("Loading required libraries...\n")
 library(phyloseq)
 library(vegan)
 library(tidyverse)
-library(lme4)
-library(lmerTest)
 library(ggplot2)
 library(ggpubr)
 library(cowplot)
@@ -40,24 +38,22 @@ physeq <- readRDS(physeq_path)
 # Extract metadata
 metadata <- as(sample_data(physeq), "data.frame")
 
-# Validate metadata columns for longitudinal LMM
-required_cols <- c("Group", "Day", "SubjectID")
+# Validate metadata columns for group analysis
+required_cols <- c("Group")
 missing_cols <- setdiff(required_cols, colnames(metadata))
 if (length(missing_cols) > 0) {
-  stop("ERROR: Metadata is missing required columns for longitudinal analysis: ", 
+  stop("ERROR: Metadata is missing required columns for analysis: ", 
        paste(missing_cols, collapse = ", "), 
-       "\nEnsure 'Group', 'Day', and 'SubjectID' are populated.")
+       "\nEnsure 'Group' is populated.")
 }
 
 # Ensure factors are set correctly
 metadata$Group <- factor(metadata$Group)
-metadata$Day <- factor(metadata$Day)
-metadata$SubjectID <- factor(metadata$SubjectID)
 
 # -------------------------------------------------------------------------
-# 1. Longitudinal Alpha Diversity Analysis (LMM)
+# 1. Alpha Diversity Analysis (ANOVA & Kruskal-Wallis)
 # -------------------------------------------------------------------------
-cat(">>> Section 1: Running Alpha Diversity LMM Analysis...\n")
+cat(">>> Section 1: Running Alpha Diversity Group Comparison...\n")
 
 # Compute alpha diversity metrics
 alpha_meas <- estimate_richness(physeq, measures = c("Observed", "Shannon", "Chao1"))
@@ -68,117 +64,56 @@ write.table(alpha_data, file.path(STATS_DIR, "alpha", "alpha_diversity_table.tsv
 # Loop through Shannon and Observed metrics
 metrics <- c("Shannon", "Observed")
 for (metric in metrics) {
-  cat("Modeling longitudinal", metric, "with LMM...\n")
+  cat("Comparing", metric, "across groups...\n")
   
-  # Fit Linear Mixed-Effects Model
-  # Fixed effects: Group, Day, and Group:Day interaction
-  # Random effect: (1 | SubjectID) - accounts for repeated measures within subjects
-  formula_str <- paste(metric, "~ Group * Day + (1 | SubjectID)")
-  lmm_model <- lmer(as.formula(formula_str), data = alpha_data)
-  
-  # Extract ANOVA table (Type III with Satterthwaite approximation)
-  anova_res <- anova(lmm_model)
+  # Fit ANOVA
+  formula_str <- paste(metric, "~ Group")
+  fit_anova <- aov(as.formula(formula_str), data = alpha_data)
+  anova_res <- summary(fit_anova)[[1]]
   write.table(as.data.frame(anova_res), 
-              file.path(STATS_DIR, "alpha", paste0("lmm_anova_", tolower(metric), ".tsv")),
+              file.path(STATS_DIR, "alpha", paste0("anova_", tolower(metric), ".tsv")),
               sep = "\t", quote = FALSE, col.names = NA)
   
-  # Extract summary (specific coefficients)
-  summary_res <- summary(lmm_model)
-  write.table(as.data.frame(summary_res$coefficients), 
-              file.path(STATS_DIR, "alpha", paste0("lmm_coefficients_", tolower(metric), ".tsv")),
-              sep = "\t", quote = FALSE, col.names = NA)
-  
-  # Visualizations
-  # Plot 1: Boxplot across groups and days
-  p1 <- ggplot(alpha_data, aes_string(x = "Day", y = metric, fill = "Group")) +
-    geom_boxplot(outlier.shape = NA, alpha = 0.7) +
-    geom_point(position = position_jitterdodge(jitter.width = 0.1, dodge.width = 0.75), size = 1.5, alpha = 0.8) +
-    theme_cowplot(12) +
-    scale_fill_brewer(palette = "Set2") +
-    labs(title = paste(metric, "by Group & Day"), x = "Collection Day", y = metric)
-  
-  # Plot 2: Volatility / Spaghetti Plot (tracking subjects over time)
-  p2 <- ggplot(alpha_data, aes_string(x = "Day", y = metric, group = "SubjectID", color = "Group")) +
-    geom_line(alpha = 0.5, size = 1) +
-    geom_point(size = 2) +
-    theme_cowplot(12) +
-    scale_color_brewer(palette = "Set2") +
-    facet_wrap(~Group) +
-    labs(title = paste(metric, "Subject Volatility"), x = "Collection Day", y = metric) +
-    theme(legend.position = "none")
-  
-  # Combine plots
-  combined_p <- plot_grid(p1, p2, ncol = 1, rel_heights = c(1, 1))
-  ggsave(file.path(STATS_DIR, "alpha", paste0("alpha_plot_", tolower(metric), ".png")), 
-         plot = combined_p, width = 10, height = 8, dpi = 300)
-}
-
-# -------------------------------------------------------------------------
-# 1.5 Rarefaction Curve Analysis
-# -------------------------------------------------------------------------
-cat(">>> Section 1.5: Generating Rarefaction Curves...\n")
-
-# Extract raw counts (non-normalized)
-counts_raw <- as.matrix(otu_table(physeq))
-if (taxa_are_rows(physeq)) {
-  counts_raw <- t(counts_raw)
-}
-
-# Find sample depths and step sizes
-depths <- rowSums(counts_raw)
-max_depth <- max(depths)
-step_size <- max(100, floor(max_depth / 50))
-
-# Subsample at multiple intervals and calculate observed species
-rarefaction_data <- list()
-for (i in 1:nrow(counts_raw)) {
-  sample_name <- rownames(counts_raw)[i]
-  sample_grp <- metadata[sample_name, "Group"]
-  sample_day <- metadata[sample_name, "Day"]
-  sample_seq <- counts_raw[i, ]
-  sample_seq <- sample_seq[sample_seq > 0]
-  
-  n_reads <- sum(sample_seq)
-  steps <- unique(c(seq(1, n_reads, by = step_size), n_reads))
-  
-  # Calculate expected richness at each step using vegan::rarefy
-  richness <- rarefy(sample_seq, steps)
-  
-  rarefaction_data[[i]] <- data.frame(
-    SampleID = sample_name,
-    Group = sample_grp,
-    Day = sample_day,
-    SubsampleDepth = steps,
-    ObservedRichness = richness
+  # Fit Kruskal-Wallis
+  kw_res <- kruskal.test(as.formula(formula_str), data = alpha_data)
+  kw_df <- data.frame(
+    Statistic = kw_res$statistic,
+    Parameter = kw_res$parameter,
+    P_Value = kw_res$p.value,
+    Method = kw_res$method
   )
+  write.table(kw_df, 
+              file.path(STATS_DIR, "alpha", paste0("kruskal_", tolower(metric), ".tsv")),
+              sep = "\t", quote = FALSE, col.names = NA)
+  
 }
-rarefaction_df <- do.call(rbind, rarefaction_data)
 
-# Plot Rarefaction Curve
-p_rare <- ggplot(rarefaction_df, aes(x = SubsampleDepth, y = ObservedRichness, group = SampleID, color = Group)) +
-  geom_line(alpha = 0.6, size = 0.8) +
-  theme_cowplot(12) +
-  scale_color_brewer(palette = "Set2") +
-  labs(title = "Rarefaction Curves by Group",
-       x = "Sequencing Depth (Reads)",
-       y = "Observed ASVs (Richness)")
-
-ggsave(file.path(STATS_DIR, "alpha", "rarefaction_curve.png"), plot = p_rare, width = 8, height = 6, dpi = 300)
+# Rarefaction Curve Analysis omitted. Handled dynamically on the fly by vis/4.rarefaction.R
 
 
 # -------------------------------------------------------------------------
-# 2. Longitudinal Beta Diversity (Stratified PERMANOVA & PCoA)
+# 2. Beta Diversity (PERMANOVA, PERMDISP, PCoA, NMDS)
 # -------------------------------------------------------------------------
-cat(">>> Section 2: Running Beta Diversity Stratified PERMANOVA...\n")
+cat(">>> Section 2: Running Beta Diversity Analysis...\n")
 
-# Normalize counts using relative abundance (Proportions)
 physeq_prop <- transform_sample_counts(physeq, function(x) x / sum(x))
 
-# Calculate Bray-Curtis and Jaccard distances
+# Calculate distances (including UniFrac which requires the phylogenetic tree)
 bray_dist <- phyloseq::distance(physeq_prop, method = "bray")
 jaccard_dist <- phyloseq::distance(physeq_prop, method = "jaccard")
 
 dists <- list("Bray-Curtis" = bray_dist, "Jaccard" = jaccard_dist)
+
+# Attempt to calculate UniFrac if tree is present
+if (!is.null(phy_tree(physeq_prop, errorIfNULL = FALSE))) {
+  cat("Phylogenetic tree found. Calculating UniFrac distances...\n")
+  wunifrac_dist <- phyloseq::distance(physeq_prop, method = "wunifrac")
+  unifrac_dist <- phyloseq::distance(physeq_prop, method = "unifrac")
+  dists[["Weighted-UniFrac"]] <- wunifrac_dist
+  dists[["Unweighted-UniFrac"]] <- unifrac_dist
+} else {
+  cat("WARNING: No phylogenetic tree found. Skipping UniFrac distances.\n")
+}
 
 for (dist_name in names(dists)) {
   curr_dist <- dists[[dist_name]]
@@ -186,239 +121,140 @@ for (dist_name in names(dists)) {
   
   cat("Analyzing", dist_name, "beta diversity...\n")
   
-  # Run Stratified PERMANOVA using adonis2
-  # Critical Innovation: to account for repeated measures, we restrict permutations 
-  # WITHIN subjects by setting strata = SubjectID.
-  # Otherwise, temporal correlation within individuals violates independent permutation assumptions.
-  permanova_res <- adonis2(curr_dist ~ Group * Day, 
+  # 1. Run PERMANOVA
+  permanova_res <- adonis2(curr_dist ~ Group, 
                            data = metadata, 
-                           strata = metadata$SubjectID,
                            permutations = 999)
   
   write.table(as.data.frame(permanova_res), 
-              file.path(STATS_DIR, "beta", paste0("permanova_stratified_", clean_name, ".tsv")),
+              file.path(STATS_DIR, "beta", paste0("permanova_", clean_name, ".tsv")),
+              sep = "\t", quote = FALSE, col.names = NA)
+              
+  # 2. Run PERMDISP (betadisper)
+  dispersion <- betadisper(curr_dist, metadata$Group)
+  permdisp_res <- permutest(dispersion, permutations = 999)
+  
+  write.table(as.data.frame(permdisp_res$tab), 
+              file.path(STATS_DIR, "beta", paste0("permdisp_", clean_name, ".tsv")),
               sep = "\t", quote = FALSE, col.names = NA)
   
-  # Perform PCoA Ordination
+  # 3. Perform PCoA Ordination
   pcoa_ord <- ordinate(physeq_prop, method = "MDS", distance = curr_dist)
   
-  # Build trajectory visualization (connecting the same subject across days)
   pcoa_df <- data.frame(pcoa_ord$vectors[, 1:2])
   colnames(pcoa_df) <- c("Axis1", "Axis2")
   pcoa_data <- cbind(metadata, pcoa_df)
   
-  # Calculate eigenvalues for axes percentage
   evals <- pcoa_ord$values$Eigenvalues
   pc1_var <- round(100 * evals[1] / sum(evals), 1)
   pc2_var <- round(100 * evals[2] / sum(evals), 1)
   
-  # Plot PCoA with trajectories
-  p_beta <- ggplot(pcoa_data, aes(x = Axis1, y = Axis2, color = Group)) +
-    # Draw paths connecting subjects sequentially across Days
-    geom_path(aes(group = SubjectID), arrow = arrow(length = unit(0.2, "cm"), type = "closed"), alpha = 0.4, size = 0.8) +
-    geom_point(aes(shape = Day), size = 3.5, alpha = 0.9) +
-    theme_cowplot(12) +
-    scale_color_brewer(palette = "Set2") +
-    labs(title = paste0("PCoA based on ", dist_name),
-         x = paste0("PC1 (", pc1_var, "%)"),
-         y = paste0("PC2 (", pc2_var, "%)")) +
-    theme(legend.box = "horizontal")
-  
-  ggsave(file.path(STATS_DIR, "beta", paste0("pcoa_", clean_name, ".png")), 
-         plot = p_beta, width = 8, height = 6, dpi = 300)
-}
-
-# -------------------------------------------------------------------------
-# 3. Compositional Differential Abundance with CLR-LMM
-# -------------------------------------------------------------------------
-cat(">>> Section 3: Running Compositional LMM Differential Abundance...\n")
-
-# Collapse to Genus level
-physeq_genus <- tax_glom(physeq, taxrank = "Genus", NArm = FALSE)
-
-# Filter low prevalence genera to increase power (keep if present in at least 20% of samples)
-prev_threshold <- 0.20
-prev_mask <- apply(otu_table(physeq_genus) > 0, 2, sum) >= (prev_threshold * nsamples(physeq_genus))
-physeq_genus_filt <- prune_taxa(prev_mask, physeq_genus)
-
-cat("Genera kept for testing after prevalence filter (>=20%):", ntaxa(physeq_genus_filt), "\n")
-
-# Extract count matrix and add pseudo-count for CLR
-count_matrix <- as.matrix(otu_table(physeq_genus_filt))
-if (taxa_are_rows(physeq_genus_filt)) {
-  count_matrix <- t(count_matrix)
-}
-count_matrix <- count_matrix + 1  # Add pseudocount of 1 to handle zero counts in log
-
-# Perform CLR transformation (Centered Log-Ratio)
-# CLR(x) = log(x) - mean(log(x))
-clr_matrix <- t(apply(count_matrix, 1, function(x) {
-  log_x <- log(x)
-  return(log_x - mean(log_x))
-}))
-
-# Extract taxonomy for annotation
-tax_genus <- as.data.frame(tax_table(physeq_genus_filt))
-
-# List to store results
-lmm_diff_results <- list()
-
-for (i in 1:ncol(clr_matrix)) {
-  asv_name <- colnames(clr_matrix)[i]
-  genus_name <- tax_genus[asv_name, "Genus"]
-  family_name <- tax_genus[asv_name, "Family"]
-  full_label <- paste0(family_name, "_", genus_name)
-  
-  # Prepare model data
-  model_df <- data.frame(
-    CLR_abundance = clr_matrix[, i],
-    Group = metadata$Group,
-    Day = metadata$Day,
-    SubjectID = metadata$SubjectID
-  )
-  
-  # Fit LMM: test Group, Day, and Group:Day interaction
-  # We wrap this in tryCatch in case a rare taxon model fails to converge
-  tryCatch({
-    fit <- lmer(CLR_abundance ~ Group * Day + (1 | SubjectID), data = model_df)
-    an_res <- anova(fit)
-    
-    # Extract p-values for Group, Day, and Group:Day
-    p_group <- an_res["Group", "Pr(>F)"]
-    p_day <- an_res["Day", "Pr(>F)"]
-    p_inter <- an_res["Group:Day", "Pr(>F)"]
-    
-    # Extract F-statistics
-    f_group <- an_res["Group", "F value"]
-    f_day <- an_res["Day", "F value"]
-    f_inter <- an_res["Group:Day", "F value"]
-    
-    lmm_diff_results[[i]] <- data.frame(
-      ASV_ID = asv_name,
-      Taxon = full_label,
-      F_Group = f_group,
-      P_Group = p_group,
-      F_Day = f_day,
-      P_Day = p_day,
-      F_Interaction = f_inter,
-      P_Interaction = p_inter
-    )
-  }, error = function(e) {
-    # If convergence fails, skip
+  # 4. Perform NMDS Ordination
+  capture.output({
+    nmds_ord <- try(ordinate(physeq_prop, method = "NMDS", distance = curr_dist, k=2, trymax=50), silent=TRUE)
   })
 }
 
-# Bind and adjust for multiple testing (FDR correction)
-if (length(lmm_diff_results) > 0) {
-  diff_df <- do.call(rbind, lmm_diff_results)
+# -------------------------------------------------------------------------
+# 3. Differential Abundance with ANCOM-BC2
+# -------------------------------------------------------------------------
+cat(">>> Section 3: Running ANCOM-BC2 Global Differential Abundance...\n")
+
+library(ANCOMBC)
+
+# Agglomerate to Genus
+physeq_genus <- tax_glom(physeq, taxrank = "Genus", NArm = FALSE)
+
+# Clean group names to remove spaces to ensure robust column matching in ANCOM-BC2
+sample_data(physeq_genus)$Group <- gsub(" ", "", sample_data(physeq_genus)$Group)
+# Force Group to factor with Level 1 as the reference level
+sample_data(physeq_genus)$Group <- factor(sample_data(physeq_genus)$Group, levels = c("Group1", "Group2", "Group3"))
+
+# Run ANCOM-BC2 (both Global LRT and Pairwise comparisons in one shot)
+res_ancom <- ancombc2(
+  data = physeq_genus,
+  fix_formula = "Group",
+  group = "Group",
+  global = TRUE,
+  pairwise = TRUE,
+  verbose = FALSE
+)
+
+# Extract and format Global results
+res_global <- res_ancom$res_global
+tax_genus <- as.data.frame(tax_table(physeq_genus))
+
+diff_df <- res_global %>%
+  mutate(
+    ASV_ID = taxon,
+    Taxon = paste0(tax_genus[ASV_ID, "Family"], "_", tax_genus[ASV_ID, "Genus"]),
+    P_Group = p_val,
+    FDR_Group = q_val,
+    F_Group = W # W statistic acts as the global test statistic
+  ) %>%
+  filter(!is.na(P_Group)) %>%
+  arrange(P_Group) %>%
+  select(ASV_ID, Taxon, F_Group, P_Group, FDR_Group)
+
+write_tsv(diff_df, file.path(STATS_DIR, "differential", "differential_abundance_genus.tsv"))
+cat("ANCOM-BC2 global differential abundance results saved.\n")
+
+# Taxonomic Composition stacked barplots omitted. Handled dynamically by vis/1.tax.R
+
+cat(">>> Section 5: Pairwise Group-by-Group Differential Abundance...\n")
+
+res_pair <- res_ancom$res_pair
+
+# Pre-calculate relative abundance means to display in the final TSV
+# (Use original group levels Group1, Group2, Group3 without spaces to match metadata$Group)
+ps_rel <- transform_sample_counts(physeq_genus, function(x) x / sum(x))
+df_rel <- psmelt(ps_rel)
+
+mean_abunds <- df_rel %>%
+  group_by(OTU, Group) %>%
+  summarise(mean_val = mean(Abundance, na.rm = TRUE), .groups = "drop")
+
+# We will build a long-format pairwise results table
+pairwise_results <- data.frame()
+
+# Define the three pairwise comparisons we expect from ANCOM-BC2
+comparisons <- list(
+  list(comp_name = "Group2_vs_Group1", lfc_col = "lfc_GroupGroup2", p_col = "p_GroupGroup2", q_col = "q_GroupGroup2", g1 = "Group1", g2 = "Group2"),
+  list(comp_name = "Group3_vs_Group1", lfc_col = "lfc_GroupGroup3", p_col = "p_GroupGroup3", q_col = "q_GroupGroup3", g1 = "Group1", g2 = "Group3"),
+  list(comp_name = "Group3_vs_Group2", lfc_col = "lfc_GroupGroup3_GroupGroup2", p_col = "p_GroupGroup3_GroupGroup2", q_col = "q_GroupGroup3_GroupGroup2", g1 = "Group2", g2 = "Group3")
+)
+
+for (comp in comparisons) {
+  cat(sprintf("   Structuring %s...\n", comp$comp_name))
   
-  # Benjamini-Hochberg FDR correction
-  diff_df$FDR_Group <- p.adjust(diff_df$P_Group, method = "BH")
-  diff_df$FDR_Day <- p.adjust(diff_df$P_Day, method = "BH")
-  diff_df$FDR_Interaction <- p.adjust(diff_df$P_Interaction, method = "BH")
-  
-  # Sort by Group significance
-  diff_df <- diff_df %>% arrange(P_Group)
-  
-  write_tsv(diff_df, file.path(STATS_DIR, "differential", "lmm_differential_abundance_genus.tsv"))
-  cat("Differential abundance results saved.\n")
-  
-  # Visualizing the top significant Genus
-  top_genus <- diff_df$ASV_ID[1]
-  top_label <- diff_df$Taxon[1]
-  
-  if (!is.na(top_genus)) {
-    plot_df <- data.frame(
-      CLR_abundance = clr_matrix[, top_genus],
-      Group = metadata$Group,
-      Day = metadata$Day,
-      SubjectID = metadata$SubjectID
+  comp_df <- res_pair %>%
+    mutate(
+      ASV_ID = taxon,
+      Genus = tax_genus[ASV_ID, "Genus"],
+      Comparison = comp$comp_name,
+      log2FoldChange = .data[[comp$lfc_col]],
+      pvalue = .data[[comp$p_col]],
+      p_adj = .data[[comp$q_col]],
+      mean_g1 = NA,
+      mean_g2 = NA
     )
-    
-    p_diff <- ggplot(plot_df, aes(x = Day, y = CLR_abundance, fill = Group)) +
-      geom_boxplot(outlier.shape = NA, alpha = 0.7) +
-      geom_point(position = position_jitterdodge(jitter.width = 0.1, dodge.width = 0.75), alpha = 0.7) +
-      theme_cowplot(12) +
-      scale_fill_brewer(palette = "Set2") +
-      labs(title = paste("Abundance of Top Taxon:", top_label),
-           x = "Collection Day",
-           y = "CLR-Transformed Abundance")
-    
-    ggsave(file.path(STATS_DIR, "differential", "top_significant_genus_plot.png"), 
-           plot = p_diff, width = 8, height = 6, dpi = 300)
+  
+  # Inject pre-calculated relative abundance means
+  for (i in 1:nrow(comp_df)) {
+    asv <- comp_df$ASV_ID[i]
+    comp_df$mean_g1[i] <- mean_abunds$mean_val[mean_abunds$OTU == asv & mean_abunds$Group == comp$g1][1]
+    comp_df$mean_g2[i] <- mean_abunds$mean_val[mean_abunds$OTU == asv & mean_abunds$Group == comp$g2][1]
   }
-} else {
-  cat("WARNING: No LMM models converged successfully.\n")
+  
+  pairwise_results <- bind_rows(pairwise_results, comp_df)
 }
 
-# -------------------------------------------------------------------------
-# 4. Taxonomic Composition Volatility
-# -------------------------------------------------------------------------
-cat(">>> Section 4: Generating Taxonomic Volatility Charts...\n")
+pairwise_results <- pairwise_results %>%
+  filter(!is.na(pvalue)) %>%
+  arrange(Comparison, p_adj) %>%
+  select(Comparison, Genus, mean_g1, mean_g2, log2FoldChange, pvalue, p_adj)
 
-# Agglomerate to Phylum level
-physeq_phylum <- tax_glom(physeq, taxrank = "Phylum")
-phylum_df <- psmelt(transform_sample_counts(physeq_phylum, function(x) x / sum(x)))
-
-# Filter to top 5 Phyla, group others
-top5_phyla <- phylum_df %>%
-  group_by(Phylum) %>%
-  summarise(MeanAbund = mean(Abundance)) %>%
-  arrange(desc(MeanAbund)) %>%
-  slice(1:5) %>%
-  pull(Phylum)
-
-phylum_df <- phylum_df %>%
-  mutate(PhylumGroup = ifelse(Phylum %in% top5_phyla, Phylum, "Other Phyla"))
-
-# Volatility Plot for Phyla
-p_phylum_time <- ggplot(phylum_df, aes(x = Day, y = Abundance, fill = PhylumGroup)) +
-  geom_bar(stat = "summary", fun = "mean", position = "stack", width = 0.6) +
-  theme_cowplot(12) +
-  scale_fill_brewer(palette = "Spectral") +
-  facet_wrap(~Group) +
-  labs(title = "Phylum Relative Abundance Volatility", x = "Collection Day", y = "Mean Relative Abundance", fill = "Phylum")
-
-ggsave(file.path(STATS_DIR, "taxa_volatility_phylum.png"), 
-       plot = p_phylum_time, width = 10, height = 6, dpi = 300)
-
-# Genus relative abundance stacked barplot
-cat(">>> Section 4.5: Generating Genus-level Stacked Barplots...\n")
-
-# Use previously collapsed genus phyloseq object, calculate relative abundances
-physeq_genus_rel <- transform_sample_counts(physeq_genus, function(x) x / sum(x))
-genus_df <- psmelt(physeq_genus_rel)
-
-# Filter to top 10 Genera, group others as "Other Genera"
-top10_genera <- genus_df %>%
-  group_by(Genus) %>%
-  summarise(MeanAbund = mean(Abundance)) %>%
-  arrange(desc(MeanAbund)) %>%
-  slice(1:10) %>%
-  pull(Genus)
-
-genus_df <- genus_df %>%
-  mutate(GenusGroup = ifelse(Genus %in% top10_genera, Genus, "Other Genera"))
-
-# Ensure GenusGroup displays cleanly
-genus_df$GenusGroup <- factor(genus_df$GenusGroup, levels = c(top10_genera, "Other Genera"))
-
-# Plot Genus Stacked Barplot faceted by Group
-p_genus_bar <- ggplot(genus_df, aes(x = Day, y = Abundance, fill = GenusGroup)) +
-  geom_bar(stat = "summary", fun = "mean", position = "stack", width = 0.6) +
-  theme_cowplot(12) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_wrap(~Group) +
-  labs(title = "Genus Relative Abundance Volatility", 
-       x = "Collection Day", 
-       y = "Mean Relative Abundance", 
-       fill = "Genus")
-
-ggsave(file.path(STATS_DIR, "taxa_barplot_genus.png"), 
-       plot = p_genus_bar, width = 12, height = 7, dpi = 300)
-
-
-cat("=========================================================================\n")
-cat("Longitudinal Statistical Analysis Completed Successfully!\n")
-cat("All plots and tables exported to: ", STATS_DIR, "\n")
-cat("=========================================================================\n")
+# Save the results
+out_file <- file.path(STATS_DIR, "differential", "pairwise_differential_abundance.tsv")
+write_tsv(pairwise_results, out_file)
+cat(sprintf("   Pairwise ANCOM-BC2 results saved to: %s\n", out_file))
