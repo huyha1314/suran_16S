@@ -23,10 +23,18 @@ metrics <- c("bray", "jaccard", "wunifrac", "unifrac")
 metrics_file_names <- c("bray_curtis", "jaccard", "weighted_unifrac", "unweighted_unifrac")
 metric_names <- c("Bray-Curtis", "Jaccard", "Weighted UniFrac", "Unweighted UniFrac")
 
+has_tree <- !is.null(phy_tree(ps_rel, errorIfNULL = FALSE))
+
 for (i in 1:length(metrics)) {
   m <- metrics[i]
   m_file <- metrics_file_names[i]
   m_name <- metric_names[i]
+  
+  # Skip UniFrac metrics if no phylogenetic tree is available
+  if (m %in% c("wunifrac", "unifrac") && !has_tree) {
+    cat(sprintf("   Skipping %s: no phylogenetic tree available (long-read mode).\n", m_name))
+    next
+  }
   
   cat(sprintf(">>> Generating high-res Beta Diversity plots for %s...\n", m_name))
   

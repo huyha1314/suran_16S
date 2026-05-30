@@ -24,15 +24,23 @@ if (!"SampleID" %in% colnames(df_samples)) {
 cat("Inferring longitudinal study groups...\n")
 parsed_metadata <- df_samples %>%
   mutate(
-    # Extract GroupPrefix (before dash)
-    GroupPrefix = str_match(SampleID, "^(\\d+)-")[,2],
+    # 1. Dynamic prefix extraction with multi-tier fallback:
+    # Tier 1: Extract everything before the last dash/underscore + digits (e.g. EM_10 -> EM, DC3_01 -> DC3, 0-12 -> 0)
+    GroupPrefix = str_match(SampleID, "^(.+?)[_-]\\d+$")[,2],
     
-    # Standardize Groups: 0 -> Group1, 21 -> Group2, 35 -> Group3
+    # Tier 2: Extract everything before the first dash/underscore (e.g. DP4-B9V2 -> DP4) if Tier 1 returned NA
+    GroupPrefix = ifelse(is.na(GroupPrefix), str_match(SampleID, "^([A-Za-z0-9]+?)[_-]")[,2], GroupPrefix),
+    
+    # Tier 3: Default to full SampleID if no separator is found
+    GroupPrefix = ifelse(is.na(GroupPrefix), SampleID, GroupPrefix),
+    
+    # 2. Standardize Groups dynamically (maintaining explicit groups for shortread baseline datasets)
     Group = case_when(
       GroupPrefix == "0"  ~ "Group1",
       GroupPrefix == "21" ~ "Group2",
       GroupPrefix == "35" ~ "Group3",
-      TRUE ~ ifelse(!is.na(GroupPrefix), paste0("Group_", GroupPrefix), "Group1")
+      is.na(GroupPrefix)  ~ "Group1",
+      TRUE ~ GroupPrefix
     ),
     
     # Add sequential sample counter (STT)

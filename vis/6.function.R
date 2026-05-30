@@ -10,7 +10,12 @@ library(matrixStats) # For rowVars
 
 # 1. Load the unstratified pathway abundance from PICRUSt2
 # This file contains the raw abundance of functional pathways predicted for each sample
-pathways_raw <- read_tsv("results/06_picrust2/pathways_out/path_abun_unstrat.tsv", show_col_types = FALSE)
+picrust_path <- "results/06_picrust2/pathways_out/path_abun_unstrat.tsv"
+if (!file.exists(picrust_path)) {
+  message("PICRUSt2 output not found (expected in longread mode). Skipping functional visualization.")
+  quit(save = "no", status = 0)
+}
+pathways_raw <- read_tsv(picrust_path, show_col_types = FALSE)
 
 # 2. Filter for the Top Most Variable Pathways
 # We want to remove static "housekeeping" pathways and highlight the ones driving functional changes.

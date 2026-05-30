@@ -10,15 +10,14 @@ library(dplyr)
 # ==============================================================================
 
 # 1. Load multi-group data
-multi_df <- read.delim("results/04_stats/differential/differential_abundance_genus.tsv", sep = "\t", header = TRUE, check.names = FALSE)
+multi_df <- read.delim("results/04_stats/differential/differential_abundance_species.tsv", sep = "\t", header = TRUE, check.names = FALSE)
 
 multi_df$Genus <- multi_df$Taxon
-multi_df$p_adj <- multi_df$FDR_Group
-multi_df$EffectSize <- multi_df$F_Group
 p_threshold <- 0.05
 
 multi_df <- multi_df %>%
-  filter(!is.na(p_adj) & !is.na(EffectSize)) %>%
+  filter(!is.na(FDR_Group) & !is.na(F_Group)) %>%
+  rename(p_adj = FDR_Group, EffectSize = F_Group) %>%
   mutate(p_adj = ifelse(p_adj == 0, .Machine$double.xmin, p_adj)) %>%
   mutate(
     Significance = ifelse(p_adj < p_threshold, "Significant Biomarker", "Not Significant"),
@@ -152,7 +151,22 @@ pair_file <- "results/04_stats/differential/pairwise_differential_abundance.tsv"
 if (file.exists(pair_file)) {
   pair_df <- read.delim(pair_file, sep = "\t", header = TRUE)
   
-  lfc_threshold <- 1.0 # Log2FC > 1 or < -1 (Fold change of 2)
+  # Detect LFC column from ANCOM-BC2 (lfc_Group*) or use W-statistic fallback
+  lfc_col <- grep("^lfc_", colnames(pair_df), value = TRUE)[1]
+  q_col   <- grep("^q_", colnames(pair_df), value = TRUE)[1]
+  
+  if (!is.na(lfc_col) && !is.na(q_col)) {
+    pair_df$log2FoldChange <- pair_df[[lfc_col]]
+    pair_df$p_adj          <- pair_df[[q_col]]
+    pair_df$Comparison     <- gsub("lfc_Group", "", lfc_col)
+  } else {
+    # Fallback: nothing to plot
+    message("No LFC/q columns detected in pairwise output. Skipping pairwise volcano.")
+    pair_df <- NULL
+  }
+  
+  if (!is.null(pair_df)) {
+  lfc_threshold <- 1.0
   
   pair_df <- pair_df %>%
     filter(!is.na(p_adj) & !is.na(log2FoldChange)) %>%
@@ -168,7 +182,7 @@ if (file.exists(pair_file)) {
   
   # Note the 'frame = Comparison' aesthetic. This creates the dropdown animation.
   p_pair <- ggplot(pair_df, aes(x = log2FoldChange, y = log10_p, color = Significance, frame = Comparison,
-    text = paste("Genus:", Genus, "<br>Log2FC:", round(log2FoldChange, 2), "<br>FDR:", signif(p_adj, 3)))) +
+    text = paste("Taxon:", taxon, "<br>LFC:", round(log2FoldChange, 2), "<br>FDR:", signif(p_adj, 3)))) +
     geom_point(alpha = 0.7, size = 1.5) +
     scale_color_manual(values = c("Enriched (Up)" = "red", "Depleted (Down)" = "blue", "Not Significant" = "grey")) +
     theme_bw() +
@@ -176,12 +190,19 @@ if (file.exists(pair_file)) {
     geom_hline(yintercept = -log10(p_threshold), linetype = "dashed", color = "black", alpha = 0.5) +
     labs(title = "Pairwise Biomarkers (Volcano Plot)", x = "Log2 Fold Change", y = "-Log10(FDR)")
   
+  n_comparisons <- length(unique(pair_df$Comparison))
+  
   p_pair_inter <- ggplotly(p_pair, tooltip = "text") %>%
-    animation_opts(frame = 0, transition = 0, redraw = TRUE) %>%
-    animation_slider(currentvalue = list(prefix = "Comparison: ", font = list(color = "red"))) %>%
     config(displaylogo = FALSE, toImageButtonOptions = list(format="png", filename="Pairwise_Volcano", width=1000, height=700, scale=2))
   
-  sig_pair <- pair_df %>% filter(Significance != "Not Significant") %>% arrange(Comparison, p_adj) %>% select(Comparison, Genus, log2FoldChange, p_adj, Significance)
+  # Only add animation slider when there are multiple comparisons to animate
+  if (n_comparisons > 1) {
+    p_pair_inter <- p_pair_inter %>%
+      animation_opts(frame = 0, transition = 0, redraw = TRUE) %>%
+      animation_slider(currentvalue = list(prefix = "Comparison: ", font = list(color = "red")))
+  }
+  
+  sig_pair <- pair_df %>% filter(Significance != "Not Significant") %>% arrange(Comparison, p_adj) %>% select(Comparison, taxon, log2FoldChange, p_adj, Significance)
   sig_pair$log2FoldChange <- round(sig_pair$log2FoldChange, 2)
   sig_pair$p_adj <- signif(sig_pair$p_adj, 3)
   
@@ -286,6 +307,7 @@ if (file.exists(pair_file)) {
     )
   )
   save_html(pair_view, "results/interactive_reports/04_diff_pairwise.html")
+  } # end if (!is.null(pair_df))
 } else {
   message("Pairwise data not found. Skipping pairwise plot.")
 }

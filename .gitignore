@@ -5,3 +5,5 @@ data/
 results/
 rp_final/
 log/
+*.gz
+*.zip

@@ -70,26 +70,36 @@ get_rarefaction_data <- function(otu_tab, metric = "observed") {
 # HELPER FUNCTION TO GENERATE INTERACTIVE PLOTLY AND PDF
 # =========================================================================
 save_rarefaction_report <- function(plot_df, title, y_label, min_depth, file_out, filename) {
-  p <- ggplot(plot_df, aes(x = Reads, y = Value, group = SampleID, color = Group, text = SampleID)) +
+  
+  # CRITICAL FIX: Added scale_x_log10 to fix squished curves from depth disparity
+  p_base <- ggplot(plot_df, aes(x = Reads, y = Value, group = SampleID, color = SampleID, text = paste("Group:", Group, "<br>Sample:", SampleID))) +
     geom_line(alpha = 0.7, linewidth = 0.8) +
     theme_bw() +
     labs(
       title = title,
-      x = "Sequencing Depth (Number of Reads)",
+      x = "Sequencing Depth (Reads - Log10 Scale)",
       y = y_label
     ) +
     geom_vline(xintercept = min_depth, linetype = "dashed", color = "darkgrey")
   
-  # Save PDF version
+  # Save PDF version with comma labels
+  p_pdf <- p_base + scale_x_log10(labels = scales::comma)
   pdf_out <- sub("\\.html$", ".pdf", file_out)
   pdf_filename <- basename(pdf_out)
-  ggsave(pdf_out, plot = p, width = 10, height = 7, device = "pdf", dpi = 300)
+  ggsave(pdf_out, plot = p_pdf, width = 10, height = 7, device = "pdf", dpi = 300)
   
-  # Interactive Plotly
-  p_interactive <- ggplotly(p, tooltip = c("text", "x", "y")) %>%
+  # Interactive Plotly: Configure log scale in Plotly layout instead of ggplot to ensure x-axis ticks render properly
+  p_interactive <- ggplotly(p_base, tooltip = c("text", "x", "y")) %>%
     layout(
-      margin = list(b = 60, r = 180), # 60px bottom margin, 180px right margin for group legend names
-      legend = list(orientation = "v", x = 1.02, y = 1)
+      margin = list(b = 90, l = 80, r = 180), # Margins adjusted to protect text labels from clipping
+      legend = list(orientation = "v", x = 1.02, y = 1),
+      xaxis = list(
+        type = "log", 
+        automargin = TRUE, 
+        tickformat = ",",
+        title = "Sequencing Depth (Reads - Log10 Scale)"
+      ),
+      yaxis = list(automargin = TRUE)
     ) %>%
     config(
       displaylogo = FALSE,
@@ -204,13 +214,13 @@ save_rarefaction_report <- function(plot_df, title, y_label, min_depth, file_out
 }
 
 # =========================================================================
-# CALCULATE AND BUILD THE PLOTS
+# CALCULATE AND BUILD THE PLOTS (RE-ALIGNED FOR COHESIVE LONGREAD NAMES)
 # =========================================================================
 
-# 1. ASV Level Raw Counts
-otu_asv <- as(otu_table(ps), "matrix")
-if (taxa_are_rows(ps)) { otu_asv <- t(otu_asv) }
-min_depth_asv <- min(rowSums(otu_asv))
+# 1. Species Level Raw Counts (Substituted for raw base entries)
+otu_species <- as(otu_table(ps), "matrix")
+if (taxa_are_rows(ps)) { otu_species <- t(otu_species) }
+min_depth_species <- min(rowSums(otu_species))
 
 # 2. Genus Level Raw Counts
 ps_genus <- tax_glom(ps, taxrank = "Genus")
@@ -218,16 +228,16 @@ otu_genus <- as(otu_table(ps_genus), "matrix")
 if (taxa_are_rows(ps_genus)) { otu_genus <- t(otu_genus) }
 min_depth_genus <- min(rowSums(otu_genus))
 
-cat(">>> Calculating ASV-Level Richness Rarefaction...\n")
-df_asv_obs <- get_rarefaction_data(otu_asv, metric = "observed")
-save_rarefaction_report(df_asv_obs, "ASV-Level Observed Richness Rarefaction", "Observed ASVs (Richness)", min_depth_asv, "results/interactive_reports/02b_rarefaction_asv_observed.html", "ASV_Observed_Rarefaction")
+cat(">>> Calculating Species-Level Richness Rarefaction...\n")
+df_species_obs <- get_rarefaction_data(otu_species, metric = "observed")
+save_rarefaction_report(df_species_obs, "Species-Level Observed Richness Rarefaction", "Observed Species (Richness)", min_depth_species, "results/interactive_reports/02b_rarefaction_asv_observed.html", "Species_Observed_Rarefaction")
 
 cat(">>> Calculating Genus-Level Richness Rarefaction...\n")
 df_genus_obs <- get_rarefaction_data(otu_genus, metric = "observed")
 save_rarefaction_report(df_genus_obs, "Genus-Level Observed Richness Rarefaction", "Observed Genera", min_depth_genus, "results/interactive_reports/02b_rarefaction_genus_observed.html", "Genus_Observed_Rarefaction")
 
-cat(">>> Calculating ASV-Level Shannon Saturation...\n")
-df_asv_sha <- get_rarefaction_data(otu_asv, metric = "shannon")
-save_rarefaction_report(df_asv_sha, "ASV-Level Shannon Diversity Saturation", "Shannon Diversity Index", min_depth_asv, "results/interactive_reports/02b_rarefaction_asv_shannon.html", "ASV_Shannon_Saturation")
+cat(">>> Calculating Species-Level Shannon Saturation...\n")
+df_species_sha <- get_rarefaction_data(otu_species, metric = "shannon")
+save_rarefaction_report(df_species_sha, "Species-Level Shannon Diversity Saturation", "Shannon Diversity Index", min_depth_species, "results/interactive_reports/02b_rarefaction_asv_shannon.html", "Species_Shannon_Saturation")
 
 cat(">>> Rarefaction calculations and interactive plotting completed successfully!\n")

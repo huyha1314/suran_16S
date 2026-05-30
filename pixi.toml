@@ -17,6 +17,9 @@ stats = "Rscript script/04_longitudinal_stats.R"
 network = "Rscript script/05_network_analysis.R"
 download_db = "bash script/download_db.sh"
 picrust2 = "bash script/06_picrust2.sh"
+qc_trim_long = "bash script/01_qc_trim_longread.sh"
+classify_long = "Rscript script/02_minimap2_classify.R"
+
 
 # --- New Visualization & Reporting Tasks ---
 vis_tax = "Rscript vis/1.tax.R"
@@ -63,3 +66,16 @@ fasttree = ">=2.2.0,<3"
 bioconductor-deseq2 = ">=1.50.2,<2"
 bioconductor-ancombc = ">=2.12.0,<3"
 bioconductor-microbiome = ">=1.32.0,<2"
+minimap2 = ">=2.28,<3"
+samtools = ">=1.19,<2"
+filtlong = ">=0.2.1,<0.3"
+nanoplot = ">=1.42.0,<2"
+emu = ">=3.6.2,<4"
+kraken2 = ">=2.17.1,<3"
+bracken = ">=3.1,<4"
+osfclient = ">=0.0.5,<0.0.6"
+kraken-biom = ">=1.2.0,<2"
+barrnap = ">=1.10.6,<2"
+bioconductor-decontam = ">=1.30.0,<2"
+
+

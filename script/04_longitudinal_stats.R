@@ -55,6 +55,10 @@ metadata$Group <- factor(metadata$Group)
 # -------------------------------------------------------------------------
 cat(">>> Section 1: Running Alpha Diversity Group Comparison...\n")
 
+cat(">>> Preparing OTU table for Alpha Diversity (Rounding to integers)...\n")
+# 1. Force the OTU table to contain only whole integers
+otu_table(physeq) <- round(otu_table(physeq))
+
 # Compute alpha diversity metrics
 alpha_meas <- estimate_richness(physeq, measures = c("Observed", "Shannon", "Chao1"))
 alpha_data <- cbind(metadata, alpha_meas)
@@ -162,17 +166,14 @@ cat(">>> Section 3: Running ANCOM-BC2 Global Differential Abundance...\n")
 
 library(ANCOMBC)
 
-# Agglomerate to Genus
-physeq_genus <- tax_glom(physeq, taxrank = "Genus", NArm = FALSE)
+# Agglomerate to Species
+physeq_species <- tax_glom(physeq, taxrank = "Species", NArm = FALSE)
 
 # Clean group names to remove spaces to ensure robust column matching in ANCOM-BC2
-sample_data(physeq_genus)$Group <- gsub(" ", "", sample_data(physeq_genus)$Group)
-# Force Group to factor with Level 1 as the reference level
-sample_data(physeq_genus)$Group <- factor(sample_data(physeq_genus)$Group, levels = c("Group1", "Group2", "Group3"))
-
+sample_data(physeq_species)$Group <- gsub(" ", "", sample_data(physeq_species)$Group)
 # Run ANCOM-BC2 (both Global LRT and Pairwise comparisons in one shot)
 res_ancom <- ancombc2(
-  data = physeq_genus,
+  data = physeq_species,
   fix_formula = "Group",
   group = "Group",
   global = TRUE,
@@ -182,12 +183,12 @@ res_ancom <- ancombc2(
 
 # Extract and format Global results
 res_global <- res_ancom$res_global
-tax_genus <- as.data.frame(tax_table(physeq_genus))
+tax_species <- as.data.frame(tax_table(physeq_species))
 
 diff_df <- res_global %>%
   mutate(
     ASV_ID = taxon,
-    Taxon = paste0(tax_genus[ASV_ID, "Family"], "_", tax_genus[ASV_ID, "Genus"]),
+    Taxon = paste0(tax_species[ASV_ID, "Genus"], "_", tax_species[ASV_ID, "Species"]),
     P_Group = p_val,
     FDR_Group = q_val,
     F_Group = W # W statistic acts as the global test statistic
@@ -196,7 +197,7 @@ diff_df <- res_global %>%
   arrange(P_Group) %>%
   select(ASV_ID, Taxon, F_Group, P_Group, FDR_Group)
 
-write_tsv(diff_df, file.path(STATS_DIR, "differential", "differential_abundance_genus.tsv"))
+write_tsv(diff_df, file.path(STATS_DIR, "differential", "differential_abundance_species.tsv"))
 cat("ANCOM-BC2 global differential abundance results saved.\n")
 
 # Taxonomic Composition stacked barplots omitted. Handled dynamically by vis/1.tax.R
@@ -205,56 +206,7 @@ cat(">>> Section 5: Pairwise Group-by-Group Differential Abundance...\n")
 
 res_pair <- res_ancom$res_pair
 
-# Pre-calculate relative abundance means to display in the final TSV
-# (Use original group levels Group1, Group2, Group3 without spaces to match metadata$Group)
-ps_rel <- transform_sample_counts(physeq_genus, function(x) x / sum(x))
-df_rel <- psmelt(ps_rel)
-
-mean_abunds <- df_rel %>%
-  group_by(OTU, Group) %>%
-  summarise(mean_val = mean(Abundance, na.rm = TRUE), .groups = "drop")
-
-# We will build a long-format pairwise results table
-pairwise_results <- data.frame()
-
-# Define the three pairwise comparisons we expect from ANCOM-BC2
-comparisons <- list(
-  list(comp_name = "Group2_vs_Group1", lfc_col = "lfc_GroupGroup2", p_col = "p_GroupGroup2", q_col = "q_GroupGroup2", g1 = "Group1", g2 = "Group2"),
-  list(comp_name = "Group3_vs_Group1", lfc_col = "lfc_GroupGroup3", p_col = "p_GroupGroup3", q_col = "q_GroupGroup3", g1 = "Group1", g2 = "Group3"),
-  list(comp_name = "Group3_vs_Group2", lfc_col = "lfc_GroupGroup3_GroupGroup2", p_col = "p_GroupGroup3_GroupGroup2", q_col = "q_GroupGroup3_GroupGroup2", g1 = "Group2", g2 = "Group3")
-)
-
-for (comp in comparisons) {
-  cat(sprintf("   Structuring %s...\n", comp$comp_name))
-  
-  comp_df <- res_pair %>%
-    mutate(
-      ASV_ID = taxon,
-      Genus = tax_genus[ASV_ID, "Genus"],
-      Comparison = comp$comp_name,
-      log2FoldChange = .data[[comp$lfc_col]],
-      pvalue = .data[[comp$p_col]],
-      p_adj = .data[[comp$q_col]],
-      mean_g1 = NA,
-      mean_g2 = NA
-    )
-  
-  # Inject pre-calculated relative abundance means
-  for (i in 1:nrow(comp_df)) {
-    asv <- comp_df$ASV_ID[i]
-    comp_df$mean_g1[i] <- mean_abunds$mean_val[mean_abunds$OTU == asv & mean_abunds$Group == comp$g1][1]
-    comp_df$mean_g2[i] <- mean_abunds$mean_val[mean_abunds$OTU == asv & mean_abunds$Group == comp$g2][1]
-  }
-  
-  pairwise_results <- bind_rows(pairwise_results, comp_df)
-}
-
-pairwise_results <- pairwise_results %>%
-  filter(!is.na(pvalue)) %>%
-  arrange(Comparison, p_adj) %>%
-  select(Comparison, Genus, mean_g1, mean_g2, log2FoldChange, pvalue, p_adj)
-
 # Save the results
 out_file <- file.path(STATS_DIR, "differential", "pairwise_differential_abundance.tsv")
-write_tsv(pairwise_results, out_file)
+write_tsv(res_pair, out_file)
 cat(sprintf("   Pairwise ANCOM-BC2 results saved to: %s\n", out_file))

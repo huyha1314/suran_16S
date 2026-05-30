@@ -6,10 +6,34 @@ library(htmltools)
 library(dplyr)
 
 # 1. Load data
-ps <- readRDS("results/03_phyloseq/phyloseq_obj.rds")
+ps_emu <- readRDS("results/03_phyloseq/phyloseq_obj.rds")
 
-# Transform to relative abundance
-ps_rel <- transform_sample_counts(ps, function(x) x / sum(x))
+bracken_rds <- "results/03_phyloseq/phyloseq_bracken.rds"
+COMPARE_MODE <- file.exists(bracken_rds)
+
+if (COMPARE_MODE) {
+  ps_bracken <- readRDS(bracken_rds)
+  
+  # Transform to relative abundance
+  ps_emu_rel <- transform_sample_counts(ps_emu, function(x) x / sum(x))
+  ps_bracken_rel <- transform_sample_counts(ps_bracken, function(x) x / sum(x))
+  
+  # Add Method column and make sample names unique for merge
+  sample_data(ps_emu_rel)$Method <- "Emu"
+  sample_data(ps_bracken_rel)$Method <- "Bracken"
+  sample_names(ps_emu_rel) <- paste0(sample_names(ps_emu_rel), "_Emu")
+  sample_names(ps_bracken_rel) <- paste0(sample_names(ps_bracken_rel), "_Bracken")
+  
+  # Merge both for side-by-side comparison
+  ps_rel <- merge_phyloseq(ps_emu_rel, ps_bracken_rel)
+  message("Bracken data found — generating Emu vs Bracken comparison plots.")
+} else {
+  # Fallback: Emu only
+  ps_emu_rel <- transform_sample_counts(ps_emu, function(x) x / sum(x))
+  sample_data(ps_emu_rel)$Method <- "Emu"
+  ps_rel <- ps_emu_rel
+  message("Bracken RDS not found — generating Emu-only plots.")
+}
 
 # 2. Function to build and save individual plots
 save_taxa_plot <- function(physeq, rank_name, file_out) {
@@ -75,16 +99,32 @@ save_taxa_plot <- function(physeq, rank_name, file_out) {
     custom_colors <- c(custom_colors, "Other" = "#888888")
   }
   
+  # Clean sample names for the x-axis
+  df_grouped$SampleID <- gsub("_Emu$|_Bracken$", "", as.character(df_grouped$Sample))
+  
+  # Dynamic title and faceting based on compare mode
+  plot_title <- if (COMPARE_MODE) {
+    paste("Relative Abundance at", rank_name, "Level (Emu vs Bracken)")
+  } else {
+    paste("Relative Abundance at", rank_name, "Level (Emu)")
+  }
+  
   # Base ggplot
-  p <- ggplot(df_grouped, aes(x = Sample, y = Abundance, fill = Taxon, text = paste("Group:", Group))) +
+  p <- ggplot(df_grouped, aes(x = SampleID, y = Abundance, fill = Taxon, text = paste("Group:", Group))) +
     geom_bar(stat = "identity", position = "stack") +
     scale_fill_manual(values = custom_colors) +
     theme_minimal() +
-    labs(title = paste("Relative Abundance at", rank_name, "Level"), y = "Relative Abundance") +
+    labs(title = plot_title, y = "Relative Abundance") +
     theme(
       axis.text.x = element_text(angle = 90, hjust = 1, size = 8),
-      legend.position = "right" # Show legend on the right
+      legend.position = "right",
+      strip.text = element_text(size = 12, face = "bold")
     )
+  
+  # Add facet only when comparing Emu vs Bracken
+  if (COMPARE_MODE) {
+    p <- p + facet_wrap(~ Method, scales = "free_x")
+  }
   
   # Save PDF version
   pdf_out <- sub("\\.html$", ".pdf", file_out)

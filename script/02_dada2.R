@@ -39,12 +39,14 @@ dir.create(DB_DIR, showWarnings = FALSE, recursive = TRUE)
 # -------------------------------------------------------------------------
 # Step 0: Verify Reference Databases
 # -------------------------------------------------------------------------
-silva_train_file <- file.path(DB_DIR, "silva_nr99_v138.1_train_set.fa.gz")
-silva_species_file <- file.path(DB_DIR, "silva_species_assignment_v138.1.fa.gz")
+silva_train_file <- Sys.getenv("SILVA_TRAIN_FILE", file.path(DB_DIR, "silva_nr99_v138.1_train_set.fa.gz"))
+silva_species_file <- Sys.getenv("SILVA_SPECIES_FILE", file.path(DB_DIR, "silva_species_assignment_v138.1.fa.gz"))
 
 if (!file.exists(silva_train_file) || !file.exists(silva_species_file)) {
-  stop("ERROR: SILVA reference database files are missing in ", DB_DIR, 
-       "\nPlease download them first by running: pixi run download_db")
+  stop("ERROR: SILVA reference database files are missing.\n",
+       "Verified train path: ", silva_train_file, "\n",
+       "Verified species path: ", silva_species_file, "\n",
+       "Please download them first by running: pixi run download_db")
 }
 cat("Database verification complete: SILVA training set and species database verified.\n")
 
@@ -199,6 +201,30 @@ saveRDS(taxa, file.path(DADA2_DIR, "taxonomy.rds"))
 asv_headers <- paste0(">", asv_names)
 asv_fasta <- c(rbind(asv_headers, asv_seqs))
 writeLines(asv_fasta, file.path(DADA2_DIR, "asvs.fasta"))
+
+# -------------------------------------------------------------------------
+# Step 9.6: Barrnap 16S rRNA Validation
+# -------------------------------------------------------------------------
+cat(">>> Running Barrnap to filter out non-rRNA ASVs...\n")
+barrnap_gff <- file.path(DADA2_DIR, "barrnap.gff")
+# Run barrnap silently
+exit_status <- system2("barrnap", args = c("--quiet", file.path(DADA2_DIR, "asvs.fasta")), stdout = barrnap_gff, stderr = NULL)
+
+if (exit_status == 0 && file.size(barrnap_gff) > 0) {
+  gff <- read.delim(barrnap_gff, header=FALSE, comment.char="#")
+  valid_asvs <- unique(gff$V1)
+  cat("Barrnap validated", length(valid_asvs), "out of", length(asv_names), "ASVs as true ribosomal RNA.\n")
+  
+  # Filter seqtab and taxa
+  seqtab.nochim <- seqtab.nochim[, valid_asvs, drop = FALSE]
+  taxa <- taxa[valid_asvs, , drop = FALSE]
+  
+  # Update clean tables
+  saveRDS(seqtab.nochim, file.path(DADA2_DIR, "seqtab_nochim.rds"))
+  saveRDS(taxa, file.path(DADA2_DIR, "taxonomy.rds"))
+} else {
+  cat("⚠️ WARNING: Barrnap failed or found no rRNA sequences. Skipping filtering.\n")
+}
 
 # -------------------------------------------------------------------------
 # Step 10: Track Reads through Pipeline

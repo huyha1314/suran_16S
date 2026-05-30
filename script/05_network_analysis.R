@@ -35,22 +35,39 @@ physeq <- readRDS(physeq_path)
 metadata <- as(sample_data(physeq), "data.frame")
 groups <- unique(metadata$Group)
 
-# Collapse to Genus level
-physeq_genus <- tax_glom(physeq, taxrank = "Genus", NArm = FALSE)
+# Collapse to Species level
+cat(">>> Agglomerating to Species level...\n")
+physeq_species <- tax_glom(physeq, taxrank = "Species", NArm = FALSE)
 
-# Filter out rare genera to avoid spurious correlations (relative abundance > 0.05% in at least 15% of samples)
-rel_abund <- transform_sample_counts(physeq_genus, function(x) x / sum(x))
-prev_mask <- apply(otu_table(rel_abund) > 0.0005, 2, sum) >= (0.15 * nsamples(physeq_genus))
-physeq_genus_filt <- prune_taxa(prev_mask, physeq_genus)
+cat(">>> Calculating prevalence mask directly from Species object...\n")
 
-cat("Genera kept for network analysis after filtering:", ntaxa(physeq_genus_filt), "\n")
+# Dynamically handle whether taxa are rows or columns in your matrix
+if (taxa_are_rows(physeq_species)) {
+  species_counts <- as(otu_table(physeq_species), "matrix")
+  prev_counts  <- rowSums(species_counts > 0)
+} else {
+  species_counts <- as(otu_table(physeq_species), "matrix")
+  prev_counts  <- colSums(species_counts > 0)
+}
+
+# Define your threshold (e.g., must be present in at least 2 samples)
+min_samples_threshold <- 2
+prev_mask <- prev_counts >= min_samples_threshold
+
+# CRITICAL FIX: Ensure lengths match identically before pruning
+if (length(prev_mask) == ntaxa(physeq_species)) {
+  physeq_species_filt <- prune_taxa(prev_mask, physeq_species)
+  cat(">>> Successfully filtered out rare species. Retained:", ntaxa(physeq_species_filt), "species.\n")
+} else {
+  stop("CRITICAL ERROR: Vector lengths still do not match. Check matrix orientations.")
+}
 
 # Extract count data and taxonomy mapping
-count_matrix <- as(otu_table(physeq_genus_filt), "matrix")
-if (taxa_are_rows(physeq_genus_filt)) {
+count_matrix <- as(otu_table(physeq_species_filt), "matrix")
+if (taxa_are_rows(physeq_species_filt)) {
   count_matrix <- t(count_matrix)
 }
-tax_genus <- as.data.frame(tax_table(physeq_genus_filt))
+tax_species <- as.data.frame(tax_table(physeq_species_filt))
 
 # Dataframes to store network topology comparison metrics
 network_metrics <- data.frame(
@@ -141,13 +158,13 @@ for (grp in groups) {
     ClusteringCoefficient = round(clust_coeff, 4)
   ))
   
-  # Add node labels (Genus level) and color by Phylum
+  # Add node labels (Species level) and color by Phylum
   # Retrieve taxonomy for remaining vertices
   node_asvs <- V(g)$name
-  node_genera <- tax_genus[node_asvs, "Genus"]
-  node_phyla <- tax_genus[node_asvs, "Phylum"]
+  node_species <- tax_species[node_asvs, "Species"]
+  node_phyla <- tax_species[node_asvs, "Phylum"]
   
-  V(g)$label <- node_genera
+  V(g)$label <- node_species
   V(g)$phylum <- node_phyla
   
   # Assign color based on phylum

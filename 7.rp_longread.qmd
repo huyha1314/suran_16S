@@ -1,0 +1,435 @@
+---
+title: "16S Microbiome Profiling Report"
+subtitle: "Oxford Nanopore Long-Read Sequencing (ONT)"
+date: today
+date-format: long
+
+number-sections: true
+highlight-style: pygments
+format:
+  html:
+    toc: true
+    toc-title: Contents
+    include-in-header:
+      - text: |
+          <style>
+          /* Iframe containers — block layout, never clips content */
+          .iframe-container {
+            width: 100%;
+            margin-bottom: 1.5em;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+          }
+          .iframe-container iframe {
+            display: block;
+            width: 100%;
+            height: 100%;  /* <--- ADD THIS LINE */
+            min-height: 400px; /* Optional: Adds a safety net so it never collapses entirely */
+            border: none;
+            border-radius: 8px;
+          }
+          /* Fix for Bootstrap dropdowns in Quarto */
+          .dropdown-menu { z-index: 1050 !important; }
+          
+          /* Force all table headers to be a professional dark blue */
+          .table thead th, table thead th {
+            background-color: #2C3E50 !important; 
+            color: #ffffff !important;
+            border-bottom: 2px solid #1A252F !important;
+          }
+          
+          /* Premium Pill Selector Styles */
+          .btn-outline-primary {
+            border-color: #3b82f6 !important;
+            color: #3b82f6 !important;
+            font-weight: 600 !important;
+            padding: 8px 20px !important;
+            border-radius: 30px !important;
+            transition: all 0.2s ease-in-out !important;
+            margin: 2px !important;
+          }
+          .btn-outline-primary:hover, .btn-outline-primary.active {
+            background-color: #3b82f6 !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
+            border-color: #3b82f6 !important;
+          }
+          </style>
+      - file: header_footer/header1.html
+    include-after-body:
+      - file: header_footer/footer1.html
+    grid: 
+      body-width: 1200px
+      sidebar-width: 258px
+    code-fold: false
+    code-tools: false
+editor: visual
+---
+
+::: {#wrn-1 .callout-important}
+## Important
+Please keep this interactive report inside its designated folder so the linked interactive plots and data files continue to function properly.
+:::
+
+# Project Workflow
+
+This report details the taxonomic composition, diversity metrics, and ecological network analysis of microbial communities identified via **Oxford Nanopore Technology (ONT) long-read 16S rRNA full-length amplicon sequencing**. The ONT long-read approach enables species-level taxonomic resolution that is not achievable with standard short-read (Illumina) sequencing. Click on any section below to expand and view the details of the pipeline.
+
+::: {.callout-note collapse="true"}
+## 1. Quality Control & Preprocessing
+* **Process:** Raw ONT reads were quality-filtered using **NanoPlot** for visual inspection and **Filtlong** to remove reads below quality and length thresholds. Primers were detected and removed using **Cutadapt**. Quality metrics were aggregated into a summary report via **MultiQC**.
+* **Technology:** Oxford Nanopore Technology (ONT) full-length 16S amplicon sequencing.
+:::
+
+::: {.callout-note collapse="true"}
+## 2. Taxonomic Profiling (Dual-Tool Strategy)
+* **Primary (Emu):** The **Emu** expectation-maximization algorithm was used as the primary taxonomic classifier. Emu is specifically designed for ONT long-read 16S data, using probabilistic alignment to resolve species-level abundances with high accuracy.
+* **Comparative (Kraken2 + Bracken):** As a secondary comparison, **Kraken2** performed rapid k-mer based classification and **Bracken** re-estimated abundance at species level using Bayesian re-estimation. Both results are visualised side-by-side in the Taxonomic Composition section.
+:::
+
+::: {.callout-note collapse="true"}
+## 3. Data Integration & Diversity Analysis
+* **Process:** Emu abundance matrices were combined across samples and assembled into a **Phyloseq** object alongside sample metadata. **Alpha diversity** (within-sample richness and evenness) and **Beta diversity** (between-sample dissimilarity via PCoA) were calculated.
+* **Note:** Since long-read taxonomy is reference-based (not ASV-resolved), UniFrac distances (which require a phylogenetic tree) are not applicable and are replaced with Bray-Curtis and Jaccard metrics.
+:::
+
+::: {.callout-note collapse="true"}
+## 4. Biomarker Discovery & Network Analysis
+* **Differential Abundance:** **ANCOM-BC2** was applied at the **Species** level to identify specific bacterial species that are significantly differentially abundant between experimental groups. This leverages the superior species-level resolution of ONT long reads.
+* **Ecological Networks:** Co-occurrence networks were constructed at the **Species** level using SparCC correlations to reveal the ecological interactions between microbial taxa across groups.
+:::
+
+# Bioinformatic Pipeline
+
+```{mermaid}
+%%{init: {'themeVariables': { 'fontSize': '16px'}, 'flowchart': {'nodeSpacing': 40, 'rankSpacing': 50}}}%%
+flowchart TD
+    %% Nodes
+    A[("ONT FASTQ\nRaw Reads")]
+    B["1. QC & Trimming<br/>(NanoPlot / Filtlong<br/>Cutadapt / MultiQC)"]
+    C1["2a. Primary Classifier<br/>(Emu EM Algorithm)"]
+    C2["2b. Comparative Classifier<br/>(Kraken2 + Bracken)"]
+    D["3. Data Integration<br/>(kraken-biom / Phyloseq)"]
+    E{"4. Diversity Analysis<br/>(Alpha & Beta)"}
+    F["5. Biomarker Discovery<br/>(ANCOM-BC2 @ Species)"]
+    G["6. Ecological Networks<br/>(SparCC @ Species)"]
+    H["7. Visualizations<br/>(Plotly / ggplot2)"]
+    I[("Final Interactive<br/>Report")]
+
+    %% Connections
+    A --> B --> C1 & C2 --> D --> E --> F & G --> H --> I
+
+    %% Styling
+    classDef input fill:#2b2d42,color:#fff,stroke:none
+    classDef process fill:#edf2f4,stroke:#8d99ae,color:#2b2d42
+    classDef check fill:#ffddd2,stroke:#e29578,color:#2b2d42
+    classDef output fill:#83c5be,stroke:#006d77,color:#fff,stroke-width:2px
+
+    class A input
+    class B,C1,C2,D,F,G,H process
+    class E check
+    class I output
+```
+
+# Quality Control
+::: {.callout-tip}
+Raw ONT sequencing data requires initial quality control. **NanoPlot** provides read length and quality distributions specific to nanopore data. The **MultiQC** report below aggregates FastQC and Cutadapt trimming metrics across all samples.
+:::
+
+```{=html}
+<div class="iframe-container">
+  <iframe src="multiqc_report.html" title="MultiQC Report" data-external="1"></iframe>
+</div>
+<br>
+<div class="dropdown" style="margin-top: 10px;">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-download"></i> Download QC Data
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="multiqc_report.html" download="multiqc_report.html">Full MultiQC HTML Report</a></li>
+  </ul>
+</div>
+```
+
+# Sample Properties & Sequencing Depth
+
+::: {.callout-tip}
+The table below details the experimental groups and metadata for all samples included in the final analysis, along with the total number of quality-filtered long reads (Read Input) successfully assigned to taxa by Emu.
+:::
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+library(phyloseq)
+library(DT)
+library(dplyr)
+
+rds_path <- "results/03_phyloseq/phyloseq_obj.rds"
+if(!file.exists(rds_path)) rds_path <- "../results/03_phyloseq/phyloseq_obj.rds"
+
+if(file.exists(rds_path)) {
+  ps <- readRDS(rds_path)
+  meta_df <- data.frame(sample_data(ps), check.names = FALSE)
+  
+  # Calculate Total Reads (or Estimated Reads for Emu) per sample
+  meta_df$Total_Reads <- round(sample_sums(ps), 0)
+  
+  # Format SampleID
+  if(!"SampleID" %in% colnames(meta_df)) {
+    meta_df <- cbind(SampleID = rownames(meta_df), meta_df)
+  }
+  
+  # Render interactive table
+  datatable(meta_df, 
+            rownames = FALSE,
+            class = 'display compact cell-border stripe',
+            options = list(
+              pageLength = 15, 
+              scrollX = TRUE,
+              dom = 'Bfrtip'
+            ))
+} else {
+  cat("Sample metadata and read counts will be displayed here once the Phyloseq object is generated.")
+}
+```
+
+# Taxonomic Composition
+::: {.callout-tip}
+The relative abundance of microbial taxa across samples, shown **side-by-side** for the **Emu** (primary) and **Bracken** (comparative) classifiers. Use the tabs to switch between taxonomic ranks. Hover over the bars for exact percentage values.
+:::
+
+```{=html}
+<div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
+  <button class="btn btn-outline-primary active" onclick="switchTaxa('phylum', this)">Phylum</button>
+  <button class="btn btn-outline-primary" onclick="switchTaxa('class', this)">Class</button>
+  <button class="btn btn-outline-primary" onclick="switchTaxa('order', this)">Order</button>
+  <button class="btn btn-outline-primary" onclick="switchTaxa('family', this)">Family</button>
+  <button class="btn btn-outline-primary" onclick="switchTaxa('genus', this)">Genus</button>
+  <button class="btn btn-outline-primary" onclick="switchTaxa('species', this)">Species</button>
+</div>
+
+<div class="iframe-container" style="height: 1200px;">
+  <iframe id="taxa-iframe" src="interactive_reports/01_taxa_phylum.html" title="Taxonomic Composition" data-external="1"></iframe>
+</div>
+
+<script>
+function switchTaxa(level, btn) {
+  const iframe = document.getElementById('taxa-iframe');
+  iframe.src = `interactive_reports/01_taxa_${level}.html`;
+  
+  // Update active class on buttons
+  const buttons = btn.parentElement.querySelectorAll('button');
+  buttons.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+```
+
+```{=html}
+<br>
+<div class="dropdown">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-download"></i> Download Taxonomic Abundance Data
+  </button>
+  <ul class="dropdown-menu">
+    <li><h6 class="dropdown-header">Raw Count Tables (TSV)</h6></li>
+    <li><a class="dropdown-item" href="03_phyloseq/abundance_phylum.tsv" download="abundance_phylum.tsv">Phylum Level Abundance</a></li>
+    <li><a class="dropdown-item" href="03_phyloseq/abundance_class.tsv" download="abundance_class.tsv">Class Level Abundance</a></li>
+    <li><a class="dropdown-item" href="03_phyloseq/abundance_order.tsv" download="abundance_order.tsv">Order Level Abundance</a></li>
+    <li><a class="dropdown-item" href="03_phyloseq/abundance_family.tsv" download="abundance_family.tsv">Family Level Abundance</a></li>
+    <li><a class="dropdown-item" href="03_phyloseq/abundance_genus.tsv" download="abundance_genus.tsv">Genus Level Abundance</a></li>
+    <li><a class="dropdown-item" href="03_phyloseq/abundance_species.tsv" download="abundance_species.tsv">Species Level Abundance</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header">Combined Format</h6></li>
+    <li><a class="dropdown-item" href="03_phyloseq/taxa_abundance_tables.xlsx" download="taxa_abundance_tables.xlsx">All Levels (Excel Workbook)</a></li>
+  </ul>
+</div>
+```
+
+# Rarefaction Analysis
+::: {.callout-tip}
+Rarefaction curves determine if the sequencing depth was sufficient to capture the full microbial diversity. Curves that plateau indicate that further sequencing would not yield additional taxa. For long-read data, rarefaction is calculated at the **Species** level (not ASV level) to reflect the true resolution of the data.
+:::
+
+
+```{=html}
+<div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
+  <button class="btn btn-outline-primary active" onclick="switchRare('asv_observed', this)">Species-Level Richness</button>
+  <button class="btn btn-outline-primary" onclick="switchRare('genus_observed', this)">Genus-Level Richness</button>
+  <button class="btn btn-outline-primary" onclick="switchRare('asv_shannon', this)">Shannon Saturation</button>
+</div>
+
+<div class="iframe-container" style="height: 700px;">
+  <iframe id="rare-iframe" src="interactive_reports/02b_rarefaction_asv_observed.html" title="Rarefaction Curves" data-external="1"></iframe>
+</div>
+
+<script>
+function switchRare(metric, btn) {
+  const iframe = document.getElementById('rare-iframe');
+  iframe.src = `interactive_reports/02b_rarefaction_${metric}.html`;
+  
+  // Update active class on buttons
+  const buttons = btn.parentElement.querySelectorAll('button');
+  buttons.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+```
+
+# Alpha Diversity (Within-Sample)
+::: {.callout-tip}
+Alpha diversity measures the complexity (richness and evenness) of the microbiome within a single sample. **Observed** richness reflects the number of unique species detected, and **Shannon** index accounts for both richness and evenness. Statistical comparisons between groups use Kruskal-Wallis test.
+:::
+
+```{=html}
+<div class="iframe-container" style="height: 850px;">
+  <iframe src="interactive_reports/02_alpha_diversity_with_table.html" title="Alpha Diversity" data-external="1"></iframe>
+</div>
+<br>
+<div class="dropdown" style="margin-top: 10px;">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-download"></i> Download Alpha Diversity Data
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="04_stats/alpha/alpha_diversity_table.tsv" download="alpha_diversity_table.tsv">Alpha Diversity Metrics (TSV)</a></li>
+    <li><a class="dropdown-item" href="04_stats/alpha/kruskal_observed.tsv" download="kruskal_observed.tsv">Kruskal-Wallis — Observed Richness (TSV)</a></li>
+    <li><a class="dropdown-item" href="04_stats/alpha/kruskal_shannon.tsv" download="kruskal_shannon.tsv">Kruskal-Wallis — Shannon Index (TSV)</a></li>
+  </ul>
+</div>
+```
+
+# Beta Diversity (Between-Sample)
+::: {.callout-tip}
+Beta diversity measures the structural differences between microbial communities. **Bray-Curtis** dissimilarity accounts for species abundances; **Jaccard** considers only presence/absence. UniFrac distances are **not applicable** in long-read taxonomy-based profiling (no phylogenetic tree). Significance is calculated via **PERMANOVA**, and variance homogeneity is validated using **PERMDISP**.
+:::
+
+```{=html}
+<div class="iframe-container" style="height: 1100px;">
+  <iframe src="interactive_reports/03_beta_diversity_with_stats.html" title="Beta Diversity Analysis" data-external="1"></iframe>
+</div>
+<br>
+<div class="dropdown" style="margin-top: 10px;">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-download"></i> Download Beta Diversity Stats & Plots
+  </button>
+  <ul class="dropdown-menu">
+    <li><h6 class="dropdown-header">Statistical Tables</h6></li>
+    <li><a class="dropdown-item" href="04_stats/beta/permanova_bray_curtis.tsv" download="permanova_bray_curtis.tsv">PERMANOVA - Bray-Curtis (TSV)</a></li>
+    <li><a class="dropdown-item" href="04_stats/beta/permanova_jaccard.tsv" download="permanova_jaccard.tsv">PERMANOVA - Jaccard (TSV)</a></li>
+    <li><a class="dropdown-item" href="04_stats/beta/permdisp_bray_curtis.tsv" download="permdisp_bray_curtis.tsv">PERMDISP - Bray-Curtis (TSV)</a></li>
+    <li><a class="dropdown-item" href="04_stats/beta/permdisp_jaccard.tsv" download="permdisp_jaccard.tsv">PERMDISP - Jaccard (TSV)</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header">High-Res Ordination Plots</h6></li>
+    <li><a class="dropdown-item" href="04_stats/beta/pcoa_bray_curtis.png" download="pcoa_bray_curtis.png">PCoA - Bray-Curtis (PNG)</a></li>
+    <li><a class="dropdown-item" href="04_stats/beta/nmds_bray_curtis.png" download="nmds_bray_curtis.png">NMDS - Bray-Curtis (PNG)</a></li>
+    <li><a class="dropdown-item" href="04_stats/beta/pcoa_jaccard.png" download="pcoa_jaccard.png">PCoA - Jaccard (PNG)</a></li>
+    <li><a class="dropdown-item" href="04_stats/beta/nmds_jaccard.png" download="nmds_jaccard.png">NMDS - Jaccard (PNG)</a></li>
+  </ul>
+</div>
+```
+
+# Differential Abundance — Species-Level Biomarkers
+::: {.callout-important}
+This section highlights the specific microbial **species** driving the differences between experimental cohorts, leveraging the high-resolution species-level classification of ONT long-read sequencing. Statistical testing was performed using **ANCOM-BC2** (Analysis of Compositions of Microbiomes with Bias Correction 2) — a rigorous, bias-corrected method robust to compositional data. Use the tabs to switch between the Global Multi-Group overview and Pairwise Volcano plots.
+:::
+
+```{=html}
+<div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
+  <button class="btn btn-outline-primary active" onclick="switchDiff('multi', this)">Global Multi-Group Plot</button>
+  <button class="btn btn-outline-primary" onclick="switchDiff('pairwise', this)">Pairwise Volcano Plot</button>
+</div>
+
+<div class="iframe-container" style="height: 900px;">
+  <iframe id="diff-iframe" src="interactive_reports/04_diff_multi.html" title="Differential Biomarkers" data-external="1"></iframe>
+</div>
+<br>
+
+<div id="diff-download-multi" class="dropdown" style="margin-top: 10px; display: block;">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-download"></i> Download ANCOM-BC2 Biomarker Data
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="04_stats/differential/differential_abundance_species.tsv" download="differential_abundance_species.tsv">Multi-Group ANCOM-BC2 Results (TSV)</a></li>
+  </ul>
+</div>
+
+<div id="diff-download-pairwise" class="dropdown" style="margin-top: 10px; display: none;">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-download"></i> Download Pairwise Fold-Change Data
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="04_stats/differential/pairwise_differential_abundance.tsv" download="pairwise_differential_abundance.tsv">Pairwise ANCOM-BC2 Results (TSV)</a></li>
+  </ul>
+</div>
+
+<script>
+function switchDiff(view, btn) {
+  const iframe = document.getElementById('diff-iframe');
+  iframe.src = `interactive_reports/04_diff_${view}.html`;
+  
+  if (view === 'multi') {
+    document.getElementById('diff-download-multi').style.display = 'block';
+    document.getElementById('diff-download-pairwise').style.display = 'none';
+  } else {
+    document.getElementById('diff-download-multi').style.display = 'none';
+    document.getElementById('diff-download-pairwise').style.display = 'block';
+  }
+  
+  // Update active class on buttons
+  const buttons = btn.parentElement.querySelectorAll('button');
+  buttons.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+```
+
+# References
+
+Callahan, B. J., McMurdie, P. J., Rosen, M. J., Han, A. W., Johnson, A. J., & Holmes, S. P. (2016). DADA2: High-resolution sample inference from Illumina amplicon data. *Nature Methods*, 13(7), 581–583. https://doi.org/10.1038/nmeth.3869
+
+Douglas, G. M., Maffei, V. J., Zaneveld, J. R., Yurgel, S. N., Brown, J. R., Taylor, C. M., ... & Langille, M. G. (2020). PICRUSt2 for prediction of metagenome functions. *Nature Biotechnology*, 38(6), 685–688. https://doi.org/10.1038/s41587-020-0548-6
+
+Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. *Bioinformatics*, 32(19), 3047–3048. https://doi.org/10.1093/bioinformatics/btw354
+
+Lin, H., & Peddada, S. D. (2020). Analysis of compositions of microbiomes with bias correction. *Nature Communications*, 11(1), 3514. https://doi.org/10.1038/s41467-020-17041-7
+
+Martin, M. (2011). Cutadapt removes adapter sequences from high-throughput sequencing reads. *EMBnet.journal*, 17(1), 10–12. https://doi.org/10.14806/ej.17.1.200
+
+McMurdie, P. J., & Holmes, S. (2013). phyloseq: an R package for reproducible interactive analysis and graphics of microbiome census data. *PLoS One*, 8(4), e61217. https://doi.org/10.1371/journal.pone.0061217
+
+Oksanen, J., Blanchet, F. G., Friendly, M., Kindt, R., Legendre, P., McGlinn, D., ... & Wagner, H. (2020). vegan: Community Ecology Package. R package version 2.5-7. https://CRAN.R-project.org/package=vegan
+
+Trigodet, F., & Eren, A. M. (2022). Accurate estimates of microbial abundance from long-read shotgun metagenomes and assemblies using Emu. *Nature Methods*, 19, 696–704. https://doi.org/10.1038/s41592-022-01440-3
+
+Wood, D. E., Lu, J., & Langmead, B. (2019). Improved metagenomic analysis with Kraken 2. *Genome Biology*, 20, 257. https://doi.org/10.1186/s13059-019-1891-0
+
+De Coster, W., D'Hert, S., Schultz, D. T., Cruts, M., & Van Broeckhoven, C. (2018). NanoPack: visualizing and processing long-read sequencing data. *Bioinformatics*, 34(15), 2666–2669. https://doi.org/10.1093/bioinformatics/bty149
+
+# Software and Database Versions
+
+To ensure computational reproducibility, all software tools and R packages are managed via a locked **Pixi** (Conda/Bioconda/CRAN) environment:
+
+| Software / Package | Version | Purpose |
+|:---|:---|:---|
+| **NanoPlot** | v1.42.0+ | ONT read quality visualization |
+| **Filtlong** | v0.2.1+ | ONT read quality and length filtering |
+| **Cutadapt** | v5.2+ | Primer and adapter trimming |
+| **MultiQC** | v1.35+ | Quality control report aggregation |
+| **Emu** | v3.6.2+ | ONT long-read 16S taxonomic profiling (primary) |
+| **Kraken2** | v2.17.1+ | k-mer based taxonomic classification (comparative) |
+| **Bracken** | v3.1+ | Bayesian abundance re-estimation from Kraken2 |
+| **kraken-biom** | v1.2.0+ | Bracken report → BIOM format conversion |
+| **Minimap2** | v2.28+ | Long-read sequence alignment |
+| **DADA2** (R) | v1.38.0+ | Short-read ASV inference (shortread mode only) |
+| **Phyloseq** (R) | v1.54.0+ | Microbiome data handling and diversity metrics |
+| **ANCOM-BC2** (R) | v2.12.0+ | Differential abundance testing at Species level |
+| **Vegan** (R) | v2.7-3+ | Ecological diversity, PERMANOVA, PERMDISP |
+| **igraph** (R) | — | Ecological co-occurrence network construction |
+| **Plotly** (R) | v4.10.4+ | Interactive HTML data visualization |
+| **Quarto** | v1.4+ | Scientific report generation and rendering |
+
+: {.striped .hover}
+
+*Note: Taxonomy was assigned using **Emu's** built-in species-level database (derived from SILVA 138.1) as the primary source. Bracken assignments used a Kraken2 database built from SILVA 138.1 16S sequences. Long-read mode does not generate ASVs or phylogenetic trees, so UniFrac distances are not calculated.*
